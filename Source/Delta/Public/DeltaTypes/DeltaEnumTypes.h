@@ -33,3 +33,20 @@ enum class EDeltaSkillType : uint8
 	Max UMETA(Hidden)
 };
 ENUM_RANGE_BY_COUNT(EDeltaSkillType, EDeltaSkillType::Max);
+
+
+UENUM(BlueprintType)
+enum class EBlackboardKey : uint8
+{
+	TargetActor
+};
+
+inline FName GetBlackboardKeyName(const EBlackboardKey KeyName)
+{
+	switch (KeyName)
+	{
+	case EBlackboardKey::TargetActor: return FName("TargetActor");
+	default: return NAME_None;
+		
+	}
+}

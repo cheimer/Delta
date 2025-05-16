@@ -8,7 +8,6 @@
 #include "MotionWarpingComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Characters/DeltaEnemyCharacter.h"
-#include "Components/CapsuleComponent.h"
 #include "Components/CombatComponent.h"
 #include "Components/HealthComponent.h"
 #include "DataAssets/Input/InputDataAsset.h"
@@ -16,7 +15,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 
 ADeltaPlayableCharacter::ADeltaPlayableCharacter()
 {
@@ -134,8 +132,7 @@ void ADeltaPlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 void ADeltaPlayableCharacter::BeginSkillAnim(const FName SkillIndex)
 {
 	if (CurrentStatus == EPlayerStatus::Skill ||
-		CurrentStatus == EPlayerStatus::Parrying ||
-		CurrentStatus == EPlayerStatus::Evasion)
+		CurrentStatus == EPlayerStatus::Parrying)
 		return;
 
 	if (HealthComponent->GetIsDead()) return;
@@ -145,27 +142,20 @@ void ADeltaPlayableCharacter::BeginSkillAnim(const FName SkillIndex)
 	
 	if (SkillIndexToSkillType.Find(SkillIndex))
 	{
-		const EDeltaSkillType CurrentSkillType = SkillIndexToSkillType[SkillIndex];
+		USkillDataAsset* SkillData = FindSkillDataAsset(SkillIndexToSkillType[SkillIndex]);
+		if (!SkillData) return;
 
-		for (const auto SkillData : SkillDataAssets)
-		{
-			if (SkillData->Type == CurrentSkillType)
-			{
-				CachedStatus = CurrentStatus;
-				CurrentStatus = EPlayerStatus::Skill;
+		CachedStatus = CurrentStatus;
+		CurrentStatus = EPlayerStatus::Skill;
 
-				FOnMontageEnded OnMontageEnded;
-				OnMontageEnded.BindUObject(this, &ADeltaPlayableCharacter::EndSkillAnim);
+		FOnMontageEnded OnMontageEnded;
+		OnMontageEnded.BindUObject(this, &ADeltaPlayableCharacter::EndSkillAnim);
 
-				AnimInstance->Montage_Play(SkillData->AnimMontage);
-				AnimInstance->Montage_SetEndDelegate(OnMontageEnded, SkillData->AnimMontage);
-				
-				UpdateSkillTarget();
-				MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TEXT("SkillTarget"), SkillTargetLocation);
-				
-				break;
-			}
-		}
+		AnimInstance->Montage_Play(SkillData->AnimMontage);
+		AnimInstance->Montage_SetEndDelegate(OnMontageEnded, SkillData->AnimMontage);
+		
+		UpdateSkillTarget();
+		MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TEXT("SkillTarget"), SkillTargetLocation);
 	}
 	
 }
@@ -312,8 +302,7 @@ void ADeltaPlayableCharacter::CharacterDeath()
 void ADeltaPlayableCharacter::Move(const FInputActionValue& Value)
 {
 	if (CurrentStatus == EPlayerStatus::Skill ||
-		CurrentStatus == EPlayerStatus::Parrying ||
-		CurrentStatus == EPlayerStatus::Evasion)
+		CurrentStatus == EPlayerStatus::Parrying)
 		return;
 
 	if (HealthComponent->GetIsDead()) return;
@@ -401,18 +390,18 @@ void ADeltaPlayableCharacter::LockTarget(const FInputActionValue& Value)
 	}
 }
 
+void ADeltaPlayableCharacter::Execute(const FInputActionValue& Value)
+{
+	if (HealthComponent->GetIsDead()) return;
+	
+	UE_LOG(LogTemp, Warning, TEXT("Execute"));
+}
+
 void ADeltaPlayableCharacter::Parrying(const FInputActionValue& Value)
 {
 	if (HealthComponent->GetIsDead()) return;
 	
-	UE_LOG(LogTemp, Warning, TEXT("ParryingX -> Execute"));
-}
-
-void ADeltaPlayableCharacter::Evasion(const FInputActionValue& Value)
-{
-	if (HealthComponent->GetIsDead()) return;
-	
-	UE_LOG(LogTemp, Warning, TEXT("EvasionX -> Parrying or Cancel"));
+	UE_LOG(LogTemp, Warning, TEXT("Parrying or Cancel"));
 }
 
 void ADeltaPlayableCharacter::SkillFirst(const FInputActionValue& Value)

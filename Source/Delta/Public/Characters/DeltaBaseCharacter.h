@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "DeltaBaseCharacter.generated.h"
 
+class USkillDataAsset;
 class USkillBase;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterDeath);
 
@@ -43,8 +44,13 @@ protected:
 	UFUNCTION()
 	void EndDeathAnim();
 
+	USkillDataAsset* FindSkillDataAsset(const EDeltaSkillType CurrentSkillType);
+
 	UPROPERTY(EditDefaultsOnly, Category = "Animations")
 	UAnimMontage* DeathMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Skill")
+	TArray<USkillDataAsset*> SkillDataAssets;
 
 	TWeakObjectPtr<USkillBase> CachedSkill;
 	

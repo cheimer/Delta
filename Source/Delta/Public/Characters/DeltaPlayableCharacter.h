@@ -9,7 +9,6 @@
 #include "DeltaPlayableCharacter.generated.h"
 
 class USkillDataAsset;
-class UMotionWarpingComponent;
 class UInputDataAsset;
 class UCameraComponent;
 class USpringArmComponent;
@@ -22,7 +21,6 @@ enum class EPlayerStatus : uint8
 	Default,
 	Skill,
 	Parrying,
-	Evasion,
 	LockTarget
 };
 
@@ -67,10 +65,10 @@ protected:
 	void LockTarget(const FInputActionValue& Value);
 	
 	UFUNCTION()
-	void Parrying(const FInputActionValue& Value);
+	void Execute(const FInputActionValue& Value);
 	
 	UFUNCTION()
-	void Evasion(const FInputActionValue& Value);
+	void Parrying(const FInputActionValue& Value);
 	
 	UFUNCTION()
 	void SkillFirst(const FInputActionValue& Value);
@@ -103,9 +101,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Skill")
 	TMap<FName, EDeltaSkillType> SkillIndexToSkillType;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Skill")
-	TArray<USkillDataAsset*> SkillDataAssets;
 
 	EPlayerStatus CurrentStatus = EPlayerStatus::Default;
 	EPlayerStatus CachedStatus = EPlayerStatus::Default;

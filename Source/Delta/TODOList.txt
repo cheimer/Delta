@@ -1,0 +1,6 @@
+
+// 반드시
+Evasion, Parrying -> Execute, Parrying 으로 변경
+
+// 필요하면
+Status -> StatusComponent로 관리

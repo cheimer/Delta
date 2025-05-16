@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/CombatComponent.h"
 #include "Components/HealthComponent.h"
+#include "DataAssets/Skill/SkillDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 ADeltaBaseCharacter::ADeltaBaseCharacter()
@@ -59,6 +60,19 @@ void ADeltaBaseCharacter::CharacterDeath()
 void ADeltaBaseCharacter::EndDeathAnim()
 {
 	UE_LOG(LogTemp, Warning, TEXT("DeathAnim End"));
+}
+
+USkillDataAsset* ADeltaBaseCharacter::FindSkillDataAsset(const EDeltaSkillType CurrentSkillType)
+{
+	for (const auto SkillData : SkillDataAssets)
+	{
+		if (SkillData->Type == CurrentSkillType)
+		{
+			return SkillData;
+		}
+	}
+
+	return nullptr;
 }
 
 void ADeltaBaseCharacter::ActiveSkill(const EDeltaSkillType SkillType)

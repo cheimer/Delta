@@ -6,6 +6,7 @@
 #include "Characters/DeltaBaseCharacter.h"
 #include "DeltaEnemyCharacter.generated.h"
 
+class ADeltaAIController;
 /**
  * 
  */
@@ -16,5 +17,18 @@ class DELTA_API ADeltaEnemyCharacter : public ADeltaBaseCharacter
 
 public:
 	ADeltaEnemyCharacter();
-	
+
+	void BeginSkillAnim();
+
+protected:
+	virtual void PossessedBy(AController* NewController) override;
+
+	virtual void CharacterDeath() override;
+
+	UFUNCTION()
+	void EndSkillAnim(UAnimMontage* AnimMontage, bool bInterrupted);
+
+private:
+	UPROPERTY()
+	ADeltaAIController* DeltaAIController;
 };
