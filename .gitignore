@@ -74,6 +74,7 @@ Plugins/**/Intermediate/*
 DerivedDataCache/*
 
 # Customize
-Content/ThirdPerson/*
-Content/Assets/*
+Content/ExternalAssets/*
 Plugins/*
+Content/__ExternalActors__/*
+Content/__ExternalObjects__/
