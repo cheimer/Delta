@@ -12,6 +12,10 @@ void USkillBase::BeginSkill(UCombatComponent* InCombatComponent)
 	CombatComponent = InCombatComponent;
 }
 
+void USkillBase::ReactDamaged()
+{
+}
+
 void USkillBase::EndSkill()
 {
 }

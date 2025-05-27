@@ -24,9 +24,9 @@ void ADeltaEnemyCharacter::PossessedBy(AController* NewController)
 	
 }
 
-void ADeltaEnemyCharacter::CharacterDeath()
+void ADeltaEnemyCharacter::OnCharacterDeathHandle(AActor* DeathCharacter)
 {
-	Super::CharacterDeath();
+	Super::OnCharacterDeathHandle(DeathCharacter);
 	
 	DeltaAIController = DeltaAIController ? DeltaAIController : Cast<ADeltaAIController>(GetController());
 	
@@ -52,10 +52,24 @@ void ADeltaEnemyCharacter::BeginSkillAnim()
 	AnimInstance->Montage_SetEndDelegate(OnMontageEnded, SkillData->AnimMontage);
 		
 	UpdateSkillTarget();
-	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TEXT("SkillTarget"), SkillTargetLocation);
+	if (GetCurrentSkillTarget().IsValid())
+	{
+		MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TEXT("SkillTarget"),GetSkillTargetLocation());
+	}
 }
 
 void ADeltaEnemyCharacter::EndSkillAnim(UAnimMontage* AnimMontage, bool bInterrupted)
 {
 	
+}
+
+void ADeltaEnemyCharacter::UpdateSkillTarget()
+{
+	Super::UpdateSkillTarget();
+	
+	DeltaAIController = DeltaAIController ? DeltaAIController : Cast<ADeltaAIController>(GetController());
+	if (!DeltaAIController) return;
+
+	SetCurrentSkillTarget(DeltaAIController->GetCurrentTarget());
+	SetSkillTargetLocation(DeltaAIController->GetCurrentTarget()->GetActorLocation());
 }

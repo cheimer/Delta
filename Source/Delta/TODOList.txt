@@ -1,6 +1,11 @@
 
 // 반드시
-Evasion, Parrying -> Execute, Parrying 으로 변경
+HUD
+GameInstance, SaveGame
+ManaComponent
 
 // 필요하면
 Status -> StatusComponent로 관리
+공격할 때 1 -> LBClick or 1 -> 1 로 가능하게
+
+적 잡을 때 시네마틱 추가 후 연동

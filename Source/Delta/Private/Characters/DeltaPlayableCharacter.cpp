@@ -107,6 +107,20 @@ void ADeltaPlayableCharacter::Tick(float DeltaTime)
 			SetLockTarget(false);
 		}
 	}
+
+	if (bIsWaitingSkill)
+	{
+		WaitingSkillTime += DeltaTime;
+		if (WaitingSkillTime > 0.1f)
+		{
+			WaitingSkillTime = 0.0f;
+			UpdateSkillTarget();
+			if (CurrentSkillTarget.IsValid())
+			{
+				DrawDebugSphere(GetWorld(), CurrentSkillTarget->GetActorLocation(), 300.0f, 32, FColor::Red);
+			}
+		}
+	}
 }
 
 void ADeltaPlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -129,35 +143,60 @@ void ADeltaPlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 	
 }
 
-void ADeltaPlayableCharacter::BeginSkillAnim(const FName SkillIndex)
+void ADeltaPlayableCharacter::StartWaitingSkill(FName SkillIndex)
 {
-	if (CurrentStatus == EPlayerStatus::Skill ||
-		CurrentStatus == EPlayerStatus::Parrying)
+	if (CurrentStatus == EPlayerStatus::Skill)
+		return;
+
+	if (HealthComponent->GetIsDead()) return;
+	
+	if (!SkillIndexToSkillType.Find(SkillIndex)) return;
+	
+	CachedSkillData = FindSkillDataAsset(SkillIndexToSkillType[SkillIndex]);
+	bIsWaitingSkill = true;
+	WaitingSkillTime = 1.0f;
+
+	if (CachedSkillData->Type == EDeltaSkillType::Parrying)
+	{
+		BeginSkillAnim();
+	}
+	
+}
+
+void ADeltaPlayableCharacter::CancelWaitingSkill()
+{
+	if (CurrentStatus == EPlayerStatus::Skill)
+		return;
+
+	bIsWaitingSkill = false;
+
+}
+
+void ADeltaPlayableCharacter::BeginSkillAnim()
+{
+	if (!bIsWaitingSkill || CurrentStatus == EPlayerStatus::Skill)
 		return;
 
 	if (HealthComponent->GetIsDead()) return;
 	
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (!AnimInstance) return;
+
+	if (!CachedSkillData.IsValid()) return;
 	
-	if (SkillIndexToSkillType.Find(SkillIndex))
-	{
-		USkillDataAsset* SkillData = FindSkillDataAsset(SkillIndexToSkillType[SkillIndex]);
-		if (!SkillData) return;
+	CachedStatus = CurrentStatus;
+	CurrentStatus = EPlayerStatus::Skill;
 
-		CachedStatus = CurrentStatus;
-		CurrentStatus = EPlayerStatus::Skill;
+	FOnMontageEnded OnMontageEnded;
+	OnMontageEnded.BindUObject(this, &ADeltaPlayableCharacter::EndSkillAnim);
 
-		FOnMontageEnded OnMontageEnded;
-		OnMontageEnded.BindUObject(this, &ADeltaPlayableCharacter::EndSkillAnim);
-
-		AnimInstance->Montage_Play(SkillData->AnimMontage);
-		AnimInstance->Montage_SetEndDelegate(OnMontageEnded, SkillData->AnimMontage);
-		
-		UpdateSkillTarget();
-		MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TEXT("SkillTarget"), SkillTargetLocation);
-	}
+	AnimInstance->Montage_Play(CachedSkillData->AnimMontage);
+	AnimInstance->Montage_SetEndDelegate(OnMontageEnded, CachedSkillData->AnimMontage);
 	
+	UpdateSkillTarget();
+	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TEXT("SkillTarget"), SkillTargetLocation);
+	
+	bIsWaitingSkill = false;
 }
 
 void ADeltaPlayableCharacter::EndSkillAnim(UAnimMontage* AnimMontage, bool bInterrupted)
@@ -255,44 +294,9 @@ ADeltaBaseCharacter* ADeltaPlayableCharacter::FindEnemyFromFront() const
 	return nullptr;
 }
 
-void ADeltaPlayableCharacter::ActiveSkill(const EDeltaSkillType SkillType)
+void ADeltaPlayableCharacter::OnCharacterDeathHandle(AActor* DeathActor)
 {
-	Super::ActiveSkill(SkillType);
-	
-	for (const auto SkillData : SkillDataAssets)
-	{
-		if (SkillData->Type == SkillType)
-		{
-			CombatComponent->BeginSkill(SkillData->Skill);
-			return;
-		}
-	}
-}
-
-void ADeltaPlayableCharacter::DeActiveSkill()
-{
-	Super::DeActiveSkill();
-
-	if (!CachedSkill.IsValid()) return;
-	CombatComponent->EndSkill(CachedSkill.Get());
-}
-
-TOptional<float> ADeltaPlayableCharacter::GetSkillDamage(EDeltaSkillType SkillType)
-{
-	for (const auto SkillData : SkillDataAssets)
-	{
-		if (SkillData->Type == SkillType)
-		{
-			return TOptional<float>(SkillData->Damage);
-		}
-	}
-
-	return TOptional<float>();
-}
-
-void ADeltaPlayableCharacter::CharacterDeath()
-{
-	Super::CharacterDeath();
+	Super::OnCharacterDeathHandle(DeathActor);
 
 	
 }
@@ -301,8 +305,7 @@ void ADeltaPlayableCharacter::CharacterDeath()
 
 void ADeltaPlayableCharacter::Move(const FInputActionValue& Value)
 {
-	if (CurrentStatus == EPlayerStatus::Skill ||
-		CurrentStatus == EPlayerStatus::Parrying)
+	if (CurrentStatus == EPlayerStatus::Skill)
 		return;
 
 	if (HealthComponent->GetIsDead()) return;
@@ -368,7 +371,7 @@ void ADeltaPlayableCharacter::Scroll(const FInputActionValue& Value)
 void ADeltaPlayableCharacter::LockTarget(const FInputActionValue& Value)
 {
 	if (HealthComponent->GetIsDead()) return;
-	
+
 	if (CurrentStatus == EPlayerStatus::Default)
 	{
 		SetLockTarget(true);
@@ -392,31 +395,37 @@ void ADeltaPlayableCharacter::LockTarget(const FInputActionValue& Value)
 
 void ADeltaPlayableCharacter::Execute(const FInputActionValue& Value)
 {
-	if (HealthComponent->GetIsDead()) return;
-	
-	UE_LOG(LogTemp, Warning, TEXT("Execute"));
+	if (bIsWaitingSkill)
+	{
+		BeginSkillAnim();
+	}
 }
 
 void ADeltaPlayableCharacter::Parrying(const FInputActionValue& Value)
 {
-	if (HealthComponent->GetIsDead()) return;
-	
-	UE_LOG(LogTemp, Warning, TEXT("Parrying or Cancel"));
+	if (bIsWaitingSkill)
+	{
+		CancelWaitingSkill();
+	}
+	else
+	{
+		StartWaitingSkill("Parrying");
+	}
 }
 
 void ADeltaPlayableCharacter::SkillFirst(const FInputActionValue& Value)
 {
-	BeginSkillAnim("SkillFirst");
+	StartWaitingSkill("SkillFirst");
 }
 
 void ADeltaPlayableCharacter::SkillSecond(const FInputActionValue& Value)
 {
-	BeginSkillAnim("SkillSecond");
+	StartWaitingSkill("SkillSecond");
 }
 
 void ADeltaPlayableCharacter::SkillThird(const FInputActionValue& Value)
 {
-	BeginSkillAnim("SkillThird");
+	StartWaitingSkill("SkillThird");
 }
 
 void ADeltaPlayableCharacter::SkillBefore(const FInputActionValue& Value)

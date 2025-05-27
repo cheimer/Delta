@@ -24,7 +24,7 @@ private:
 	FName SocketName = "LeftClawsSocket";
 
 	UPROPERTY(EditAnywhere, Category = "Values", meta = (AllowPrivateAccess = "true"))
-	float AttackRange = 100.0f;
+	float AttackRange = 300.0f;
 
 	UPROPERTY()
 	ADeltaBaseCharacter* OwnerDeltaCharacter;

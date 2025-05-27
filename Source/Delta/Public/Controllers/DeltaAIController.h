@@ -39,7 +39,8 @@ private:
 
 public:
 #pragma region GetSet
-
+	TWeakObjectPtr<ADeltaBaseCharacter> GetCurrentTarget() const {return CurrentPlayableTarget;}
+	
 #pragma endregion GetSet
 	
 };

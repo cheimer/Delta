@@ -20,7 +20,6 @@ enum class EPlayerStatus : uint8
 {
 	Default,
 	Skill,
-	Parrying,
 	LockTarget
 };
 
@@ -35,9 +34,6 @@ class DELTA_API ADeltaPlayableCharacter : public ADeltaBaseCharacter
 public:
 	ADeltaPlayableCharacter();
 
-	virtual void ActiveSkill(const EDeltaSkillType SkillType) override;
-	virtual void DeActiveSkill() override;
-
 	virtual void UpdateSkillTarget() override;
 
 protected:
@@ -47,7 +43,7 @@ protected:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
-	virtual void CharacterDeath() override;
+	virtual void OnCharacterDeathHandle(AActor* DeathActor) override;
 	
 	TWeakObjectPtr<ADeltaBaseCharacter> CurrentLockTarget = nullptr;
 	
@@ -88,7 +84,10 @@ protected:
 #pragma endregion Inputs
 
 private:
-	void BeginSkillAnim(FName SkillIndex);
+	void StartWaitingSkill(FName SkillIndex);
+	void CancelWaitingSkill();
+
+	void BeginSkillAnim();
 	
 	UFUNCTION()
 	void EndSkillAnim(UAnimMontage* AnimMontage, bool bInterrupted);
@@ -104,6 +103,10 @@ private:
 
 	EPlayerStatus CurrentStatus = EPlayerStatus::Default;
 	EPlayerStatus CachedStatus = EPlayerStatus::Default;
+	
+	bool bIsWaitingSkill = false;
+	float WaitingSkillTime = 0.0f;
+	TWeakObjectPtr<USkillDataAsset> CachedSkillData;
 	
 #pragma region Components
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
@@ -130,7 +133,6 @@ private:
 	
 public:
 #pragma region GetSet
-	virtual TOptional<float> GetSkillDamage(EDeltaSkillType SkillType) override;
 	
 #pragma endregion GetSet
 

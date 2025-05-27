@@ -20,10 +20,12 @@ public:
 
 	void BeginSkillAnim();
 
+	virtual void UpdateSkillTarget() override;
+	
 protected:
 	virtual void PossessedBy(AController* NewController) override;
 
-	virtual void CharacterDeath() override;
+	virtual void OnCharacterDeathHandle(AActor* DeathCharacter) override;
 
 	UFUNCTION()
 	void EndSkillAnim(UAnimMontage* AnimMontage, bool bInterrupted);

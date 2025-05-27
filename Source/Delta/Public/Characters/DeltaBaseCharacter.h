@@ -10,11 +10,11 @@
 
 class USkillDataAsset;
 class USkillBase;
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterDeath);
-
 class UHealthComponent;
 class UCombatComponent;
 class UMotionWarpingComponent;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterDeath, AActor*, DeathActor);
 
 UCLASS()
 class DELTA_API ADeltaBaseCharacter : public ACharacter
@@ -39,7 +39,7 @@ protected:
 	void TakeSkillDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
 
 	UFUNCTION()
-	virtual void CharacterDeath();
+	virtual void OnCharacterDeathHandle(AActor* DeathActor);
 
 	UFUNCTION()
 	void EndDeathAnim();
@@ -52,8 +52,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Skill")
 	TArray<USkillDataAsset*> SkillDataAssets;
 
-	TWeakObjectPtr<USkillBase> CachedSkill;
-	
 	TWeakObjectPtr<ADeltaBaseCharacter> CurrentSkillTarget = nullptr;
 	FVector SkillTargetLocation;
 	TArray<TEnumAsByte<EObjectTypeQuery>> TargetTraceChannel;
@@ -73,14 +71,17 @@ protected:
 public:
 #pragma region GetSet
 	TWeakObjectPtr<ADeltaBaseCharacter> GetCurrentSkillTarget() const {return CurrentSkillTarget;}
+	void SetCurrentSkillTarget(TWeakObjectPtr<ADeltaBaseCharacter> const InSkillTarget) {CurrentSkillTarget = InSkillTarget;}
+	
 	// return Saved TargetLocation or front location
 	FVector GetSkillTargetLocation() const {return SkillTargetLocation;}
+	void SetSkillTargetLocation(const FVector& InSkillTargetLocation) {SkillTargetLocation = InSkillTargetLocation;}
 	
-	virtual TOptional<float> GetSkillDamage(EDeltaSkillType SkillType) {return TOptional<float>();}
+	TOptional<float> GetSkillDamage(EDeltaSkillType SkillType);
 
 	bool GetIsDead() const {return HealthComponent->GetIsDead();}
 
-	void SetCachedSkill(TWeakObjectPtr<USkillBase> const InSkill) {CachedSkill = InSkill;}
+	const TArray<TEnumAsByte<EObjectTypeQuery>>& GetTargetTraceChannel() const {return TargetTraceChannel;}
 	
 #pragma endregion GetSet
 

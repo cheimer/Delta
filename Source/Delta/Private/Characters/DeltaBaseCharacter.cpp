@@ -8,7 +8,6 @@
 #include "Components/CombatComponent.h"
 #include "Components/HealthComponent.h"
 #include "DataAssets/Skill/SkillDataAsset.h"
-#include "GameFramework/CharacterMovementComponent.h"
 
 ADeltaBaseCharacter::ADeltaBaseCharacter()
 {
@@ -34,7 +33,7 @@ void ADeltaBaseCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	OnTakeAnyDamage.AddDynamic(this, &ThisClass::TakeSkillDamage);
-	OnCharacterDeath.AddDynamic(this, &ThisClass::CharacterDeath);
+	OnCharacterDeath.AddDynamic(this, &ThisClass::OnCharacterDeathHandle);
 }
 
 void ADeltaBaseCharacter::TakeSkillDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
@@ -42,7 +41,7 @@ void ADeltaBaseCharacter::TakeSkillDamage(AActor* DamagedActor, float Damage, co
 	HealthComponent->TakeDamage(Damage);
 }
 
-void ADeltaBaseCharacter::CharacterDeath()
+void ADeltaBaseCharacter::OnCharacterDeathHandle(AActor* DeathActor)
 {
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -75,12 +74,38 @@ USkillDataAsset* ADeltaBaseCharacter::FindSkillDataAsset(const EDeltaSkillType C
 	return nullptr;
 }
 
+TOptional<float> ADeltaBaseCharacter::GetSkillDamage(EDeltaSkillType SkillType)
+{
+	for (const auto SkillData : SkillDataAssets)
+	{
+		if (SkillData->Type == SkillType)
+		{
+			return TOptional<float>(SkillData->Damage);
+		}
+	}
+
+	return TOptional<float>();
+}
+
 void ADeltaBaseCharacter::ActiveSkill(const EDeltaSkillType SkillType)
 {
+	if (!CombatComponent) return;
+	
+	for (const auto SkillData : SkillDataAssets)
+	{
+		if (SkillData->Type == SkillType)
+		{
+			CombatComponent->BeginSkill(SkillData->Skill);
+			return;
+		}
+	}
 }
 
 void ADeltaBaseCharacter::DeActiveSkill()
 {
+	if (!CombatComponent) return;
+	
+	CombatComponent->EndSkill();
 }
 
 void ADeltaBaseCharacter::UpdateSkillTarget()

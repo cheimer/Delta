@@ -20,12 +20,11 @@ public:
 	UCombatComponent();
 
 	void BeginSkill(TSubclassOf<USkillBase>& SkillClass);
-	void EndSkill(USkillBase* CachedSkill);
+	void EndSkill();
 
 	void ApplySkillDamage(AActor* DamagedActor, AActor* DamageCauser, EDeltaSkillType SkillType);
 
-	TWeakObjectPtr<ADeltaBaseCharacter> GetSkillTargetActor();
-	FVector GetSkillTargetLocation(bool bIsUpdateSkillTargetLocation);
+	void TakeDamage();
 
 protected:
 	virtual void BeginPlay() override;
@@ -33,5 +32,26 @@ protected:
 private:
 	UPROPERTY()
 	ADeltaBaseCharacter* OwnerDeltaCharacter;
+	
+	TWeakObjectPtr<USkillBase> CachedSkill;
+
+	float DamageMultiplier = 1.0f;
+	float DamageTakenMultiplier = 1.0f;
+
+#pragma region GetSet
+public:
+	TOptional<bool> GetIsOpponent(const AActor* CheckActor);
+	
+	void GetTargetTraceChannel(TArray<TEnumAsByte<EObjectTypeQuery>>& OutObjectTypes);
+
+	TWeakObjectPtr<ADeltaBaseCharacter> GetSkillTargetActor();
+	FVector GetSkillTargetLocation(bool bIsUpdateSkillTargetLocation);
+
+	void SetDamageMultiplier(const float InDamageMultiplier) {DamageMultiplier = InDamageMultiplier;}
+	float GetDamageMultiplier() const {return DamageMultiplier;}
+	void SetDamageTakenMultiplier(const float InDamageTakenMultiplier) {DamageTakenMultiplier = InDamageTakenMultiplier;}
+	float GetDamageTakenMultiplier() const {return DamageTakenMultiplier;}
+
+#pragma endregion  GetSet
 
 };

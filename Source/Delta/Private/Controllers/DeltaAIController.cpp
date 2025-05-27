@@ -20,7 +20,7 @@ void ADeltaAIController::OnPossess(APawn* InPawn)
 	if (BehaviorTree && BehaviorTree->BlackboardAsset)
 	{
 		DeltaOwnerCharacter = DeltaOwnerCharacter.Get() ? DeltaOwnerCharacter.Get() : Cast<ADeltaEnemyCharacter>(InPawn);
-		if (!DeltaOwnerCharacter.Get()) return;
+		if (!DeltaOwnerCharacter.IsValid()) return;
 		
 		RunBehaviorTree(BehaviorTree);
 	}
@@ -52,10 +52,8 @@ ADeltaBaseCharacter* ADeltaAIController::GetRandPlayableTarget()
 
 void ADeltaAIController::AttackTarget()
 {
-	if (!CurrentPlayableTarget.Get()) return;
-
-	DeltaOwnerCharacter = DeltaOwnerCharacter.Get() ? DeltaOwnerCharacter.Get() : Cast<ADeltaEnemyCharacter>(GetOwner());
-	if (!DeltaOwnerCharacter.Get()) return;
+	DeltaOwnerCharacter = DeltaOwnerCharacter.IsValid() ? DeltaOwnerCharacter.Get() : Cast<ADeltaEnemyCharacter>(GetOwner());
+	if (!DeltaOwnerCharacter.IsValid()) return;
 
 	DeltaOwnerCharacter->BeginSkillAnim();
 }

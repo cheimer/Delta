@@ -16,8 +16,8 @@ class DELTA_API UAnimNotifyState_ActiveSkill : public UAnimNotifyState
 	GENERATED_BODY()
 
 public:
-	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference);
-	virtual void NotifyEnd(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, const FAnimNotifyEventReference& EventReference);
+	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
+	virtual void NotifyEnd(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, const FAnimNotifyEventReference& EventReference) override;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	EDeltaSkillType SkillType;

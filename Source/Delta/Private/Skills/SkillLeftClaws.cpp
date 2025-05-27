@@ -28,7 +28,8 @@ void USkillLeftClaws::BeginSkill(UCombatComponent* InCombatComponent)
 void USkillLeftClaws::AttackTarget()
 {
 	TWeakObjectPtr TargetCharacter = CombatComponent->GetSkillTargetActor();
-	if (!TargetCharacter.Get()) return;
+	if (!TargetCharacter.IsValid()) return;
 
+	UE_LOG(LogTemp, Warning, TEXT("Skill left claws"));
 	CombatComponent->ApplySkillDamage(TargetCharacter.Get(), CombatComponent->GetOwner(), SkillType);
 }

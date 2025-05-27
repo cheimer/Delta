@@ -30,7 +30,11 @@ private:
 	
 	float CurrentHealth;
 	bool bIsDead = false;
-
+	
 public:
+#pragma region GetSet
 	bool GetIsDead() const {return bIsDead;}
+	
+#pragma endregion GetSet
+	
 };

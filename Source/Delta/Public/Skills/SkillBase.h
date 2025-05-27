@@ -22,7 +22,7 @@ public:
 	EDeltaSkillType SkillType;
 
 	virtual void BeginSkill(UCombatComponent* InCombatComponent);
-
+	virtual void ReactDamaged();
 	virtual void EndSkill();
 
 protected:

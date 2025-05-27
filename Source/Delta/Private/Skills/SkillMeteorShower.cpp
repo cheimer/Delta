@@ -5,7 +5,6 @@
 
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraSystem.h"
-#include "Characters/DeltaBaseCharacter.h"
 #include "Components/CombatComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -27,13 +26,9 @@ void USkillMeteorShower::BeginSkill(UCombatComponent* InCombatComponent)
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, MeteorShowerVFX, SpawnLocation);
 	
 	GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &ThisClass::AttackUnderEnemy, TickRate, true, SpawnHeight / FallingSpeed);
-	SpawnTime += SpawnHeight / FallingSpeed;
+	SpawnTime = SpawnHeight / FallingSpeed;
 }
 
-/*
- *	It is work on 1 target enemy.
- *	if wanna hit multi, Distance TargetCharacter to SpawnLocation -> LineTrace or Add HitBox
- */
 void USkillMeteorShower::AttackUnderEnemy()
 {
 	SpawnTime += TickRate;
@@ -42,17 +37,25 @@ void USkillMeteorShower::AttackUnderEnemy()
 		GetWorld()->GetTimerManager().ClearTimer(AttackTimerHandle);
 		return;
 	}
+	
+	if (!CombatComponent.IsValid() && !CombatComponent->GetOwner()) return;
+	
+	TArray<FHitResult> HitResults;
+	FVector EndLocation = SpawnLocation + -FVector::UpVector * SpawnHeight * 1.5f;
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	CombatComponent->GetTargetTraceChannel(ObjectTypes);
 
-	if (!TargetCharacter.IsValid() || !CombatComponent.IsValid()) return;
+	UKismetSystemLibrary::BoxTraceMultiForObjects(this, SpawnLocation, EndLocation, FVector(1.0f, 100.0f, 100.0f),
+		(-FVector::UpVector).ToOrientationRotator(), ObjectTypes, false,TArray<AActor*>(),
+		EDrawDebugTrace::None, HitResults, true);
 
-	FVector TargetLocation = TargetCharacter->GetActorLocation();
-	if (TargetLocation.Z < SpawnLocation.Z && TargetLocation.Z > SpawnLocation.Z - SpawnHeight * 2)
+	
+	for (auto HitResult : HitResults)
 	{
-		FVector2D SpawnVector2D = FVector2D(SpawnLocation.X, SpawnLocation.Y);
-		FVector2D TargetLocation2D = FVector2D(TargetLocation.X, TargetLocation.Y);
-		if (FVector2D::Distance(SpawnVector2D, TargetLocation2D) < 100.0f)
+		if (CombatComponent->GetIsOpponent(HitResult.GetActor()))
 		{
-			CombatComponent->ApplySkillDamage(TargetCharacter.Get(), CombatComponent->GetOwner(), SkillType);
+			CombatComponent->ApplySkillDamage(HitResult.GetActor(), CombatComponent->GetOwner(), SkillType);
+			return; // Hit only first target
 		}
 	}
 	

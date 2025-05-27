@@ -18,6 +18,9 @@ ENUM_RANGE_BY_COUNT(EDeltaTemplateType, EDeltaTemplateType::Max);
 UENUM(BlueprintType)
 enum class EDeltaSkillType : uint8
 {
+	//Playable Character
+	Parrying,
+	
 	//Back Character
 	Shield,
 	MeteorShower,
