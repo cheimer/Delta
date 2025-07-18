@@ -4,7 +4,6 @@
 #include "AI/BTTask_TargetUpdate.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Characters/DeltaEnemyCharacter.h"
 #include "Controllers/DeltaAIController.h"
 
 UBTTask_TargetUpdate::UBTTask_TargetUpdate()
@@ -19,7 +18,7 @@ EBTNodeResult::Type UBTTask_TargetUpdate::ExecuteTask(UBehaviorTreeComponent& Ow
 	ADeltaAIController* OwnerAIController = Cast<ADeltaAIController>(OwnerComp.GetAIOwner());
 	if (!OwnerAIController) return EBTNodeResult::Failed;
 
-	ADeltaBaseCharacter* TargetActor = OwnerAIController->GetRandPlayableTarget();
+	AActor* TargetActor = OwnerAIController->GetRandPlayableTarget(MaxDistance);
 	if (!TargetActor) return EBTNodeResult::Failed;
 
 	if (!OwnerComp.GetBlackboardComponent()) return EBTNodeResult::Failed;

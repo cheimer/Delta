@@ -19,10 +19,10 @@ class DELTA_API UCombatComponent : public UActorComponent
 public:	
 	UCombatComponent();
 
-	void BeginSkill(TSubclassOf<USkillBase>& SkillClass);
+	void BeginSkill(const TSubclassOf<USkillBase>& SkillClass);
 	void EndSkill();
 
-	void ApplySkillDamage(AActor* DamagedActor, AActor* DamageCauser, EDeltaSkillType SkillType);
+	void ApplySkillDamage(AActor* DamagedActor, AActor* DamageCauser, const float SkillDamage);
 
 	void TakeDamage();
 
@@ -32,8 +32,9 @@ protected:
 private:
 	UPROPERTY()
 	ADeltaBaseCharacter* OwnerDeltaCharacter;
-	
-	TWeakObjectPtr<USkillBase> CachedSkill;
+
+	UPROPERTY()
+	USkillBase* CachedSkill;
 
 	float DamageMultiplier = 1.0f;
 	float DamageTakenMultiplier = 1.0f;
@@ -44,7 +45,7 @@ public:
 	
 	void GetTargetTraceChannel(TArray<TEnumAsByte<EObjectTypeQuery>>& OutObjectTypes);
 
-	TWeakObjectPtr<ADeltaBaseCharacter> GetSkillTargetActor();
+	ADeltaBaseCharacter* GetSkillTargetActor();
 	FVector GetSkillTargetLocation(bool bIsUpdateSkillTargetLocation);
 
 	void SetDamageMultiplier(const float InDamageMultiplier) {DamageMultiplier = InDamageMultiplier;}

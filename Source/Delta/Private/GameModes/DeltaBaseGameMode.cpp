@@ -4,27 +4,33 @@
 #include "GameModes/DeltaBaseGameMode.h"
 
 #include "Characters/DeltaBaseCharacter.h"
-#include "Characters/DeltaEnemyCharacter.h"
+#include "Characters/Enemy/DeltaEnemyCharacter.h"
 #include "Characters/DeltaPlayableCharacter.h"
+#include "Controllers/DeltaPlayerController.h"
+#include "GameStates/DeltaGameState.h"
 #include "Kismet/GameplayStatics.h"
-
-class ADeltaPlayableCharacter;
+#include "PlayerState/DeltaPlayerState.h"
+#include "UI/DeltaHUD.h"
 
 ADeltaBaseGameMode::ADeltaBaseGameMode()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
+	DefaultPawnClass = ADeltaBaseCharacter::StaticClass();
+	HUDClass = ADeltaHUD::StaticClass();
+	PlayerControllerClass = ADeltaPlayerController::StaticClass();
+	GameStateClass = ADeltaGameState::StaticClass();
+	PlayerStateClass = ADeltaPlayerState::StaticClass();
+
 	CurrentState = EGameModeState::WaitForStart;
+	GameStartTime = 0.0f;
 }
 
 void ADeltaBaseGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
 {
 	Super::InitGame(MapName, Options, ErrorMessage);
 
-	/*
-	 *	Set Skill, Enemy ...
-	 */
 }
 
 void ADeltaBaseGameMode::BeginPlay()

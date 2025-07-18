@@ -7,7 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "MotionWarpingComponent.h"
 #include "Camera/CameraComponent.h"
-#include "Characters/DeltaEnemyCharacter.h"
+#include "Characters/Enemy/DeltaEnemyCharacter.h"
 #include "Components/CombatComponent.h"
 #include "Components/HealthComponent.h"
 #include "DataAssets/Input/InputDataAsset.h"
@@ -32,8 +32,7 @@ ADeltaPlayableCharacter::ADeltaPlayableCharacter()
 
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
 	SpringArmComponent->SetupAttachment(GetRootComponent());
-	SpringArmComponent->TargetArmLength = 200.0f;
-	TargetArmLengthGoTo = 200.0f;
+	SpringArmComponent->TargetArmLength = TargetArmLengthGoTo;
 	SpringArmComponent->SocketOffset = FVector(0.0f, 55.0f, 65.0f);
 	SpringArmComponent->ProbeSize = 1.0f;
 	SpringArmComponent->bUsePawnControlRotation = true;
@@ -158,7 +157,7 @@ void ADeltaPlayableCharacter::StartWaitingSkill(FName SkillIndex)
 
 	if (CachedSkillData->Type == EDeltaSkillType::Parrying)
 	{
-		BeginSkillAnim();
+		PlaySkillAnimation(SkillIndexToSkillType[SkillIndex]);
 	}
 	
 }
@@ -172,35 +171,27 @@ void ADeltaPlayableCharacter::CancelWaitingSkill()
 
 }
 
-void ADeltaPlayableCharacter::BeginSkillAnim()
+void ADeltaPlayableCharacter::PlaySkillAnimation(const EDeltaSkillType SkillType)
 {
-	if (!bIsWaitingSkill || CurrentStatus == EPlayerStatus::Skill)
-		return;
-
+	if (!bIsWaitingSkill || CurrentStatus == EPlayerStatus::Skill) return;
 	if (HealthComponent->GetIsDead()) return;
-	
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if (!AnimInstance) return;
-
 	if (!CachedSkillData.IsValid()) return;
+	
+	Super::PlaySkillAnimation(SkillType);
 	
 	CachedStatus = CurrentStatus;
 	CurrentStatus = EPlayerStatus::Skill;
 
-	FOnMontageEnded OnMontageEnded;
-	OnMontageEnded.BindUObject(this, &ADeltaPlayableCharacter::EndSkillAnim);
-
-	AnimInstance->Montage_Play(CachedSkillData->AnimMontage);
-	AnimInstance->Montage_SetEndDelegate(OnMontageEnded, CachedSkillData->AnimMontage);
-	
 	UpdateSkillTarget();
-	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TEXT("SkillTarget"), SkillTargetLocation);
+	UpdateMotionWarpingTarget();
 	
 	bIsWaitingSkill = false;
 }
 
-void ADeltaPlayableCharacter::EndSkillAnim(UAnimMontage* AnimMontage, bool bInterrupted)
+void ADeltaPlayableCharacter::EndSkillAnimation()
 {
+	Super::EndSkillAnimation();
+	
 	CurrentStatus = CachedStatus;
 }
 
@@ -397,7 +388,7 @@ void ADeltaPlayableCharacter::Execute(const FInputActionValue& Value)
 {
 	if (bIsWaitingSkill)
 	{
-		BeginSkillAnim();
+		PlaySkillAnimation(CachedSkillData->Type);
 	}
 }
 

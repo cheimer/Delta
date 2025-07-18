@@ -1,11 +1,14 @@
-
-// 반드시
-HUD
+// 할거
 GameInstance, SaveGame
-ManaComponent
+HUD
+UI
+
+적 잡을 때 시네마틱 추가 후 연동
+적 보스 3개 이상, 캐릭터 2개 이상
 
 // 필요하면
 Status -> StatusComponent로 관리
 공격할 때 1 -> LBClick or 1 -> 1 로 가능하게
-
-적 잡을 때 시네마틱 추가 후 연동
+SkillType to String 으로 오류 가능성 낮추기
+Skill 공격할 때 이동 -> 루프 모션 활용
+스킬 저장 구조 -> <int32>로 바꾼 뒤 DataAsset 에서 인덱스를 가져오기

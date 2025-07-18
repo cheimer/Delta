@@ -13,5 +13,12 @@ UCLASS()
 class DELTA_API USaveGameSetting : public USaveGame
 {
 	GENERATED_BODY()
+
+public:
+	float VolumePercent;
+
+	float MouseSensitivity;
+
+	bool bFullscreen;
 	
 };

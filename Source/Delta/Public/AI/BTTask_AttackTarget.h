@@ -19,9 +19,18 @@ public:
 
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+	virtual void OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult) override;
+
+	UFUNCTION()
+	void OnCurrentMontageEnd(UAnimMontage* Montage, bool bInterrupted);
 
 private:
+	void CleanUpTask();
+	
 	UPROPERTY(EditAnywhere, Category = "Blackboard Key")
 	FBlackboardKeySelector TargetActorKey;
+
+	UPROPERTY()
+	UBehaviorTreeComponent* CurrentOwnerComp;
 	
 };

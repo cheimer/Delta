@@ -22,15 +22,14 @@ void UCombatComponent::BeginPlay()
 	
 }
 
-void UCombatComponent::BeginSkill(TSubclassOf<USkillBase>& SkillClass)
+void UCombatComponent::BeginSkill(const TSubclassOf<USkillBase>& SkillClass)
 {
 	if (!SkillClass) return;
 
 	OwnerDeltaCharacter = OwnerDeltaCharacter ? OwnerDeltaCharacter : Cast<ADeltaBaseCharacter>(GetOwner());
 	if (!OwnerDeltaCharacter) return;
 
-	TWeakObjectPtr Skill = NewObject<USkillBase>(this, SkillClass);
-	if (Skill.IsValid())
+	if (USkillBase* Skill = NewObject<USkillBase>(this, SkillClass))
 	{
 		CachedSkill = Skill;
 		CachedSkill->BeginSkill(this);
@@ -39,28 +38,27 @@ void UCombatComponent::BeginSkill(TSubclassOf<USkillBase>& SkillClass)
 
 void UCombatComponent::EndSkill()
 {
-	if (CachedSkill.IsValid())
+	if (IsValid(CachedSkill))
 	{
 		CachedSkill->EndSkill();
 		CachedSkill = nullptr;
 	}
 }
 
-void UCombatComponent::ApplySkillDamage(AActor* DamagedActor, AActor* DamageCauser, EDeltaSkillType SkillType)
+void UCombatComponent::ApplySkillDamage(AActor* DamagedActor, AActor* DamageCauser, const float SkillDamage)
 {
 	OwnerDeltaCharacter = OwnerDeltaCharacter ? OwnerDeltaCharacter : Cast<ADeltaBaseCharacter>(GetOwner());
 	if (!OwnerDeltaCharacter) return;
-	
-	TOptional<float> DefaultSkillDamage = OwnerDeltaCharacter->GetSkillDamage(SkillType);
-	if (!DefaultSkillDamage.IsSet()) return;
 
-	UGameplayStatics::ApplyDamage(DamagedActor, DefaultSkillDamage.GetValue() * DamageMultiplier,
+	UE_LOG(LogTemp, Warning, TEXT("ApplySkillDamage %s to %s"), *DamageCauser->GetName(), *DamagedActor->GetName());
+	
+	UGameplayStatics::ApplyDamage(DamagedActor, SkillDamage * DamageMultiplier,
 		OwnerDeltaCharacter->GetInstigatorController(), DamageCauser, UDamageType::StaticClass());
 }
 
 void UCombatComponent::TakeDamage()
 {
-	if (CachedSkill.IsValid())
+	if (IsValid(CachedSkill))
 	{
 		CachedSkill->ReactDamaged();
 	}
@@ -70,6 +68,7 @@ TOptional<bool> UCombatComponent::GetIsOpponent(const AActor* CheckActor)
 {
 	OwnerDeltaCharacter = OwnerDeltaCharacter ? OwnerDeltaCharacter : Cast<ADeltaBaseCharacter>(GetOwner());
 	if (!OwnerDeltaCharacter) return TOptional<bool>();
+	if (!IsValid(CheckActor)) return TOptional<bool>();
 
 	if (OwnerDeltaCharacter->GetClass() != CheckActor->GetClass())
 	{
@@ -89,15 +88,17 @@ void UCombatComponent::GetTargetTraceChannel(TArray<TEnumAsByte<EObjectTypeQuery
 	OutObjectTypes = OwnerDeltaCharacter->GetTargetTraceChannel();
 }
 
-TWeakObjectPtr<ADeltaBaseCharacter> UCombatComponent::GetSkillTargetActor()
+ADeltaBaseCharacter* UCombatComponent::GetSkillTargetActor()
 {
 	OwnerDeltaCharacter = OwnerDeltaCharacter ? OwnerDeltaCharacter : Cast<ADeltaBaseCharacter>(GetOwner());
 	check(OwnerDeltaCharacter);
 
+	if (!IsValid(OwnerDeltaCharacter->GetCurrentSkillTarget())) return nullptr;
+	
 	return OwnerDeltaCharacter->GetCurrentSkillTarget();
 }
 
-FVector UCombatComponent::GetSkillTargetLocation(bool bIsUpdateSkillTargetLocation)
+FVector UCombatComponent::GetSkillTargetLocation(const bool bIsUpdateSkillTargetLocation)
 {
 	OwnerDeltaCharacter = OwnerDeltaCharacter ? OwnerDeltaCharacter : Cast<ADeltaBaseCharacter>(GetOwner());
 	check(OwnerDeltaCharacter);

@@ -17,6 +17,8 @@ class DELTA_API USkillMeteorShower : public USkillBase
 	GENERATED_BODY()
 
 public:
+	USkillMeteorShower();
+	
 	virtual void BeginSkill(UCombatComponent* InCombatComponent) override;
 
 	UPROPERTY(EditAnywhere, Category = "VFX")
@@ -29,22 +31,19 @@ public:
 	float SpawnDuration = 5.0f;
 
 private:
+	UPROPERTY(EditAnywhere, Category = "Skill")
+	float SkillDamage = 5.0f;
+	
 	UFUNCTION()
 	void AttackUnderEnemy();
 
-	TWeakObjectPtr<ADeltaBaseCharacter> TargetCharacter;
 	FVector SpawnLocation;
 	float SpawnTime = 0.0f;
 	
 	FTimerHandle AttackTimerHandle;
 
+	//(SpawnHeight / FallingSpeed) ~ (VFX Duration + SpawnHeight / FallingSpeed) = Hit Time
 	static constexpr float FallingSpeed = 1000.0f;
 	static constexpr float TickRate = 0.5f;
 	
 };
-
-/*	Description
- *	
- *	Falling Speed = 1000
- *	So, (SpawnHeight / 1000) ~ (VFX Duration + SpawnHeight / 1000) = Hit Time
- */

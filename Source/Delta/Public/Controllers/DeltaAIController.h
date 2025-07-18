@@ -21,8 +21,10 @@ class DELTA_API ADeltaAIController : public AAIController
 public:
 	ADeltaAIController();
 	
-	ADeltaBaseCharacter* GetRandPlayableTarget();
+	AActor* GetRandPlayableTarget(const float MaxDistance = 1000.0f);
 
+	void SetCurrentSkill();
+	TOptional<float> GetCurrentSkillRange();
 	void AttackTarget();
 
 protected:
@@ -37,9 +39,12 @@ private:
 	UPROPERTY()
 	TArray<ADeltaBaseCharacter*> PlayableTargets;
 
+	FVector SpawnLocation;
+
 public:
 #pragma region GetSet
-	TWeakObjectPtr<ADeltaBaseCharacter> GetCurrentTarget() const {return CurrentPlayableTarget;}
+	ADeltaBaseCharacter* GetCurrentTarget() const {return CurrentPlayableTarget.IsValid() ? CurrentPlayableTarget.Get() : nullptr;}
+	FVector GetSpawnLocation() const { return SpawnLocation; }
 	
 #pragma endregion GetSet
 	

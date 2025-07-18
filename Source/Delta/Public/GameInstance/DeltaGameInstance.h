@@ -6,6 +6,8 @@
 #include "Engine/GameInstance.h"
 #include "DeltaGameInstance.generated.h"
 
+class USaveGameSetting;
+class USaveGameData;
 /**
  * 
  */
@@ -17,19 +19,24 @@ class DELTA_API UDeltaGameInstance : public UGameInstance
 public:
 	UDeltaGameInstance();
 
-	virtual void Init() override;
-	virtual void OnStart() override;
-	virtual void Shutdown() override;
+	void SaveGameData();
+	void LoadGameData();
 
-	void ApplySettings();
+	void SaveGameSetting();
+	void LoadGameSetting();
 
-	void LoadFromFile();
-	void SaveToFile();
-
-	UPROPERTY(EditDefaultsOnly, Category = "Settings")
-	float MasterVolume;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Settings")
-	bool bIsFullscreen;
+private:
+	void CreateSaveGameData();
 	
+	void CreateSaveGameSetting();
+	
+	UPROPERTY()
+	USaveGameData* CurrentSaveData;
+	UPROPERTY()
+	USaveGameSetting* CurrentSaveSetting;
+
+	FString SaveDataSlotName;
+	FString SaveSettingSlotName;
+
+	int32 UserIndex = 0;
 };

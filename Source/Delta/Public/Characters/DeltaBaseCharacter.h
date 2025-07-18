@@ -8,6 +8,8 @@
 #include "GameFramework/Character.h"
 #include "DeltaBaseCharacter.generated.h"
 
+class UBoxComponent;
+class UManaComponent;
 class USkillDataAsset;
 class USkillBase;
 class UHealthComponent;
@@ -28,7 +30,14 @@ public:
 	virtual void ActiveSkill(const EDeltaSkillType SkillType);
 	virtual void DeActiveSkill();
 
+	virtual void PlaySkillAnimation(const EDeltaSkillType SkillType);
+	virtual void EndSkillAnimation();
+
+	virtual void UpdateMotionWarpingTarget();
 	virtual void UpdateSkillTarget();
+	UBoxComponent* FindSkillCollision(const FName& SkillCollision);
+
+	TOptional<float> GetCurrentSkillRange() const;
 	
 	FOnCharacterDeath OnCharacterDeath;
 	
@@ -38,20 +47,15 @@ protected:
 	UFUNCTION()
 	void TakeSkillDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual void OnCharacterDeathHandle(AActor* DeathActor);
-
-	UFUNCTION()
-	void EndDeathAnim();
 
 	USkillDataAsset* FindSkillDataAsset(const EDeltaSkillType CurrentSkillType);
 
-	UPROPERTY(EditDefaultsOnly, Category = "Animations")
-	UAnimMontage* DeathMontage;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Skill")
 	TArray<USkillDataAsset*> SkillDataAssets;
-
+	TWeakObjectPtr<USkillDataAsset> CachedSkillData;
+	
 	TWeakObjectPtr<ADeltaBaseCharacter> CurrentSkillTarget = nullptr;
 	FVector SkillTargetLocation;
 	TArray<TEnumAsByte<EObjectTypeQuery>> TargetTraceChannel;
@@ -66,19 +70,20 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UHealthComponent* HealthComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UManaComponent* ManaComponent;
+
 #pragma endregion Components
 	
 public:
 #pragma region GetSet
-	TWeakObjectPtr<ADeltaBaseCharacter> GetCurrentSkillTarget() const {return CurrentSkillTarget;}
-	void SetCurrentSkillTarget(TWeakObjectPtr<ADeltaBaseCharacter> const InSkillTarget) {CurrentSkillTarget = InSkillTarget;}
+	ADeltaBaseCharacter* GetCurrentSkillTarget() const {return CurrentSkillTarget.IsValid() ? CurrentSkillTarget.Get() : nullptr;}
+	void SetCurrentSkillTarget(ADeltaBaseCharacter* InSkillTarget) {CurrentSkillTarget = InSkillTarget;}
 	
 	// return Saved TargetLocation or front location
 	FVector GetSkillTargetLocation() const {return SkillTargetLocation;}
 	void SetSkillTargetLocation(const FVector& InSkillTargetLocation) {SkillTargetLocation = InSkillTargetLocation;}
 	
-	TOptional<float> GetSkillDamage(EDeltaSkillType SkillType);
-
 	bool GetIsDead() const {return HealthComponent->GetIsDead();}
 
 	const TArray<TEnumAsByte<EObjectTypeQuery>>& GetTargetTraceChannel() const {return TargetTraceChannel;}

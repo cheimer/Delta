@@ -8,6 +8,11 @@
 #include "Components/CombatComponent.h"
 #include "Kismet/GameplayStatics.h"
 
+USkillMeteorShower::USkillMeteorShower()
+{
+	SkillType = EDeltaSkillType::MeteorShower;
+}
+
 void USkillMeteorShower::BeginSkill(UCombatComponent* InCombatComponent)
 {
 	Super::BeginSkill(InCombatComponent);
@@ -18,8 +23,6 @@ void USkillMeteorShower::BeginSkill(UCombatComponent* InCombatComponent)
 		UE_LOG(LogTemp, Warning, TEXT("MeteorShow VFX is not settings"));
 		return;
 	}
-
-	TargetCharacter = InCombatComponent->GetSkillTargetActor();
 	
 	SpawnLocation = InCombatComponent->GetSkillTargetLocation(false) + FVector::UpVector * SpawnHeight;
 	SpawnLocation.Z = InCombatComponent->GetOwner()->GetActorLocation().Z + SpawnHeight;
@@ -30,7 +33,7 @@ void USkillMeteorShower::BeginSkill(UCombatComponent* InCombatComponent)
 }
 
 void USkillMeteorShower::AttackUnderEnemy()
-{
+{ 
 	SpawnTime += TickRate;
 	if (SpawnTime > SpawnDuration + SpawnHeight / FallingSpeed)
 	{
@@ -52,9 +55,11 @@ void USkillMeteorShower::AttackUnderEnemy()
 	
 	for (auto HitResult : HitResults)
 	{
+		if (!HitResult.GetActor()) continue;
+
 		if (CombatComponent->GetIsOpponent(HitResult.GetActor()))
 		{
-			CombatComponent->ApplySkillDamage(HitResult.GetActor(), CombatComponent->GetOwner(), SkillType);
+			CombatComponent->ApplySkillDamage(HitResult.GetActor(), CombatComponent->GetOwner(), SkillDamage);
 			return; // Hit only first target
 		}
 	}
