@@ -13,5 +13,8 @@ UCLASS()
 class DELTA_API USaveGameData : public USaveGame
 {
 	GENERATED_BODY()
+
+public:
+	FVector PlayerLocation;
 	
 };

@@ -4,7 +4,7 @@
 #include "Controllers/DeltaAIController.h"
 
 #include "BehaviorTree/BehaviorTree.h"
-#include "Characters/DeltaEnemyCharacter.h"
+#include "Characters/Enemy/DeltaEnemyCharacter.h"
 #include "Characters/DeltaPlayableCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -24,9 +24,11 @@ void ADeltaAIController::OnPossess(APawn* InPawn)
 		
 		RunBehaviorTree(BehaviorTree);
 	}
+
+	SpawnLocation = InPawn->GetActorLocation();
 }
 
-ADeltaBaseCharacter* ADeltaAIController::GetRandPlayableTarget() 
+AActor* ADeltaAIController::GetRandPlayableTarget(const float MaxDistance) 
 {
 	if (PlayableTargets.IsEmpty())
 	{
@@ -44,16 +46,47 @@ ADeltaBaseCharacter* ADeltaAIController::GetRandPlayableTarget()
 
 	if (PlayableTargets.IsEmpty()) return nullptr;
 
-	int RandIndex = FMath::RandRange(0,PlayableTargets.Num() - 1);
+	if (!GetPawn()) return nullptr;
+	
+	TArray<ADeltaBaseCharacter*> TempArray;
+	for (ADeltaBaseCharacter* CachedActor : PlayableTargets)
+	{
+		if (!CachedActor) continue;
+
+		if (FVector::Distance(CachedActor->GetActorLocation(), GetPawn()->GetActorLocation()) < MaxDistance)
+		{
+			TempArray.Add(CachedActor);
+		}
+	}
+	if (TempArray.IsEmpty()) return nullptr;
+
+	int RandIndex = FMath::RandRange(0,TempArray.Num() - 1);
 
 	CurrentPlayableTarget = PlayableTargets[RandIndex];
 	return CurrentPlayableTarget.Get();
 }
 
-void ADeltaAIController::AttackTarget()
+void ADeltaAIController::SetCurrentSkill()
 {
-	DeltaOwnerCharacter = DeltaOwnerCharacter.IsValid() ? DeltaOwnerCharacter.Get() : Cast<ADeltaEnemyCharacter>(GetOwner());
+	DeltaOwnerCharacter = DeltaOwnerCharacter.IsValid() ? DeltaOwnerCharacter.Get() : Cast<ADeltaEnemyCharacter>(GetPawn());
 	if (!DeltaOwnerCharacter.IsValid()) return;
 
-	DeltaOwnerCharacter->BeginSkillAnim();
+	DeltaOwnerCharacter->SetCurrentSkill();
+
+}
+
+TOptional<float> ADeltaAIController::GetCurrentSkillRange()
+{
+	DeltaOwnerCharacter = DeltaOwnerCharacter.IsValid() ? DeltaOwnerCharacter.Get() : Cast<ADeltaEnemyCharacter>(GetPawn());
+	if (!DeltaOwnerCharacter.IsValid()) return TOptional<float>();
+
+	return DeltaOwnerCharacter->GetCurrentSkillRange();
+}
+
+void ADeltaAIController::AttackTarget()
+{
+	DeltaOwnerCharacter = DeltaOwnerCharacter.IsValid() ? DeltaOwnerCharacter.Get() : Cast<ADeltaEnemyCharacter>(GetPawn());
+	if (!DeltaOwnerCharacter.IsValid()) return;
+
+	DeltaOwnerCharacter->PlaySkillAnimation(DeltaOwnerCharacter->GetCurrentSkill());
 }

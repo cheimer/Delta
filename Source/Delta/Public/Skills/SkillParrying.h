@@ -16,6 +16,8 @@ class DELTA_API USkillParrying : public USkillBase
 	GENERATED_BODY()
 
 public:
+	USkillParrying();
+	
 	virtual void BeginSkill(UCombatComponent* InCombatComponent) override;
 	virtual void ReactDamaged() override;
 	virtual void EndSkill() override;

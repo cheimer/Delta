@@ -36,6 +36,9 @@ public:
 
 	virtual void UpdateSkillTarget() override;
 
+	virtual void PlaySkillAnimation(const EDeltaSkillType SkillType) override;
+	virtual void EndSkillAnimation() override;
+
 protected:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void BeginPlay() override;
@@ -87,11 +90,6 @@ private:
 	void StartWaitingSkill(FName SkillIndex);
 	void CancelWaitingSkill();
 
-	void BeginSkillAnim();
-	
-	UFUNCTION()
-	void EndSkillAnim(UAnimMontage* AnimMontage, bool bInterrupted);
-
 	void SetLockTarget(bool bWantsLockOn);
 	void SetLockTargetWhileSkill(bool bWantsLockOn);
 	
@@ -106,13 +104,12 @@ private:
 	
 	bool bIsWaitingSkill = false;
 	float WaitingSkillTime = 0.0f;
-	TWeakObjectPtr<USkillDataAsset> CachedSkillData;
 	
 #pragma region Components
-	UPROPERTY(EditDefaultsOnly, Category = "Camera")
+	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USpringArmComponent* SpringArmComponent;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Camera")
+	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UCameraComponent* CameraComponent;
 	
 #pragma endregion Components
@@ -127,7 +124,7 @@ private:
 	const float TargetArmLengthMin = 100.0f;
 	const float TargetArmLengthMax = 500.0f;
 	const float ScrollSensitive = 20.0f;
-	float TargetArmLengthGoTo;
+	float TargetArmLengthGoTo = 350.0f;
 
 #pragma endregion Setting Values
 	

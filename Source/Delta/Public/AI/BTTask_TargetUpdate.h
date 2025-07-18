@@ -23,5 +23,8 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, Category = "Blackboard Key")
 	FBlackboardKeySelector TargetActorKey;
+
+	UPROPERTY(EditAnywhere, Category = "Values")
+	float MaxDistance = 1000.0f;
 	
 };

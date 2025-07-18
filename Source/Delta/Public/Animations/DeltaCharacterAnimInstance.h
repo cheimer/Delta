@@ -7,6 +7,7 @@
 #include "DeltaCharacterAnimInstance.generated.h"
 
 class ADeltaBaseCharacter;
+
 /**
  * 
  */
@@ -19,9 +20,9 @@ public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character")
-	bool bIsFlying;
-
+	void SetBoolValue(const FString& PropertyName, const bool BoolValue);
+	void SetAnimMontage(UAnimMontage* AnimMontage);
+	
 private:
 	UPROPERTY(BlueprintReadOnly, Category = "Character", meta = (AllowPrivateAccess = "true"))
 	ADeltaBaseCharacter* DeltaCharacter;
@@ -33,9 +34,10 @@ private:
 	float CurrentAngle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character", meta = (AllowPrivateAccess = "true"))
-	bool bIsRunning;
+	bool bIsDeath = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character", meta = (AllowPrivateAccess = "true"))
-	bool bIsAttacking;
+	TWeakObjectPtr<UAnimMontage> CachedAnimMontage;
+
+	bool bDoPlayMontage = false;
 
 };

@@ -8,6 +8,8 @@
 
 class ADeltaBaseCharacter;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnHealthChanged, float, CurrentHealth, float, MaxHealth, bool, bIsDamaged);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DELTA_API UHealthComponent : public UActorComponent
 {
@@ -18,6 +20,11 @@ public:
 
 	void TakeDamage(float Damage);
 
+	float GetHealthPercentage() const;
+	void SetHealthPercentage(const float HealthPercentage);
+
+	FOnHealthChanged OnHealthChanged;
+	
 protected:
 	virtual void BeginPlay() override;
 

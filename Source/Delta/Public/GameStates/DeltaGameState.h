@@ -13,5 +13,15 @@ UCLASS()
 class DELTA_API ADeltaGameState : public AGameStateBase
 {
 	GENERATED_BODY()
+
+private:
+	bool bIsGamePaused = false;
+
+public:
+#pragma region GetSet
+	bool GetIsGamePaused() const {return bIsGamePaused;}
+	void SetGamePause(const bool InGamePaused) {bIsGamePaused = InGamePaused;}
+
+#pragma endregion GetSet
 	
 };

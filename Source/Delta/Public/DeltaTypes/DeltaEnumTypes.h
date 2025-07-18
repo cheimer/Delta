@@ -16,40 +16,40 @@ ENUM_RANGE_BY_COUNT(EDeltaTemplateType, EDeltaTemplateType::Max);
 */
 
 UENUM(BlueprintType)
+enum class EDeltaSkillState : uint8
+{
+	//Playable
+	Back,
+
+	//Enemy
+	DesertDragon_Ground,
+	DesertDragon_Fly,
+	
+	Max UMETA(Hidden)
+};
+ENUM_RANGE_BY_COUNT(EDeltaSkillState, EDeltaSkillState::Max);
+
+
+UENUM(BlueprintType)
 enum class EDeltaSkillType : uint8
 {
 	//Playable Character
-	Parrying,
+	Parrying UMETA(DisplayName = "Parrying"),
 	
 	//Back Character
-	Shield,
-	MeteorShower,
+	Shield UMETA(DisplayName = "Shield"),
+	MeteorShower UMETA(DisplayName = "MeteorShower"),
 
 	//Desert Dragon
-	LeftClaws,
-	RightClaws,
-	DoubleClaws,
-	Bite,
-	SpitFire,
-	SpreadFire,
+	LeftClaws UMETA(DisplayName = "LeftClaws"),
+	RightClaws UMETA(DisplayName = "RightClaws"),
+	DoubleClaws UMETA(DisplayName = "DoubleClaws"),
+	Bite UMETA(DisplayName = "Bite"),
+	SpitFire UMETA(DisplayName = "SpitFire"),
+	SpreadFire UMETA(DisplayName = "SpreadFire"),
+	FlySpitFire UMETA(DisplayName = "FlySpitFire"),
+	FlySpreadFire UMETA(DisplayName = "FlySpreadFire"),
 	
 	Max UMETA(Hidden)
 };
 ENUM_RANGE_BY_COUNT(EDeltaSkillType, EDeltaSkillType::Max);
-
-
-UENUM(BlueprintType)
-enum class EBlackboardKey : uint8
-{
-	TargetActor
-};
-
-inline FName GetBlackboardKeyName(const EBlackboardKey KeyName)
-{
-	switch (KeyName)
-	{
-	case EBlackboardKey::TargetActor: return FName("TargetActor");
-	default: return NAME_None;
-		
-	}
-}

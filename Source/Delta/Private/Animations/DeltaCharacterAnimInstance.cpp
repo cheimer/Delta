@@ -12,7 +12,6 @@ void UDeltaCharacterAnimInstance::NativeInitializeAnimation()
 
 	DeltaCharacter = Cast<ADeltaBaseCharacter>(TryGetPawnOwner());
 
-	bIsFlying = false;
 }
 
 void UDeltaCharacterAnimInstance::NativeUpdateAnimation(float DeltaTime)
@@ -46,6 +45,32 @@ void UDeltaCharacterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		CurrentAngle = 0.0f;
 	}
 
-	
+	if (CachedAnimMontage.IsValid() && bDoPlayMontage)
+	{
+		Montage_Play(CachedAnimMontage.Get());
+		bDoPlayMontage = false;
+	}
 
+}
+
+void UDeltaCharacterAnimInstance::SetBoolValue(const FString& PropertyName, const bool BoolValue)
+{
+	FBoolProperty* Property = FindFProperty<FBoolProperty>(GetClass(), *PropertyName);
+	if(Property)
+	{
+		Property->SetPropertyValue_InContainer(this, BoolValue);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Cannot find property from %s"), *GetName());
+	}
+}
+
+void UDeltaCharacterAnimInstance::SetAnimMontage(UAnimMontage* AnimMontage)
+{
+	if (AnimMontage)
+	{
+		CachedAnimMontage = AnimMontage;
+		bDoPlayMontage = true;
+	}
 }

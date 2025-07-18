@@ -6,6 +6,11 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Components/CombatComponent.h"
 
+USkillParrying::USkillParrying()
+{
+	SkillType = EDeltaSkillType::Parrying;
+}
+
 void USkillParrying::BeginSkill(UCombatComponent* InCombatComponent)
 {
 	Super::BeginSkill(InCombatComponent);
