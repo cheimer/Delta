@@ -5,12 +5,14 @@
 
 #include "BrainComponent.h"
 #include "MotionWarpingComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Controllers/DeltaAIController.h"
 #include "DataAssets/Skill/SkillDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 ADeltaEnemyCharacter::ADeltaEnemyCharacter()
 {
+	
 }
 
 void ADeltaEnemyCharacter::PossessedBy(AController* NewController)
@@ -24,9 +26,9 @@ void ADeltaEnemyCharacter::PossessedBy(AController* NewController)
 	
 }
 
-void ADeltaEnemyCharacter::OnCharacterDeathHandle(AActor* DeathCharacter)
+void ADeltaEnemyCharacter::HandleCharacterDeath(AActor* DeathCharacter)
 {
-	Super::OnCharacterDeathHandle(DeathCharacter);
+	Super::HandleCharacterDeath(DeathCharacter);
 	
 	DeltaAIController = DeltaAIController ? DeltaAIController : Cast<ADeltaAIController>(GetController());
 	

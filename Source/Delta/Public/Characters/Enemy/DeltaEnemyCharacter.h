@@ -29,7 +29,7 @@ public:
 protected:
 	virtual void PossessedBy(AController* NewController) override;
 
-	virtual void OnCharacterDeathHandle(AActor* DeathCharacter) override;
+	virtual void HandleCharacterDeath(AActor* DeathCharacter) override;
 
 private:
 	UPROPERTY()

@@ -21,6 +21,7 @@ public:
 
 	void BeginSkill(const TSubclassOf<USkillBase>& SkillClass);
 	void EndSkill();
+	void ReleaseSkill();
 
 	void ApplySkillDamage(AActor* DamagedActor, AActor* DamageCauser, const float SkillDamage);
 

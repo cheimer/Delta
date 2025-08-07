@@ -22,7 +22,7 @@ protected:
 	virtual void OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult) override;
 
 	UFUNCTION()
-	void OnCurrentMontageEnd(UAnimMontage* Montage, bool bInterrupted);
+	void HandleCurrentMontageEnd(UAnimMontage* Montage, bool bInterrupted);
 
 private:
 	void CleanUpTask();

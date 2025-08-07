@@ -34,7 +34,7 @@ EBTNodeResult::Type UBTTask_AttackTarget::ExecuteTask(UBehaviorTreeComponent& Ow
 	CurrentOwnerComp = &OwnerComp;
 
 	OwnerAIController->AttackTarget();
-	OwnerAnimIns->OnMontageEnded.AddDynamic(this, &ThisClass::OnCurrentMontageEnd);
+	OwnerAnimIns->OnMontageEnded.AddDynamic(this, &ThisClass::HandleCurrentMontageEnd);
 	
 	return EBTNodeResult::InProgress;
 }
@@ -46,7 +46,7 @@ void UBTTask_AttackTarget::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uin
 	Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult);
 }
 
-void UBTTask_AttackTarget::OnCurrentMontageEnd(UAnimMontage* Montage, bool bInterrupted)
+void UBTTask_AttackTarget::HandleCurrentMontageEnd(UAnimMontage* Montage, bool bInterrupted)
 {
 	const EBTNodeResult::Type Result = CurrentOwnerComp && !bInterrupted ? EBTNodeResult::Succeeded : EBTNodeResult::Failed;
 	
@@ -65,6 +65,6 @@ void UBTTask_AttackTarget::CleanUpTask()
 	UAnimInstance* OwnerAnimIns = OwnerCharacter->GetMesh() ? OwnerCharacter->GetMesh()->GetAnimInstance() : nullptr;
 	if (!OwnerAnimIns) return;
 
-	OwnerAnimIns->OnMontageEnded.RemoveDynamic(this, &ThisClass::OnCurrentMontageEnd);
+	OwnerAnimIns->OnMontageEnded.RemoveDynamic(this, &ThisClass::HandleCurrentMontageEnd);
 	CurrentOwnerComp = nullptr;
 }

@@ -41,8 +41,12 @@ void UCombatComponent::EndSkill()
 	if (IsValid(CachedSkill))
 	{
 		CachedSkill->EndSkill();
-		CachedSkill = nullptr;
 	}
+}
+
+void UCombatComponent::ReleaseSkill()
+{
+	CachedSkill = nullptr;
 }
 
 void UCombatComponent::ApplySkillDamage(AActor* DamagedActor, AActor* DamageCauser, const float SkillDamage)

@@ -37,7 +37,7 @@ protected:
 
 private:
 	UFUNCTION()
-	void OnCharacterDeath(AActor* DeathActor);
+	void HandleCharacterDeath(AActor* DeathActor);
 	void EnemyCharacterDeath(ADeltaEnemyCharacter* DeathEnemy);
 	void PlayableCharacterDeath(ADeltaPlayableCharacter* DeathPlayable);
 

@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "DeltaBaseCharacter.generated.h"
 
+class UDeltaCharacterAnimInstance;
 class UBoxComponent;
 class UManaComponent;
 class USkillDataAsset;
@@ -33,6 +34,8 @@ public:
 	virtual void PlaySkillAnimation(const EDeltaSkillType SkillType);
 	virtual void EndSkillAnimation();
 
+	void EnableInterrupt();
+
 	virtual void UpdateMotionWarpingTarget();
 	virtual void UpdateSkillTarget();
 	UBoxComponent* FindSkillCollision(const FName& SkillCollision);
@@ -48,9 +51,15 @@ protected:
 	void TakeSkillDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
 
 	UFUNCTION(BlueprintCallable)
-	virtual void OnCharacterDeathHandle(AActor* DeathActor);
+	virtual void HandleCharacterDeath(AActor* DeathActor);
 
 	USkillDataAsset* FindSkillDataAsset(const EDeltaSkillType CurrentSkillType);
+
+	UPROPERTY(EditAnywhere, Category = "Values")
+	FString DisplayName;
+
+	UPROPERTY()
+	UDeltaCharacterAnimInstance* AnimInstance;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Skill")
 	TArray<USkillDataAsset*> SkillDataAssets;
@@ -77,6 +86,8 @@ protected:
 	
 public:
 #pragma region GetSet
+	FString GetDisplayName() const {return DisplayName;}
+	
 	ADeltaBaseCharacter* GetCurrentSkillTarget() const {return CurrentSkillTarget.IsValid() ? CurrentSkillTarget.Get() : nullptr;}
 	void SetCurrentSkillTarget(ADeltaBaseCharacter* InSkillTarget) {CurrentSkillTarget = InSkillTarget;}
 	

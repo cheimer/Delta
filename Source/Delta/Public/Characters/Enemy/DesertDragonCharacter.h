@@ -30,10 +30,10 @@ public:
 #pragma endregion IFlying
 
 protected:
-	virtual void OnCharacterDeathHandle(AActor* DeathCharacter) override;
+	virtual void HandleCharacterDeath(AActor* DeathCharacter) override;
 	
 	UFUNCTION()
-	void OnNextPhase(const int PhaseNum);
+	void HandleNextPhase(const int PhaseNum);
 	
 	virtual void SetCurrentSkill() override;
 
@@ -41,7 +41,7 @@ protected:
 	void OnFlyEnd(UAnimMontage* Montage, bool bInterrupted);
 
 	UFUNCTION()
-	void OnCharacterLanded(const FHitResult& Hit);
+	void HandleCharacterLanded(const FHitResult& Hit);
 
 	UPROPERTY(EditDefaultsOnly, Category = "FlyStart")
 	UAnimMontage* FlyStartMontage;

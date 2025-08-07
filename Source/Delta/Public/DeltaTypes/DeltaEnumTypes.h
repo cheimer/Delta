@@ -2,19 +2,9 @@
 
 #pragma once
 
-//Template Code: Copy and edit following lines
-/*
-UENUM(BlueprintType)
-enum class EDeltaTemplateType : uint8
-{
-	Type1,
-	Type2,
-	
-	Max UMETA(Hidden)
-};
-ENUM_RANGE_BY_COUNT(EDeltaTemplateType, EDeltaTemplateType::Max);
-*/
-
+//////////////////////////////
+/// Skills
+//////////////////////////////
 UENUM(BlueprintType)
 enum class EDeltaSkillState : uint8
 {
@@ -29,7 +19,6 @@ enum class EDeltaSkillState : uint8
 };
 ENUM_RANGE_BY_COUNT(EDeltaSkillState, EDeltaSkillState::Max);
 
-
 UENUM(BlueprintType)
 enum class EDeltaSkillType : uint8
 {
@@ -39,6 +28,7 @@ enum class EDeltaSkillType : uint8
 	//Back Character
 	Shield UMETA(DisplayName = "Shield"),
 	MeteorShower UMETA(DisplayName = "MeteorShower"),
+	Slash UMETA(DisplayName = "Slash"),
 
 	//Desert Dragon
 	LeftClaws UMETA(DisplayName = "LeftClaws"),
@@ -53,3 +43,30 @@ enum class EDeltaSkillType : uint8
 	Max UMETA(Hidden)
 };
 ENUM_RANGE_BY_COUNT(EDeltaSkillType, EDeltaSkillType::Max);
+
+//////////////////////////////
+/// UI
+//////////////////////////////
+UENUM(BlueprintType)
+enum class EDeltaHUDMode : uint8
+{
+	None,
+	Main,
+	Play
+};
+
+UENUM(BlueprintType)
+enum class EDeltaWidgetType : uint8
+{
+	None,
+
+	// HUDMode : Main
+	Main,
+	Option,
+
+	// HUDMode : Play
+	Play,
+	Pause,
+	Lose,
+	Win
+};

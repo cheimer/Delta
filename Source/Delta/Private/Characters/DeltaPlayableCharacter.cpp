@@ -10,8 +10,10 @@
 #include "Characters/Enemy/DeltaEnemyCharacter.h"
 #include "Components/CombatComponent.h"
 #include "Components/HealthComponent.h"
+#include "Controllers/DeltaPlayerController.h"
 #include "DataAssets/Input/InputDataAsset.h"
 #include "DataAssets/Skill/SkillDataAsset.h"
+#include "DeltaTypes/DeltaNamespaceTypes.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -142,22 +144,35 @@ void ADeltaPlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 	
 }
 
-void ADeltaPlayableCharacter::StartWaitingSkill(FName SkillIndex)
+void ADeltaPlayableCharacter::StartWaitingSkill(int KeyIndex)
 {
 	if (CurrentStatus == EPlayerStatus::Skill)
 		return;
 
 	if (HealthComponent->GetIsDead()) return;
+
+	if (!SkillSetArray.IsValidIndex(CurrentSkillSetIndex)) return;
+	if (!SkillSetArray[CurrentSkillSetIndex].SkillTypes.IsValidIndex(KeyIndex)) return;
 	
-	if (!SkillIndexToSkillType.Find(SkillIndex)) return;
+	CachedSkillData = FindSkillDataAsset(SkillSetArray[CurrentSkillSetIndex].SkillTypes[KeyIndex]);
+	if (!CachedSkillData.IsValid()) return;
 	
-	CachedSkillData = FindSkillDataAsset(SkillIndexToSkillType[SkillIndex]);
+	bIsWaitingSkill = true;
+	WaitingSkillTime = 1.0f;
+
+}
+
+void ADeltaPlayableCharacter::StartWaitingSkill(EDeltaSkillType SkillType)
+{
+	CachedSkillData = FindSkillDataAsset(SkillType);
+	if (!CachedSkillData.IsValid()) return;
+	
 	bIsWaitingSkill = true;
 	WaitingSkillTime = 1.0f;
 
 	if (CachedSkillData->Type == EDeltaSkillType::Parrying)
 	{
-		PlaySkillAnimation(SkillIndexToSkillType[SkillIndex]);
+		PlaySkillAnimation(SkillType);
 	}
 	
 }
@@ -169,6 +184,21 @@ void ADeltaPlayableCharacter::CancelWaitingSkill()
 
 	bIsWaitingSkill = false;
 
+}
+
+void ADeltaPlayableCharacter::ChangeSkillList(const bool bIsNext)
+{
+	if (CurrentStatus != EPlayerStatus::Default && CurrentStatus != EPlayerStatus::LockTarget) return;
+	if (bIsWaitingSkill) return;
+
+	if (CurrentSkillSetIndex == 0 && !bIsNext) return;
+	if (CurrentSkillSetIndex == SkillSetArray.Num() - 1 && bIsNext) return;
+
+	int BeforeSkillSetIndex = CurrentSkillSetIndex;
+	CurrentSkillSetIndex = FMath::Clamp(BeforeSkillSetIndex + (bIsNext ? 1 : -1), 0, SkillSetArray.Num() - 1);
+
+	UE_LOG(LogTemp, Warning, TEXT("Broadcast %d, %d"), BeforeSkillSetIndex, CurrentSkillSetIndex);
+	OnChangeSkillSet.Broadcast(BeforeSkillSetIndex, CurrentSkillSetIndex);
 }
 
 void ADeltaPlayableCharacter::PlaySkillAnimation(const EDeltaSkillType SkillType)
@@ -183,7 +213,7 @@ void ADeltaPlayableCharacter::PlaySkillAnimation(const EDeltaSkillType SkillType
 	CurrentStatus = EPlayerStatus::Skill;
 
 	UpdateSkillTarget();
-	UpdateMotionWarpingTarget();
+	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName(WarpTarget::SkillTarget), SkillTargetLocation);
 	
 	bIsWaitingSkill = false;
 }
@@ -195,49 +225,73 @@ void ADeltaPlayableCharacter::EndSkillAnimation()
 	CurrentStatus = CachedStatus;
 }
 
+TArray<const UTexture2D*>& ADeltaPlayableCharacter::GetSkillTextures(const int Index)
+{
+	static TArray<const UTexture2D*> TextureArray;
+	TextureArray.Empty();
+	
+	if (!SkillSetArray.IsValidIndex(Index)) return TextureArray;
+	
+	TArray<EDeltaSkillType> SkillTypes;
+	SkillTypes.Append(SkillSetArray[Index].SkillTypes);
+
+	for (auto SkillType : SkillTypes)
+	{
+		if (USkillDataAsset* SkillData = FindSkillDataAsset(SkillType))
+		{
+			TextureArray.Add(SkillData->MainImage);
+		}
+	}
+
+	return TextureArray;
+}
+
 void ADeltaPlayableCharacter::SetLockTarget(bool bWantsLockOn)
 {
 	if (bWantsLockOn)
 	{
-		CurrentStatus = EPlayerStatus::LockTarget;
+		if (CurrentStatus == EPlayerStatus::Skill)
+		{
+			CachedStatus = EPlayerStatus::LockTarget;
+		}
+		else
+		{
+			CurrentStatus = EPlayerStatus::LockTarget;
+		}
 		
 		SpringArmComponent->bUsePawnControlRotation = false;
 		
 		UpdateLockTarget();
+
+		ADeltaPlayerController* PlayerController = Cast<ADeltaPlayerController>(Controller);
+		if (CurrentLockTarget.IsValid() && PlayerController)
+		{
+			PlayerController->LockTargetDetected(CurrentLockTarget.Get());
+		}
 	}
 	else
 	{
-		CurrentStatus = EPlayerStatus::Default;
+		if (CurrentStatus == EPlayerStatus::Skill)
+		{
+			CachedStatus = EPlayerStatus::Default;
+		}
+		else
+		{
+			CurrentStatus = EPlayerStatus::Default;
+		}
 		
 		Controller->SetControlRotation(CameraComponent->GetComponentRotation());
 		
 		SpringArmComponent->bUsePawnControlRotation = true;
 		
 		CurrentLockTarget = nullptr;
+
+		if (ADeltaPlayerController* PlayerController = Cast<ADeltaPlayerController>(Controller))
+		{
+			PlayerController->LockTargetLost();
+		}
 	}
 	
-}
-
-void ADeltaPlayableCharacter::SetLockTargetWhileSkill(bool bWantsLockOn)
-{
-	if (bWantsLockOn)
-	{
-		CachedStatus = EPlayerStatus::LockTarget;
-		
-		SpringArmComponent->bUsePawnControlRotation = false;
-		
-		UpdateLockTarget();
-	}
-	else
-	{
-		CachedStatus = EPlayerStatus::Default;
-		
-		Controller->SetControlRotation(CameraComponent->GetComponentRotation());
-		
-		SpringArmComponent->bUsePawnControlRotation = true;
-		
-		CurrentLockTarget = nullptr;
-	}
 }
 
 void ADeltaPlayableCharacter::UpdateLockTarget()
@@ -285,9 +339,9 @@ ADeltaBaseCharacter* ADeltaPlayableCharacter::FindEnemyFromFront() const
 	return nullptr;
 }
 
-void ADeltaPlayableCharacter::OnCharacterDeathHandle(AActor* DeathActor)
+void ADeltaPlayableCharacter::HandleCharacterDeath(AActor* DeathActor)
 {
-	Super::OnCharacterDeathHandle(DeathActor);
+	Super::HandleCharacterDeath(DeathActor);
 
 	
 }
@@ -375,11 +429,11 @@ void ADeltaPlayableCharacter::LockTarget(const FInputActionValue& Value)
 	{
 		if (CachedStatus == EPlayerStatus::Default)
 		{
-			SetLockTargetWhileSkill(true);
+			SetLockTarget(true);
 		}
 		else if (CachedStatus == EPlayerStatus::LockTarget)
 		{
-			SetLockTargetWhileSkill(false);
+			SetLockTarget(false);
 		}
 	}
 }
@@ -400,33 +454,33 @@ void ADeltaPlayableCharacter::Parrying(const FInputActionValue& Value)
 	}
 	else
 	{
-		StartWaitingSkill("Parrying");
+		StartWaitingSkill(EDeltaSkillType::Parrying);
 	}
 }
 
 void ADeltaPlayableCharacter::SkillFirst(const FInputActionValue& Value)
 {
-	StartWaitingSkill("SkillFirst");
+	StartWaitingSkill(0);
 }
 
 void ADeltaPlayableCharacter::SkillSecond(const FInputActionValue& Value)
 {
-	StartWaitingSkill("SkillSecond");
+	StartWaitingSkill(1);
 }
 
 void ADeltaPlayableCharacter::SkillThird(const FInputActionValue& Value)
 {
-	StartWaitingSkill("SkillThird");
+	StartWaitingSkill(2);
 }
 
 void ADeltaPlayableCharacter::SkillBefore(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Skill Before"));
+	ChangeSkillList(false);
 }
 
 void ADeltaPlayableCharacter::SkillNext(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Skill Next"));
+	ChangeSkillList(true);
 }
 
 #pragma endregion Input

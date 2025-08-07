@@ -46,7 +46,7 @@ void ADeltaBaseGameMode::BeginPlay()
 		if (ADeltaBaseCharacter* CachedCharacter = Cast<ADeltaBaseCharacter>(TempActor))
 		{
 			Characters.Add(CachedCharacter);
-			CachedCharacter->OnCharacterDeath.AddDynamic(this, &ThisClass::OnCharacterDeath);
+			CachedCharacter->OnCharacterDeath.AddDynamic(this, &ThisClass::HandleCharacterDeath);
 		}
 	}
 }
@@ -65,7 +65,7 @@ void ADeltaBaseGameMode::GameStart()
 	CurrentState = EGameModeState::Playing;
 }
 
-void ADeltaBaseGameMode::OnCharacterDeath(AActor* DeathActor)
+void ADeltaBaseGameMode::HandleCharacterDeath(AActor* DeathActor)
 {
 	ADeltaEnemyCharacter* EnemyCharacter = Cast<ADeltaEnemyCharacter>(DeathActor);
 	if (EnemyCharacter)

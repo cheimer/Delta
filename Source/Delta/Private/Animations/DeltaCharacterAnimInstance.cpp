@@ -18,7 +18,7 @@ void UDeltaCharacterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 {
 	Super::NativeUpdateAnimation(DeltaTime);
 
-	DeltaCharacter = DeltaCharacter == nullptr ? Cast<ADeltaBaseCharacter>(TryGetPawnOwner()) : DeltaCharacter;
+	DeltaCharacter = DeltaCharacter ? DeltaCharacter : Cast<ADeltaBaseCharacter>(TryGetPawnOwner());
 	if(!DeltaCharacter) return;
 
 	FVector Velocity = DeltaCharacter->GetVelocity();
@@ -39,6 +39,16 @@ void UDeltaCharacterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		// 방향 판별 (왼쪽 / 오른쪽)
 		float Direction = FVector::CrossProduct(ForwardVector, Velocity).Z >= 0 ? 1.f : -1.f;
 		CurrentAngle = AngleDegrees * Direction;
+
+		// Interrupt Montage
+		if (bCanStopMontage)
+		{
+			bCanStopMontage = false;
+			if (IsAnyMontagePlaying())
+			{
+				Montage_Stop(0.5f);
+			}
+		}
 	}
 	else
 	{
@@ -73,4 +83,9 @@ void UDeltaCharacterAnimInstance::SetAnimMontage(UAnimMontage* AnimMontage)
 		CachedAnimMontage = AnimMontage;
 		bDoPlayMontage = true;
 	}
+}
+
+void UDeltaCharacterAnimInstance::EnableInterrupt()
+{
+	bCanStopMontage = true;
 }

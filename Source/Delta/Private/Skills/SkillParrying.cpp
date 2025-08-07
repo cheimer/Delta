@@ -24,10 +24,14 @@ void USkillParrying::ReactDamaged()
 	Super::ReactDamaged();
 
 	if (!CombatComponent.IsValid() || !CombatComponent->GetOwner()) return;
-
-	FVector SpawnLocation = CombatComponent->GetOwner()->GetActorLocation();
-	FRotator SpawnRotation = CombatComponent->GetOwner()->GetActorRotation();
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ParryingVFX, SpawnLocation, SpawnRotation);
+	
+	if (ParryingVFX)
+	{
+		FVector SpawnLocation = CombatComponent->GetOwner()->GetActorLocation();
+		FRotator SpawnRotation = CombatComponent->GetOwner()->GetActorRotation();
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ParryingVFX, SpawnLocation, SpawnRotation);
+	}
+	
 }
 
 void USkillParrying::EndSkill()

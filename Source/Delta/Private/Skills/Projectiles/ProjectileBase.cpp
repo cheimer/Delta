@@ -47,6 +47,11 @@ void AProjectileBase::OnProjectileOverlap(UPrimitiveComponent* OverlappedCompone
 	if (CombatComponent->GetIsOpponent(OtherActor))
 	{
 		CombatComponent->ApplySkillDamage(OtherActor, GetOwner(), ProjectileDamage);
+
+		if (ProjectileHitVFX->IsValid())
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ProjectileHitVFX, GetActorLocation());
+		}
 	}
 }
 

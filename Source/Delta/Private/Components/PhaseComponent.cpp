@@ -24,14 +24,14 @@ void UPhaseComponent::BeginPlay()
 	{
 		if (UHealthComponent* HealthComp = GetOwner()->FindComponentByClass<UHealthComponent>())
 		{
-			HealthComp->OnHealthChanged.AddDynamic(this, &ThisClass::OnHealthChanged);
+			HealthComp->OnHealthChanged.AddDynamic(this, &ThisClass::HandleHealthChanged);
 		}
 	}
 
 	
 }
 
-void UPhaseComponent::OnHealthChanged(float CurrentHealth, float MaxHealth, bool bIsDamaged)
+void UPhaseComponent::HandleHealthChanged(float CurrentHealth, float MaxHealth, bool bIsDamaged)
 {
 	bool bDoNextPhase =
 		bIsDamaged &&

@@ -22,7 +22,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	void OnHealthChanged(float CurrentHealth, float MaxHealth, bool bIsDamaged);
+	void HandleHealthChanged(float CurrentHealth, float MaxHealth, bool bIsDamaged);
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Character", meta = (AllowPrivateAccess = "true"))

@@ -14,6 +14,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class USkillBase;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangeSkillSet, int, BeforeIndex, int, AfterIndex);
 
 UENUM(BlueprintType)
 enum class EPlayerStatus : uint8
@@ -22,6 +23,23 @@ enum class EPlayerStatus : uint8
 	Skill,
 	LockTarget
 };
+
+USTRUCT(BlueprintType)
+struct FSkillTypeWrapper
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<EDeltaSkillType> SkillTypes;
+
+	FSkillTypeWrapper()
+	{
+		// UI Skill Size
+		SkillTypes.SetNum(3);
+	}
+
+};
+
 
 /**
  * 
@@ -39,6 +57,10 @@ public:
 	virtual void PlaySkillAnimation(const EDeltaSkillType SkillType) override;
 	virtual void EndSkillAnimation() override;
 
+	TArray<const UTexture2D*>& GetSkillTextures(const int Index);
+
+	FOnChangeSkillSet OnChangeSkillSet;
+
 protected:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void BeginPlay() override;
@@ -46,7 +68,7 @@ protected:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
-	virtual void OnCharacterDeathHandle(AActor* DeathActor) override;
+	virtual void HandleCharacterDeath(AActor* DeathActor) override;
 	
 	TWeakObjectPtr<ADeltaBaseCharacter> CurrentLockTarget = nullptr;
 	
@@ -87,23 +109,27 @@ protected:
 #pragma endregion Inputs
 
 private:
-	void StartWaitingSkill(FName SkillIndex);
+	void StartWaitingSkill(int KeyIndex);
+	void StartWaitingSkill(EDeltaSkillType SkillType);
 	void CancelWaitingSkill();
 
+	void ChangeSkillList(const bool bIsNext);
+
 	void SetLockTarget(bool bWantsLockOn);
-	void SetLockTargetWhileSkill(bool bWantsLockOn);
 	
 	void UpdateLockTarget();
 	ADeltaBaseCharacter* FindEnemyFromFront() const;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Skill")
-	TMap<FName, EDeltaSkillType> SkillIndexToSkillType;
-
+	TArray<FSkillTypeWrapper> SkillSetArray;
+	
 	EPlayerStatus CurrentStatus = EPlayerStatus::Default;
 	EPlayerStatus CachedStatus = EPlayerStatus::Default;
 	
 	bool bIsWaitingSkill = false;
 	float WaitingSkillTime = 0.0f;
+
+	int CurrentSkillSetIndex = 0;
 	
 #pragma region Components
 	UPROPERTY(VisibleAnywhere, Category = "Components")
@@ -130,6 +156,7 @@ private:
 	
 public:
 #pragma region GetSet
+	int GetCurrentSkillSetIndex() const { return CurrentSkillSetIndex; };
 	
 #pragma endregion GetSet
 

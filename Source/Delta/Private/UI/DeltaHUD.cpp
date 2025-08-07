@@ -4,42 +4,56 @@
 #include "UI/DeltaHUD.h"
 
 #include "UI/DeltaBaseWidget.h"
+#include "UI/PlayWidget.h"
 
 void ADeltaHUD::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//ChangeHUDMode(EDeltaHUDMode::Main);
+	ChangeHUDMode(EDeltaHUDMode::Play);
 }
 
 void ADeltaHUD::ChangeHUDMode(const EDeltaHUDMode HUDMode)
 {
-	if (CurrentWidget.Value)
+	if (CurrentWidget)
 	{
 		for (auto CachedWidget : DeltaWidgets)
 		{
 			CachedWidget.Value->RemoveFromParent();
+			CachedWidget.Value->MarkAsGarbage();
 		}
-		CurrentWidget.Value = nullptr;
+		CurrentWidget = nullptr;
 		DeltaWidgets.Empty();
 	}
 
-	for (auto CachedClass : ResultMenuWidgetClasses)
+	if (!IsValid(UIDataAsset)) return;
+
+	int DefaultWidgetNum = 0;
+	for (auto WidgetInfo : UIDataAsset->UIWidgetInfos)
 	{
-		EDeltaHUDMode CachedHUDMode = SwitchWidgetToHUD(CachedClass.Key);
-		if (CachedHUDMode == HUDMode)
+		if (WidgetInfo.HUDMode == HUDMode)
 		{
-			UDeltaBaseWidget* CachedWidget = Cast<UDeltaBaseWidget>(CreateWidget(GetWorld(), CachedClass.Value));
-			if (CachedWidget)
+			if (UDeltaBaseWidget* CachedWidget = Cast<UDeltaBaseWidget>(CreateWidget(GetWorld(), WidgetInfo.WidgetClass)))
 			{
-				DeltaWidgets.Add(CachedClass.Key, CachedWidget);
+				DeltaWidgets.Add(WidgetInfo.WidgetType, CachedWidget);
+				
+				CachedWidget->InItWidget(WidgetInfo.WidgetType);
 				CachedWidget->AddToViewport();
-				CachedWidget->SetVisibility(ESlateVisibility::Hidden);
+				if (WidgetInfo.bIsDefaultWidget)
+				{
+					CachedWidget->SetVisibility(ESlateVisibility::Visible);
+					DefaultWidgetNum++;
+					CurrentWidget = CachedWidget;
+				}
+				else
+				{
+					CachedWidget->SetVisibility(ESlateVisibility::Hidden);
+				}
 			}
 		}
 	}
-
-	SetHUDInit(HUDMode);
+	
+	check(DefaultWidgetNum == 1);
 
 }
 
@@ -47,59 +61,42 @@ void ADeltaHUD::ChangeWidgetType(const EDeltaWidgetType WidgetType, const bool b
 {
 	if (!DeltaWidgets.Contains(WidgetType)) return;
 
-	if (bDoHiddenBefore)
+	if (bDoHiddenBefore && IsValid(CurrentWidget))
 	{
-		CurrentWidget.Value->SetVisibility(ESlateVisibility::Hidden);
-	}
-
-	CurrentWidget.Key = WidgetType;
-	CurrentWidget.Value = DeltaWidgets[WidgetType];
-	CurrentWidget.Value->SetVisibility(ESlateVisibility::Visible);
-
-}
-
-void ADeltaHUD::SetHUDInit(const EDeltaHUDMode HUDMode)
-{
-	if (HUDMode == EDeltaHUDMode::Main)
-	{
-		if (!DeltaWidgets.Find(EDeltaWidgetType::Main_Main))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Main Widget need to Settings"));
-			return;
-		}
-
-		CurrentWidget = TPair<EDeltaWidgetType, UDeltaBaseWidget*>(EDeltaWidgetType::Main_Main, DeltaWidgets[EDeltaWidgetType::Main_Main]);
-	}
-	else if (HUDMode == EDeltaHUDMode::Play)
-	{
-		if (!DeltaWidgets.Find(EDeltaWidgetType::Play_Play))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Play Widget need to Settings"));
-			return;
-		}
-
-		CurrentWidget = TPair<EDeltaWidgetType, UDeltaBaseWidget*>(EDeltaWidgetType::Play_Play, DeltaWidgets[EDeltaWidgetType::Play_Play]);
+		CurrentWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 	
-	CurrentWidget.Value->SetVisibility(ESlateVisibility::Visible);
+	CurrentWidget = DeltaWidgets[WidgetType];
+	CurrentWidget->SetVisibility(ESlateVisibility::Visible);
 	
-
 }
 
-EDeltaHUDMode ADeltaHUD::SwitchWidgetToHUD(const EDeltaWidgetType WidgetType)
+void ADeltaHUD::ShowLockTarget(const AActor* Target) const
 {
-	switch (WidgetType)
+	if (!DeltaWidgets.Contains(EDeltaWidgetType::Play)) return;
+
+	if (UPlayWidget* PlayWidget = Cast<UPlayWidget>(DeltaWidgets[EDeltaWidgetType::Play]))
 	{
-	case EDeltaWidgetType::Main_Main:
-	case EDeltaWidgetType::Main_Option:
-		return EDeltaHUDMode::Main;
-	case EDeltaWidgetType::Play_Play:
-	case EDeltaWidgetType::Play_Pause:
-	case EDeltaWidgetType::Play_Lose:
-	case EDeltaWidgetType::Play_Win:
-		return EDeltaHUDMode::Play;
-	default:
-		check(false);
-		return EDeltaHUDMode::None;
+		PlayWidget->ShowTargetInfo(Target);
+	}
+}
+
+void ADeltaHUD::HideLockTarget() const
+{
+	if (!DeltaWidgets.Contains(EDeltaWidgetType::Play)) return;
+
+	if (UPlayWidget* PlayWidget = Cast<UPlayWidget>(DeltaWidgets[EDeltaWidgetType::Play]))
+	{
+		PlayWidget->HideTargetInfo();
+	}
+}
+
+void ADeltaHUD::ChangeSkillSet(int BeforeIndex, int AfterIndex)
+{
+	if (!DeltaWidgets.Contains(EDeltaWidgetType::Play)) return;
+
+	if (UPlayWidget* PlayWidget = Cast<UPlayWidget>(DeltaWidgets[EDeltaWidgetType::Play]))
+	{
+		PlayWidget->ChangeSkillSet(BeforeIndex, AfterIndex);
 	}
 }

@@ -31,7 +31,6 @@ void ADeltaBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	
-
 }
 
 void ADeltaBaseCharacter::BeginPlay()
@@ -39,7 +38,8 @@ void ADeltaBaseCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	OnTakeAnyDamage.AddDynamic(this, &ThisClass::TakeSkillDamage);
-	OnCharacterDeath.AddDynamic(this, &ThisClass::OnCharacterDeathHandle);
+	OnCharacterDeath.AddDynamic(this, &ThisClass::HandleCharacterDeath);
+
 }
 
 void ADeltaBaseCharacter::TakeSkillDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
@@ -47,14 +47,15 @@ void ADeltaBaseCharacter::TakeSkillDamage(AActor* DamagedActor, float Damage, co
 	HealthComponent->TakeDamage(Damage);
 }
 
-void ADeltaBaseCharacter::OnCharacterDeathHandle(AActor* DeathActor)
+void ADeltaBaseCharacter::HandleCharacterDeath(AActor* DeathActor)
 {
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
-	UDeltaCharacterAnimInstance* AnimInstance = Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+	if (!GetMesh()) return;
+	AnimInstance = AnimInstance ? AnimInstance : Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 	if (!AnimInstance) return;
-	
+
 	AnimInstance->SetBoolValue(AnimValue::IsDeath, true);
 }
 
@@ -93,7 +94,8 @@ void ADeltaBaseCharacter::PlaySkillAnimation(const EDeltaSkillType SkillType)
 	USkillDataAsset* SkillData = FindSkillDataAsset(SkillType);
 	if (!SkillData) return;
 
-	UDeltaCharacterAnimInstance* AnimInstance = GetMesh() ? Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance()) : nullptr;
+	if (!GetMesh()) return;
+	AnimInstance = AnimInstance ? AnimInstance : Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 	if (!AnimInstance) return;
 
 	AnimInstance->SetAnimMontage(SkillData->AnimMontage);
@@ -101,14 +103,31 @@ void ADeltaBaseCharacter::PlaySkillAnimation(const EDeltaSkillType SkillType)
 
 void ADeltaBaseCharacter::EndSkillAnimation()
 {
+	if (!CombatComponent) return;
 	
+	CombatComponent->ReleaseSkill();
+}
+
+void ADeltaBaseCharacter::EnableInterrupt()
+{
+	if (!GetMesh()) return;
+	AnimInstance = AnimInstance ? AnimInstance : Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+	if (!AnimInstance) return;
+
+	AnimInstance->EnableInterrupt();
 }
 
 void ADeltaBaseCharacter::UpdateMotionWarpingTarget()
 {
-	if (GetCurrentSkillTarget() && MotionWarpingComponent)
+	if (!MotionWarpingComponent) return;
+
+	if (GetCurrentSkillTarget())
 	{
 		MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName(WarpTarget::SkillTarget), GetCurrentSkillTarget()->GetActorLocation());
+	}
+	else
+	{
+		MotionWarpingComponent->RemoveWarpTarget(FName(WarpTarget::SkillTarget));
 	}
 }
 

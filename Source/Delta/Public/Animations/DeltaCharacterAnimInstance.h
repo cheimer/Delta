@@ -22,6 +22,8 @@ public:
 
 	void SetBoolValue(const FString& PropertyName, const bool BoolValue);
 	void SetAnimMontage(UAnimMontage* AnimMontage);
+
+	void EnableInterrupt();
 	
 private:
 	UPROPERTY(BlueprintReadOnly, Category = "Character", meta = (AllowPrivateAccess = "true"))
@@ -39,5 +41,7 @@ private:
 	TWeakObjectPtr<UAnimMontage> CachedAnimMontage;
 
 	bool bDoPlayMontage = false;
+
+	bool bCanStopMontage = false;
 
 };

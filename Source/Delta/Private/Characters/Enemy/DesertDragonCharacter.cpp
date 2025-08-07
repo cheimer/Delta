@@ -30,14 +30,14 @@ void ADesertDragonCharacter::BeginPlay()
 
 	if (PhaseComponent)
 	{
-		PhaseComponent->OnPhaseChanged.AddDynamic(this, &ThisClass::OnNextPhase);
+		PhaseComponent->OnPhaseChanged.AddDynamic(this, &ThisClass::HandleNextPhase);
 	}
 
 }
 
-void ADesertDragonCharacter::OnCharacterDeathHandle(AActor* DeathCharacter)
+void ADesertDragonCharacter::HandleCharacterDeath(AActor* DeathCharacter)
 {
-	Super::OnCharacterDeathHandle(DeathCharacter);
+	Super::HandleCharacterDeath(DeathCharacter);
 
 	check(GetCharacterMovement());
 	check(GetCapsuleComponent());
@@ -46,11 +46,11 @@ void ADesertDragonCharacter::OnCharacterDeathHandle(AActor* DeathCharacter)
 	GetCharacterMovement()->MovementMode = MOVE_Falling;
 	
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	LandedDelegate.AddDynamic(this, &ThisClass::OnCharacterLanded);
+	LandedDelegate.AddDynamic(this, &ThisClass::HandleCharacterLanded);
 
 }
 
-void ADesertDragonCharacter::OnNextPhase(const int PhaseNum)
+void ADesertDragonCharacter::HandleNextPhase(const int PhaseNum)
 {
 	switch (PhaseNum)
 	{
@@ -67,42 +67,53 @@ void ADesertDragonCharacter::DoPhaseOne()
 {
 	GetCharacterMovement()->MovementMode = MOVE_Flying;
 	
-	if (UDeltaCharacterAnimInstance* AnimInstance = GetMesh() ? Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance()) : nullptr)
+	if (GetMesh() && FlyStartMontage)
 	{
-		AnimInstance->SetBoolValue(AnimValue_DesertDragon::IsFlying, true);
-		AnimInstance->SetAnimMontage(FlyStartMontage);
-		AnimInstance->RootMotionMode = ERootMotionMode::RootMotionFromEverything;
-
-		AnimInstance->OnMontageEnded.AddDynamic(this, &ThisClass::OnFlyEnd);
-
-		if (MotionWarpingComponent)
+		AnimInstance = AnimInstance ? AnimInstance : Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+		if (AnimInstance)
 		{
-			FVector Destination = GetActorLocation();
-			Destination += GetActorForwardVector() * FlyLocation.X;
-			Destination.Z += FlyLocation.Z;
-			MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName(WarpTarget::FlyLocation), Destination);
+			AnimInstance->SetBoolValue(AnimValue_DesertDragon::IsFlying, true);
+			AnimInstance->SetAnimMontage(FlyStartMontage);
+			AnimInstance->RootMotionMode = ERootMotionMode::RootMotionFromEverything;
+
+			AnimInstance->OnMontageEnded.AddDynamic(this, &ThisClass::OnFlyEnd);
+
+			if (MotionWarpingComponent)
+			{
+				FVector Destination = GetActorLocation();
+				Destination += GetActorForwardVector() * FlyLocation.X;
+				Destination.Z += FlyLocation.Z;
+				MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName(WarpTarget::FlyLocation), Destination);
+			}
 		}
 	}
 }
 
 void ADesertDragonCharacter::OnFlyEnd(UAnimMontage* Montage, bool bInterrupted)
 {
-	if (UDeltaCharacterAnimInstance* AnimInstance = GetMesh() ? Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance()) : nullptr)
-	{
-		AnimInstance->RootMotionMode = ERootMotionMode::RootMotionFromMontagesOnly;
-		AnimInstance->OnMontageEnded.RemoveDynamic(this, &ThisClass::OnFlyEnd);
-	}
 	
+	if (!GetMesh()) return;
+	AnimInstance = AnimInstance ? AnimInstance : Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+	if (!AnimInstance) return;
+
+	AnimInstance->RootMotionMode = ERootMotionMode::RootMotionFromMontagesOnly;
+	AnimInstance->OnMontageEnded.RemoveDynamic(this, &ThisClass::OnFlyEnd);
 	
 }
 
-void ADesertDragonCharacter::OnCharacterLanded(const FHitResult& Hit)
+void ADesertDragonCharacter::HandleCharacterLanded(const FHitResult& Hit)
 {
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	if (UDeltaCharacterAnimInstance* AnimInstance = GetMesh() ? Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance()) : nullptr)
+	
+	if (GetMesh())
 	{
-		AnimInstance->SetBoolValue(AnimValue_DesertDragon::IsHitGround, true);
+		AnimInstance = AnimInstance ? AnimInstance : Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+		if (AnimInstance)
+		{
+			AnimInstance->SetBoolValue(AnimValue_DesertDragon::IsHitGround, true);
+		}
 	}
+
 }
 
 /*

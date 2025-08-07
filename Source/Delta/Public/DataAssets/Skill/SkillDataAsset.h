@@ -37,4 +37,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Skill")
 	float Distance = 0.0f;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Appearence")
+	UTexture2D* MainImage;
+
 };

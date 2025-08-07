@@ -33,7 +33,8 @@ protected:
 	void OnAttackOverlapped();
 
 	FTimerHandle AttackTimerHandle;
-	
+
+	UPROPERTY(EditAnywhere, Category = "Values")
 	float TickRate = 0.2f;
 	
 };
