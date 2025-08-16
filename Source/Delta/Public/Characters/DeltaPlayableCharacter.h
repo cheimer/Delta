@@ -21,7 +21,8 @@ enum class EPlayerStatus : uint8
 {
 	Default,
 	Skill,
-	LockTarget
+	LockTarget,
+	WaitingSkill
 };
 
 USTRUCT(BlueprintType)
@@ -57,7 +58,10 @@ public:
 	virtual void PlaySkillAnimation(const EDeltaSkillType SkillType) override;
 	virtual void EndSkillAnimation() override;
 
-	TArray<const UTexture2D*>& GetSkillTextures(const int Index);
+	TArray<UTexture2D*>& GetSkillTextures(const int Index);
+
+	void LookAtCameraCenter();
+	void LookAtForward();
 
 	FOnChangeSkillSet OnChangeSkillSet;
 
@@ -126,10 +130,12 @@ private:
 	EPlayerStatus CurrentStatus = EPlayerStatus::Default;
 	EPlayerStatus CachedStatus = EPlayerStatus::Default;
 	
-	bool bIsWaitingSkill = false;
 	float WaitingSkillTime = 0.0f;
 
 	int CurrentSkillSetIndex = 0;
+
+	double CachedPitch = 0.0f;
+	bool bIsLookingCameraCenter = false;
 	
 #pragma region Components
 	UPROPERTY(VisibleAnywhere, Category = "Components")

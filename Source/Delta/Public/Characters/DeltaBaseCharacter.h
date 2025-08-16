@@ -41,6 +41,13 @@ public:
 	UBoxComponent* FindSkillCollision(const FName& SkillCollision);
 
 	TOptional<float> GetCurrentSkillRange() const;
+
+	TOptional<bool> IsFirstSection();
+	TOptional<float> GetMontageRemainTime();
+
+	void MoveCharacterMesh(const FVector& NewLocation, const float DurationTime);
+
+	void SetVisibleMesh(const FName MeshName, const bool bIsVisible);
 	
 	FOnCharacterDeath OnCharacterDeath;
 	
@@ -54,12 +61,16 @@ protected:
 	virtual void HandleCharacterDeath(AActor* DeathActor);
 
 	USkillDataAsset* FindSkillDataAsset(const EDeltaSkillType CurrentSkillType);
+	
+	void RestoreCharacterMeshLocation();
 
 	UPROPERTY(EditAnywhere, Category = "Values")
 	FString DisplayName;
 
 	UPROPERTY()
 	UDeltaCharacterAnimInstance* AnimInstance;
+
+	bool bCanInterruptSkill = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Skill")
 	TArray<USkillDataAsset*> SkillDataAssets;
@@ -83,10 +94,17 @@ protected:
 	UManaComponent* ManaComponent;
 
 #pragma endregion Components
+
+private:
+	FVector CachedMeshLocation = FVector::ZeroVector;
+
+	FTimerHandle RestoreMeshTimerHandle;
 	
 public:
 #pragma region GetSet
 	FString GetDisplayName() const {return DisplayName;}
+
+	bool GetCanInterruptSkill() const {return bCanInterruptSkill;}
 	
 	ADeltaBaseCharacter* GetCurrentSkillTarget() const {return CurrentSkillTarget.IsValid() ? CurrentSkillTarget.Get() : nullptr;}
 	void SetCurrentSkillTarget(ADeltaBaseCharacter* InSkillTarget) {CurrentSkillTarget = InSkillTarget;}

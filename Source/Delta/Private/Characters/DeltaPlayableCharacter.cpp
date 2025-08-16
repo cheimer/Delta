@@ -28,7 +28,7 @@ ADeltaPlayableCharacter::ADeltaPlayableCharacter()
 	bUseControllerRotationRoll = false;
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
+	GetCharacterMovement()->RotationRate = FRotator(500.0f, 500.0f, 0.0f);
 	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.0f;
 
@@ -95,8 +95,12 @@ void ADeltaPlayableCharacter::Tick(float DeltaTime)
 	{
 		SpringArmComponent->TargetArmLength = FMath::Lerp(SpringArmComponent->TargetArmLength, TargetArmLengthGoTo, DeltaTime * 10.0f);
 	}
+
+	bool bIsLockTarget =
+		CurrentStatus == EPlayerStatus::LockTarget ||
+		((CurrentStatus == EPlayerStatus::WaitingSkill || CurrentStatus == EPlayerStatus::Skill) && CachedStatus == EPlayerStatus::LockTarget);
 	
-	if (CurrentStatus == EPlayerStatus::LockTarget || (CurrentStatus == EPlayerStatus::Skill && CachedStatus == EPlayerStatus::LockTarget))
+	if (bIsLockTarget)
 	{
 		if (CurrentLockTarget.IsValid() && !CurrentLockTarget->GetIsDead())
 		{
@@ -108,8 +112,8 @@ void ADeltaPlayableCharacter::Tick(float DeltaTime)
 			SetLockTarget(false);
 		}
 	}
-
-	if (bIsWaitingSkill)
+	
+	if (CurrentStatus == EPlayerStatus::WaitingSkill)
 	{
 		WaitingSkillTime += DeltaTime;
 		if (WaitingSkillTime > 0.1f)
@@ -118,6 +122,7 @@ void ADeltaPlayableCharacter::Tick(float DeltaTime)
 			UpdateSkillTarget();
 			if (CurrentSkillTarget.IsValid())
 			{
+				// TODO: Need to add UI.
 				DrawDebugSphere(GetWorld(), CurrentSkillTarget->GetActorLocation(), 300.0f, 32, FColor::Red);
 			}
 		}
@@ -146,8 +151,7 @@ void ADeltaPlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 
 void ADeltaPlayableCharacter::StartWaitingSkill(int KeyIndex)
 {
-	if (CurrentStatus == EPlayerStatus::Skill)
-		return;
+	if (CurrentStatus != EPlayerStatus::Default && CurrentStatus != EPlayerStatus::LockTarget) return;
 
 	if (HealthComponent->GetIsDead()) return;
 
@@ -157,7 +161,8 @@ void ADeltaPlayableCharacter::StartWaitingSkill(int KeyIndex)
 	CachedSkillData = FindSkillDataAsset(SkillSetArray[CurrentSkillSetIndex].SkillTypes[KeyIndex]);
 	if (!CachedSkillData.IsValid()) return;
 	
-	bIsWaitingSkill = true;
+	CachedStatus = CurrentStatus;
+	CurrentStatus = EPlayerStatus::WaitingSkill;
 	WaitingSkillTime = 1.0f;
 
 }
@@ -167,7 +172,8 @@ void ADeltaPlayableCharacter::StartWaitingSkill(EDeltaSkillType SkillType)
 	CachedSkillData = FindSkillDataAsset(SkillType);
 	if (!CachedSkillData.IsValid()) return;
 	
-	bIsWaitingSkill = true;
+	CachedStatus = CurrentStatus;
+	CurrentStatus = EPlayerStatus::WaitingSkill;
 	WaitingSkillTime = 1.0f;
 
 	if (CachedSkillData->Type == EDeltaSkillType::Parrying)
@@ -179,17 +185,16 @@ void ADeltaPlayableCharacter::StartWaitingSkill(EDeltaSkillType SkillType)
 
 void ADeltaPlayableCharacter::CancelWaitingSkill()
 {
-	if (CurrentStatus == EPlayerStatus::Skill)
+	if (CurrentStatus != EPlayerStatus::WaitingSkill)
 		return;
 
-	bIsWaitingSkill = false;
+	CurrentStatus = CachedStatus;
 
 }
 
 void ADeltaPlayableCharacter::ChangeSkillList(const bool bIsNext)
 {
 	if (CurrentStatus != EPlayerStatus::Default && CurrentStatus != EPlayerStatus::LockTarget) return;
-	if (bIsWaitingSkill) return;
 
 	if (CurrentSkillSetIndex == 0 && !bIsNext) return;
 	if (CurrentSkillSetIndex == SkillSetArray.Num() - 1 && bIsNext) return;
@@ -197,25 +202,21 @@ void ADeltaPlayableCharacter::ChangeSkillList(const bool bIsNext)
 	int BeforeSkillSetIndex = CurrentSkillSetIndex;
 	CurrentSkillSetIndex = FMath::Clamp(BeforeSkillSetIndex + (bIsNext ? 1 : -1), 0, SkillSetArray.Num() - 1);
 
-	UE_LOG(LogTemp, Warning, TEXT("Broadcast %d, %d"), BeforeSkillSetIndex, CurrentSkillSetIndex);
 	OnChangeSkillSet.Broadcast(BeforeSkillSetIndex, CurrentSkillSetIndex);
 }
 
 void ADeltaPlayableCharacter::PlaySkillAnimation(const EDeltaSkillType SkillType)
 {
-	if (!bIsWaitingSkill || CurrentStatus == EPlayerStatus::Skill) return;
+	if (CurrentStatus != EPlayerStatus::WaitingSkill) return;
 	if (HealthComponent->GetIsDead()) return;
 	if (!CachedSkillData.IsValid()) return;
 	
 	Super::PlaySkillAnimation(SkillType);
 	
-	CachedStatus = CurrentStatus;
 	CurrentStatus = EPlayerStatus::Skill;
 
 	UpdateSkillTarget();
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName(WarpTarget::SkillTarget), SkillTargetLocation);
-	
-	bIsWaitingSkill = false;
 }
 
 void ADeltaPlayableCharacter::EndSkillAnimation()
@@ -225,9 +226,9 @@ void ADeltaPlayableCharacter::EndSkillAnimation()
 	CurrentStatus = CachedStatus;
 }
 
-TArray<const UTexture2D*>& ADeltaPlayableCharacter::GetSkillTextures(const int Index)
+TArray<UTexture2D*>& ADeltaPlayableCharacter::GetSkillTextures(const int Index)
 {
-	static TArray<const UTexture2D*> TextureArray;
+	static TArray<UTexture2D*> TextureArray;
 	TextureArray.Empty();
 	
 	if (!SkillSetArray.IsValidIndex(Index)) return TextureArray;
@@ -246,11 +247,42 @@ TArray<const UTexture2D*>& ADeltaPlayableCharacter::GetSkillTextures(const int I
 	return TextureArray;
 }
 
+void ADeltaPlayableCharacter::LookAtCameraCenter()
+{
+	if (!SpringArmComponent) return;
+
+	SetLockTarget(false);
+	bIsLookingCameraCenter = true;
+
+	CachedPitch = GetActorRotation().Pitch;
+
+	SpringArmComponent->SetRelativeRotation(FRotator::ZeroRotator);
+	
+	SpringArmComponent->bUsePawnControlRotation = false;
+	bUseControllerRotationPitch = true;
+	bUseControllerRotationYaw = true;
+
+}
+
+void ADeltaPlayableCharacter::LookAtForward()
+{
+	if (!SpringArmComponent) return;
+
+	SpringArmComponent->bUsePawnControlRotation = true;
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+
+	FRotator ResetRotation = FRotator(CachedPitch, GetActorRotation().Yaw, GetActorRotation().Roll);
+	SetActorRotation(ResetRotation);
+
+	bIsLookingCameraCenter = false;
+}
+
 void ADeltaPlayableCharacter::SetLockTarget(bool bWantsLockOn)
 {
 	if (bWantsLockOn)
 	{
-		if (CurrentStatus == EPlayerStatus::Skill)
+		if (CurrentStatus == EPlayerStatus::Skill || CurrentStatus == EPlayerStatus::WaitingSkill)
 		{
 			CachedStatus = EPlayerStatus::LockTarget;
 		}
@@ -271,7 +303,7 @@ void ADeltaPlayableCharacter::SetLockTarget(bool bWantsLockOn)
 	}
 	else
 	{
-		if (CurrentStatus == EPlayerStatus::Skill)
+		if (CurrentStatus == EPlayerStatus::Skill || CurrentStatus == EPlayerStatus::WaitingSkill)
 		{
 			CachedStatus = EPlayerStatus::Default;
 		}
@@ -350,21 +382,25 @@ void ADeltaPlayableCharacter::HandleCharacterDeath(AActor* DeathActor)
 
 void ADeltaPlayableCharacter::Move(const FInputActionValue& Value)
 {
-	if (CurrentStatus == EPlayerStatus::Skill)
-		return;
-
 	if (HealthComponent->GetIsDead()) return;
 
+	if (CurrentStatus == EPlayerStatus::Skill && !bCanInterruptSkill) return;
+
 	const FVector2D MovementVector = Value.Get<FVector2D>();
-	
 	FRotator MovementRotation;
-	if (CurrentStatus == EPlayerStatus::Default)
+
+	EPlayerStatus CheckStatus = (CurrentStatus == EPlayerStatus::Skill || CurrentStatus == EPlayerStatus::WaitingSkill) ? CachedStatus : CurrentStatus;
+	if (CheckStatus == EPlayerStatus::Default)
 	{
 		MovementRotation = FRotator(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
 	}
-	else if (CurrentStatus == EPlayerStatus::LockTarget)
+	else if (CheckStatus == EPlayerStatus::LockTarget)
 	{
 		MovementRotation = FRotator(0.0f, CameraComponent->GetComponentRotation().Yaw, 0.0f);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Undefined status. Check Move Func"));
 	}
 	
 	if (MovementVector.Y != 0.0f)
@@ -385,7 +421,10 @@ void ADeltaPlayableCharacter::Look(const FInputActionValue& Value)
 {
 	const FVector2D LookAxisVector = Value.Get<FVector2D>();
 
-	if (CurrentStatus != EPlayerStatus::LockTarget)
+	bool bCanLookUp = CurrentStatus == EPlayerStatus::Default ||
+		((CurrentStatus == EPlayerStatus::WaitingSkill || CurrentStatus == EPlayerStatus::Skill) && CachedStatus == EPlayerStatus::Default);
+
+	if (bCanLookUp)
 	{
 		if (LookAxisVector.X != 0.0f)
 		{
@@ -415,46 +454,70 @@ void ADeltaPlayableCharacter::Scroll(const FInputActionValue& Value)
 
 void ADeltaPlayableCharacter::LockTarget(const FInputActionValue& Value)
 {
-	if (HealthComponent->GetIsDead()) return;
+	if (HealthComponent->GetIsDead() || bIsLookingCameraCenter) return;
 
-	if (CurrentStatus == EPlayerStatus::Default)
+	switch (CurrentStatus)
 	{
+	case EPlayerStatus::Default:
 		SetLockTarget(true);
-	}
-	else if (CurrentStatus == EPlayerStatus::LockTarget)
-	{
+		break;
+	case EPlayerStatus::LockTarget:
 		SetLockTarget(false);
-	}
-	else if (CurrentStatus == EPlayerStatus::Skill)
-	{
+		break;
+	case EPlayerStatus::WaitingSkill:
+	case EPlayerStatus::Skill:
 		if (CachedStatus == EPlayerStatus::Default)
-		{
 			SetLockTarget(true);
-		}
 		else if (CachedStatus == EPlayerStatus::LockTarget)
-		{
 			SetLockTarget(false);
-		}
+		else
+			UE_LOG(LogTemp, Warning, TEXT("Undefined status. Lock Target"));
+		break;
+	default:
+		UE_LOG(LogTemp, Warning, TEXT("Undefined status. Lock Target"));
+		break;
 	}
 }
 
 void ADeltaPlayableCharacter::Execute(const FInputActionValue& Value)
 {
-	if (bIsWaitingSkill)
+	switch (CurrentStatus)
 	{
-		PlaySkillAnimation(CachedSkillData->Type);
+	case EPlayerStatus::Default:
+	case EPlayerStatus::LockTarget:
+		return;
+	case EPlayerStatus::WaitingSkill:
+		if (CachedSkillData.IsValid())
+		{
+			PlaySkillAnimation(CachedSkillData->Type);
+		}
+		return;
+	case EPlayerStatus::Skill:
+		if (IsValid(CombatComponent))
+		{
+			CombatComponent->ActInput();
+		}
+		return;
+	default:
+		UE_LOG(LogTemp, Warning, TEXT("Undefined status. Execute Func"));
 	}
+	
 }
 
 void ADeltaPlayableCharacter::Parrying(const FInputActionValue& Value)
 {
-	if (bIsWaitingSkill)
+	switch (CurrentStatus)
 	{
-		CancelWaitingSkill();
-	}
-	else
-	{
+	case EPlayerStatus::Default:
+	case EPlayerStatus::LockTarget:
 		StartWaitingSkill(EDeltaSkillType::Parrying);
+	case EPlayerStatus::Skill:
+		return;
+	case EPlayerStatus::WaitingSkill:
+		CancelWaitingSkill();
+		return;
+	default:
+		UE_LOG(LogTemp, Warning, TEXT("Undefined status. Parrying Func"));
 	}
 }
 

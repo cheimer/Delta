@@ -19,7 +19,7 @@ public:
 	void LockTargetDetected(AActor* Target) const;
 	void LockTargetLost() const;
 
-	TArray<const UTexture2D*>& GetSkillTextures(int Index);
+	TArray<UTexture2D*>& GetSkillTextures(int Index);
 
 protected:
 	virtual void BeginPlay() override;

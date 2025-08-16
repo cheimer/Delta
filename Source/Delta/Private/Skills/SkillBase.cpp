@@ -16,6 +16,11 @@ void USkillBase::ReactDamaged()
 {
 }
 
+void USkillBase::ActInput()
+{
+}
+
 void USkillBase::EndSkill()
 {
+	
 }

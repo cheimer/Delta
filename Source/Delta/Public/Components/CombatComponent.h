@@ -27,6 +27,15 @@ public:
 
 	void TakeDamage();
 
+	void ActInput();
+
+	void LookAtCameraCenter();
+	void LookAtForward();
+
+	TOptional<bool> IsFirstSection();
+	
+	void MoveCharacterMesh(const FVector& NewLocation);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -39,6 +48,8 @@ private:
 
 	float DamageMultiplier = 1.0f;
 	float DamageTakenMultiplier = 1.0f;
+
+	int32 CurrentSkillCount = 0;
 
 #pragma region GetSet
 public:
@@ -53,6 +64,8 @@ public:
 	float GetDamageMultiplier() const {return DamageMultiplier;}
 	void SetDamageTakenMultiplier(const float InDamageTakenMultiplier) {DamageTakenMultiplier = InDamageTakenMultiplier;}
 	float GetDamageTakenMultiplier() const {return DamageTakenMultiplier;}
+
+	int32 GetCurrentSkillCount() const {return CurrentSkillCount;}
 
 #pragma endregion  GetSet
 

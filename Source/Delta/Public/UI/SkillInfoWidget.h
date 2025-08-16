@@ -16,7 +16,7 @@ class DELTA_API USkillInfoWidget : public UDeltaBaseWidget
 	GENERATED_BODY()
 
 public:
-	void SetImages(TArray<const UTexture2D*>& ImageTextures);
+	void SetImages(TArray<UTexture2D*>& ImageTextures);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Appearance")
 	FVector2D ImagesSize = FVector2D(32.0f, 32.0f);

@@ -36,14 +36,13 @@ void UDeltaCharacterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		float AngleRadians = FMath::Acos(FVector::DotProduct(ForwardVector, Velocity));
 		float AngleDegrees = FMath::RadiansToDegrees(AngleRadians);
 
-		// 방향 판별 (왼쪽 / 오른쪽)
+		// Check Direction (Left / Right)
 		float Direction = FVector::CrossProduct(ForwardVector, Velocity).Z >= 0 ? 1.f : -1.f;
 		CurrentAngle = AngleDegrees * Direction;
 
 		// Interrupt Montage
-		if (bCanStopMontage)
+		if (DeltaCharacter->GetCanInterruptSkill())
 		{
-			bCanStopMontage = false;
 			if (IsAnyMontagePlaying())
 			{
 				Montage_Stop(0.5f);
@@ -59,6 +58,11 @@ void UDeltaCharacterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	{
 		Montage_Play(CachedAnimMontage.Get());
 		bDoPlayMontage = false;
+		
+		if (!OnMontageEnded.IsAlreadyBound(this, &ThisClass::HandleMontageEnd))
+		{
+			OnMontageEnded.AddDynamic(this, &ThisClass::HandleMontageEnd);
+		}
 	}
 
 }
@@ -85,7 +89,13 @@ void UDeltaCharacterAnimInstance::SetAnimMontage(UAnimMontage* AnimMontage)
 	}
 }
 
-void UDeltaCharacterAnimInstance::EnableInterrupt()
+void UDeltaCharacterAnimInstance::HandleMontageEnd(UAnimMontage* Montage, bool bInterrupted)
 {
-	bCanStopMontage = true;
+	OnMontageEnded.RemoveDynamic(this, &ThisClass::HandleMontageEnd);
+	
+	DeltaCharacter = DeltaCharacter ? DeltaCharacter : Cast<ADeltaBaseCharacter>(TryGetPawnOwner());
+	check(DeltaCharacter);
+
+	DeltaCharacter->EndSkillAnimation();
+
 }

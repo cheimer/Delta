@@ -29,6 +29,12 @@ enum class EDeltaSkillType : uint8
 	Shield UMETA(DisplayName = "Shield"),
 	MeteorShower UMETA(DisplayName = "MeteorShower"),
 	Slash UMETA(DisplayName = "Slash"),
+	Lightning UMETA(DisplayName = "Lightning"),
+	GroundCrack UMETA(DisplayName = "GroundCrack"),
+	Flashes UMETA(DisplayName = "Flashes"),
+	ArrowShot UMETA(DisplayName = "ArrowShot"),
+	FlyingDisk UMETA(DisplayName = "FlyingDisk"),
+	RailGun UMETA(DisplayName = "RailGun"),
 
 	//Desert Dragon
 	LeftClaws UMETA(DisplayName = "LeftClaws"),

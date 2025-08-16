@@ -22,6 +22,13 @@ struct FChangeSkillSet
 
 	UPROPERTY()
 	UWidgetAnimation* RightAnim;
+
+	FChangeSkillSet()
+	{
+		CurrentIndex = -1;
+		LeftAnim = nullptr;
+		RightAnim = nullptr;
+	}
 };
 
 /**

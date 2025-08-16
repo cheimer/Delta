@@ -23,8 +23,10 @@ public:
 	void SetBoolValue(const FString& PropertyName, const bool BoolValue);
 	void SetAnimMontage(UAnimMontage* AnimMontage);
 
-	void EnableInterrupt();
-	
+protected:
+	UFUNCTION()
+	void HandleMontageEnd(UAnimMontage* Montage, bool bInterrupted);
+
 private:
 	UPROPERTY(BlueprintReadOnly, Category = "Character", meta = (AllowPrivateAccess = "true"))
 	ADeltaBaseCharacter* DeltaCharacter;
@@ -41,7 +43,5 @@ private:
 	TWeakObjectPtr<UAnimMontage> CachedAnimMontage;
 
 	bool bDoPlayMontage = false;
-
-	bool bCanStopMontage = false;
 
 };

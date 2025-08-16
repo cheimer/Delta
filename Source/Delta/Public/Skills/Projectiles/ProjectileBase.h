@@ -20,6 +20,7 @@ public:
 	AProjectileBase();
 
 	void SetDirection(const FVector& Direction) const;
+	void SetGravityScale(const float GravityScale);
 
 protected:
 	virtual void BeginPlay() override;

@@ -4,6 +4,7 @@
 #include "Components/CombatComponent.h"
 
 #include "Characters/DeltaBaseCharacter.h"
+#include "Characters/DeltaPlayableCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Skills/SkillBase.h"
 
@@ -33,6 +34,7 @@ void UCombatComponent::BeginSkill(const TSubclassOf<USkillBase>& SkillClass)
 	{
 		CachedSkill = Skill;
 		CachedSkill->BeginSkill(this);
+		CurrentSkillCount++;
 	}
 }
 
@@ -47,6 +49,7 @@ void UCombatComponent::EndSkill()
 void UCombatComponent::ReleaseSkill()
 {
 	CachedSkill = nullptr;
+	CurrentSkillCount = 0;
 }
 
 void UCombatComponent::ApplySkillDamage(AActor* DamagedActor, AActor* DamageCauser, const float SkillDamage)
@@ -66,6 +69,46 @@ void UCombatComponent::TakeDamage()
 	{
 		CachedSkill->ReactDamaged();
 	}
+}
+
+void UCombatComponent::ActInput()
+{
+	if (IsValid(CachedSkill))
+	{
+		CachedSkill->ActInput();
+	}
+}
+
+void UCombatComponent::LookAtCameraCenter()
+{
+	ADeltaPlayableCharacter* PlayerCharacter = Cast<ADeltaPlayableCharacter>(GetOwner());
+	if (!PlayerCharacter) return;
+
+	PlayerCharacter->LookAtCameraCenter();
+}
+
+void UCombatComponent::LookAtForward()
+{
+	ADeltaPlayableCharacter* PlayerCharacter = Cast<ADeltaPlayableCharacter>(GetOwner());
+	if (!PlayerCharacter) return;
+
+	PlayerCharacter->LookAtForward();
+}
+
+TOptional<bool> UCombatComponent::IsFirstSection()
+{
+	OwnerDeltaCharacter = OwnerDeltaCharacter ? OwnerDeltaCharacter : Cast<ADeltaBaseCharacter>(GetOwner());
+	if (!OwnerDeltaCharacter) return TOptional<bool>();
+
+	return OwnerDeltaCharacter->IsFirstSection();
+}
+
+void UCombatComponent::MoveCharacterMesh(const FVector& NewLocation)
+{
+	OwnerDeltaCharacter = OwnerDeltaCharacter ? OwnerDeltaCharacter : Cast<ADeltaBaseCharacter>(GetOwner());
+	if (!OwnerDeltaCharacter) return;
+
+	OwnerDeltaCharacter->MoveCharacterMesh(NewLocation, OwnerDeltaCharacter->GetMontageRemainTime().Get(0.0f) - 0.1f);
 }
 
 TOptional<bool> UCombatComponent::GetIsOpponent(const AActor* CheckActor)

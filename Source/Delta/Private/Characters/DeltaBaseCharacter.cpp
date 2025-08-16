@@ -12,6 +12,7 @@
 #include "Components/ManaComponent.h"
 #include "DataAssets/Skill/SkillDataAsset.h"
 #include "DeltaTypes/DeltaNamespaceTypes.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 ADeltaBaseCharacter::ADeltaBaseCharacter()
 {
@@ -63,7 +64,7 @@ USkillDataAsset* ADeltaBaseCharacter::FindSkillDataAsset(const EDeltaSkillType C
 {
 	for (const auto SkillData : SkillDataAssets)
 	{
-		if (SkillData->Type == CurrentSkillType)
+		if (SkillData && SkillData->Type == CurrentSkillType)
 		{
 			return SkillData;
 		}
@@ -106,15 +107,13 @@ void ADeltaBaseCharacter::EndSkillAnimation()
 	if (!CombatComponent) return;
 	
 	CombatComponent->ReleaseSkill();
+	
+	bCanInterruptSkill = false;
 }
 
 void ADeltaBaseCharacter::EnableInterrupt()
 {
-	if (!GetMesh()) return;
-	AnimInstance = AnimInstance ? AnimInstance : Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance());
-	if (!AnimInstance) return;
-
-	AnimInstance->EnableInterrupt();
+	bCanInterruptSkill = true;
 }
 
 void ADeltaBaseCharacter::UpdateMotionWarpingTarget()
@@ -146,4 +145,65 @@ TOptional<float> ADeltaBaseCharacter::GetCurrentSkillRange() const
 	if (!CachedSkillData.IsValid()) return TOptional<float>();
 
 	return CachedSkillData->Distance;
+}
+
+TOptional<bool> ADeltaBaseCharacter::IsFirstSection()
+{
+	if (!GetMesh() || !GetMesh()->GetAnimInstance()) return TOptional<bool>();
+
+	AnimInstance = AnimInstance ? AnimInstance : Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+	if (!AnimInstance) return TOptional<bool>();
+
+	UAnimMontage* CurrentMontage = AnimInstance->GetCurrentActiveMontage();
+	if (!CurrentMontage) return TOptional<bool>();
+	
+	int32 CurrentSection = CurrentMontage->GetSectionIndex(AnimInstance->Montage_GetCurrentSection());
+
+	switch (CurrentSection)
+	{
+	case INDEX_NONE:
+		return TOptional<bool>();
+	case 0:
+		return true;
+	default:
+		return false;
+	}
+}
+
+TOptional<float> ADeltaBaseCharacter::GetMontageRemainTime()
+{
+	if (!GetMesh() || !GetMesh()->GetAnimInstance()) return TOptional<float>();
+
+	AnimInstance = AnimInstance ? AnimInstance : Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+	if (!AnimInstance) return TOptional<float>();
+
+	UAnimMontage* CurrentMontage = AnimInstance->GetCurrentActiveMontage();
+	if (!CurrentMontage) return TOptional<float>();
+	
+	return CurrentMontage->GetPlayLength() - AnimInstance->Montage_GetPosition(CurrentMontage);
+}
+
+void ADeltaBaseCharacter::MoveCharacterMesh(const FVector& NewLocation, const float DurationTime)
+{
+	if (!GetMesh()) return;
+
+	CachedMeshLocation = GetMesh()->GetRelativeLocation();
+	GetMesh()->SetRelativeLocation(CachedMeshLocation + NewLocation);
+
+	GetWorld()->GetTimerManager().SetTimer(RestoreMeshTimerHandle, this, &ThisClass::RestoreCharacterMeshLocation, DurationTime, false);
+}
+
+void ADeltaBaseCharacter::SetVisibleMesh(const FName MeshName, const bool bIsVisible)
+{
+	UStaticMeshComponent* SMMesh = Cast<UStaticMeshComponent>(GetDefaultSubobjectByName(MeshName));
+	if (!SMMesh) return;
+
+	SMMesh->SetVisibility(bIsVisible);
+}
+
+void ADeltaBaseCharacter::RestoreCharacterMeshLocation()
+{
+	if (!GetMesh()) return;
+
+	GetMesh()->SetRelativeLocation(CachedMeshLocation);
 }

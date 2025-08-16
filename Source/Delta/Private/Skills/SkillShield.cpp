@@ -16,7 +16,7 @@ void USkillShield::BeginSkill(UCombatComponent* InCombatComponent)
 {
 	Super::BeginSkill(InCombatComponent);
 
-	if (!InCombatComponent || !InCombatComponent->GetOwner() || !InCombatComponent->GetOwner())
+	if (!InCombatComponent || !InCombatComponent->GetOwner())
 	{
 		check(false);
 		return;

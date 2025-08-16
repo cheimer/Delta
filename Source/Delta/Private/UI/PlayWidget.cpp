@@ -95,7 +95,6 @@ void UPlayWidget::ChangeSkillSet(const int BeforeIndex, const int AfterIndex)
 
 	if (BeforeIndex > AfterIndex)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Q Left"));
 		if (SkillChangeAnims.Contains(BeforeIndex) && SkillChangeAnims.Contains(AfterIndex))
 		{
 			if (SkillChangeAnims[BeforeIndex].LeftAnim)
@@ -106,7 +105,6 @@ void UPlayWidget::ChangeSkillSet(const int BeforeIndex, const int AfterIndex)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("E Right"));
 		if (SkillChangeAnims.Contains(BeforeIndex) && SkillChangeAnims.Contains(AfterIndex))
 		{
 			if (SkillChangeAnims[BeforeIndex].RightAnim)

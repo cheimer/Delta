@@ -23,6 +23,7 @@ public:
 
 	virtual void BeginSkill(UCombatComponent* InCombatComponent);
 	virtual void ReactDamaged();
+	virtual void ActInput();
 	virtual void EndSkill();
 
 protected:

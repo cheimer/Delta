@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SkillProjectile.h"
 #include "Skills/SkillBase.h"
 #include "SkillSpitFire.generated.h"
 
@@ -13,28 +14,11 @@ class ADeltaBaseCharacter;
  * 
  */
 UCLASS()
-class DELTA_API USkillSpitFire : public USkillBase
+class DELTA_API USkillSpitFire : public USkillProjectile
 {
 	GENERATED_BODY()
 
 public:
 	USkillSpitFire();
-	
-	virtual void BeginSkill(UCombatComponent* InCombatComponent) override;
-
-protected:
-	TWeakObjectPtr<AProjectileBase> SpawnedProjectile;
-
-private:
-	UPROPERTY(EditAnywhere, Category = "Skill")
-	float SkillDamage = 50;
-	
-	UPROPERTY(EditAnywhere, Category = "Name")
-	FName SpawnSocketName = FName("SpitFireSocket");
-
-	UPROPERTY(EditAnywhere, Category = "Projectile")
-	TSubclassOf<AProjectileBase> FireProjectileClass;
-
-	TWeakObjectPtr<ADeltaBaseCharacter> OwnerDeltaCharacter;
 	
 };

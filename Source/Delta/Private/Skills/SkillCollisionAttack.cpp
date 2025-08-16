@@ -57,4 +57,5 @@ void USkillCollisionAttack::OnTargetOverlap(UPrimitiveComponent* OverlappedCompo
 	OverlappedActors.Add(OtherActor);
 	
 	CombatComponent->ApplySkillDamage(OtherActor, CombatComponent->GetOwner(), SkillDamage);
+	bIsTargetOverlapping = true;
 }

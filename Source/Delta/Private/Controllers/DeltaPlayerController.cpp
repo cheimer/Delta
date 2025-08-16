@@ -40,7 +40,7 @@ void ADeltaPlayerController::LockTargetLost() const
 	}
 }
 
-TArray<const UTexture2D*>& ADeltaPlayerController::GetSkillTextures(int Index)
+TArray<UTexture2D*>& ADeltaPlayerController::GetSkillTextures(int Index)
 {
 	if (ADeltaPlayableCharacter* PlayerCharacter = Cast<ADeltaPlayableCharacter>(GetPawn()))
 	{
@@ -48,7 +48,7 @@ TArray<const UTexture2D*>& ADeltaPlayerController::GetSkillTextures(int Index)
 	}
 	else
 	{
-		static TArray<const UTexture2D*> EmptyArray;
+		static TArray<UTexture2D*> EmptyArray;
 		return EmptyArray;
 	}
 	

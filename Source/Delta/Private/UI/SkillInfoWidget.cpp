@@ -5,7 +5,7 @@
 
 #include "Components/Image.h"
 
-void USkillInfoWidget::SetImages(TArray<const UTexture2D*>& ImageTextures)
+void USkillInfoWidget::SetImages(TArray<UTexture2D*>& ImageTextures)
 {
 	if (ImageTextures.Num() != ImageArray.Num()) return;
 	
@@ -13,7 +13,7 @@ void USkillInfoWidget::SetImages(TArray<const UTexture2D*>& ImageTextures)
 	{
 		if (IsValid(ImageTextures[i]) && IsValid(ImageArray[i]))
 		{
-			ImageArray[i]->SetBrushFromSoftTexture(ImageTextures[i]);
+			ImageArray[i]->SetBrushFromTexture(ImageTextures[i]);
 		}
 	}
 	

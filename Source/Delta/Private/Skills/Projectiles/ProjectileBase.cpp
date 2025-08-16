@@ -48,16 +48,17 @@ void AProjectileBase::OnProjectileOverlap(UPrimitiveComponent* OverlappedCompone
 	{
 		CombatComponent->ApplySkillDamage(OtherActor, GetOwner(), ProjectileDamage);
 
-		if (ProjectileHitVFX->IsValid())
+		if (ProjectileHitVFX)
 		{
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ProjectileHitVFX, GetActorLocation());
 		}
+		Destroy();
 	}
 }
 
 void AProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (ProjectileHitVFX->IsValid())
+	if (ProjectileHitVFX)
 	{
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ProjectileHitVFX, GetActorLocation());
 	}
@@ -67,4 +68,9 @@ void AProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, AActor*
 void AProjectileBase::SetDirection(const FVector& Direction) const
 {
 	ProjectileMovement->Velocity = Direction * ProjectileMovement->Velocity.Size();
+}
+
+void AProjectileBase::SetGravityScale(const float GravityScale)
+{
+	ProjectileMovement->ProjectileGravityScale = GravityScale;
 }

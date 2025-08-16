@@ -38,4 +38,7 @@ protected:
 	UPROPERTY()
 	ADeltaBaseCharacter* OwnerDeltaCharacter;
 
+	bool bIsTargetOverlapping = false;
+	
+
 };
