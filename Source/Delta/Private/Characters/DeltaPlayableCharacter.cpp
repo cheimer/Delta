@@ -10,6 +10,7 @@
 #include "Characters/Enemy/DeltaEnemyCharacter.h"
 #include "Components/CombatComponent.h"
 #include "Components/HealthComponent.h"
+#include "Components/ManaComponent.h"
 #include "Controllers/DeltaPlayerController.h"
 #include "DataAssets/Input/InputDataAsset.h"
 #include "DataAssets/Skill/SkillDataAsset.h"
@@ -113,19 +114,26 @@ void ADeltaPlayableCharacter::Tick(float DeltaTime)
 		}
 	}
 	
-	if (CurrentStatus == EPlayerStatus::WaitingSkill)
+	ADeltaPlayerController* PlayerController = Cast<ADeltaPlayerController>(Controller);
+	if ((CurrentStatus == EPlayerStatus::WaitingSkill || CurrentStatus == EPlayerStatus::Skill) && PlayerController)
 	{
 		WaitingSkillTime += DeltaTime;
 		if (WaitingSkillTime > 0.1f)
 		{
 			WaitingSkillTime = 0.0f;
 			UpdateSkillTarget();
+			
 			if (CurrentSkillTarget.IsValid())
 			{
-				// TODO: Need to add UI.
-				DrawDebugSphere(GetWorld(), CurrentSkillTarget->GetActorLocation(), 300.0f, 32, FColor::Red);
+				bIsTargetUpdate = true;
+				PlayerController->TargetDetected(CurrentSkillTarget.Get());
 			}
 		}
+	}
+	else if (bIsTargetUpdate)
+	{
+		bIsTargetUpdate = false;
+		PlayerController->TargetLost();
 	}
 }
 
@@ -153,17 +161,24 @@ void ADeltaPlayableCharacter::StartWaitingSkill(int KeyIndex)
 {
 	if (CurrentStatus != EPlayerStatus::Default && CurrentStatus != EPlayerStatus::LockTarget) return;
 
-	if (HealthComponent->GetIsDead()) return;
-
 	if (!SkillSetArray.IsValidIndex(CurrentSkillSetIndex)) return;
 	if (!SkillSetArray[CurrentSkillSetIndex].SkillTypes.IsValidIndex(KeyIndex)) return;
 	
-	CachedSkillData = FindSkillDataAsset(SkillSetArray[CurrentSkillSetIndex].SkillTypes[KeyIndex]);
-	if (!CachedSkillData.IsValid()) return;
+	if (HealthComponent->GetIsDead()) return;
+
+	USkillDataAsset* TempSkillData = FindSkillDataAsset(SkillSetArray[CurrentSkillSetIndex].SkillTypes[KeyIndex]);
+	if (!TempSkillData) return;
+	if (!ManaComponent->CanUseSkill(TempSkillData->Cost)) return;
+	
+	CachedSkillData = TempSkillData;
 	
 	CachedStatus = CurrentStatus;
 	CurrentStatus = EPlayerStatus::WaitingSkill;
+	
 	WaitingSkillTime = 1.0f;
+
+	CurrentSkillKeyIndex = KeyIndex;
+	OnSelectSkill.Broadcast(CurrentSkillSetIndex, CurrentSkillKeyIndex, true);
 
 }
 
@@ -189,6 +204,8 @@ void ADeltaPlayableCharacter::CancelWaitingSkill()
 		return;
 
 	CurrentStatus = CachedStatus;
+
+	OnSelectSkill.Broadcast(CurrentSkillSetIndex, CurrentSkillKeyIndex, false);
 
 }
 
@@ -247,6 +264,25 @@ TArray<UTexture2D*>& ADeltaPlayableCharacter::GetSkillTextures(const int Index)
 	return TextureArray;
 }
 
+TArray<int32> ADeltaPlayableCharacter::GetSkillCosts(const int Index)
+{
+	if (!SkillSetArray.IsValidIndex(Index)) return TArray<int32>();
+
+	TArray<int32> CostArray;
+	TArray<EDeltaSkillType> SkillTypes;
+	SkillTypes.Append(SkillSetArray[Index].SkillTypes);
+
+	for (auto SkillType : SkillTypes)
+	{
+		if (USkillDataAsset* SkillData = FindSkillDataAsset(SkillType))
+		{
+			CostArray.Add(SkillData->Cost);
+		}
+	}
+
+	return CostArray;
+}
+
 void ADeltaPlayableCharacter::LookAtCameraCenter()
 {
 	if (!SpringArmComponent) return;
@@ -298,7 +334,7 @@ void ADeltaPlayableCharacter::SetLockTarget(bool bWantsLockOn)
 		ADeltaPlayerController* PlayerController = Cast<ADeltaPlayerController>(Controller);
 		if (CurrentLockTarget.IsValid() && PlayerController)
 		{
-			PlayerController->LockTargetDetected(CurrentLockTarget.Get());
+			PlayerController->TargetDetected(CurrentLockTarget.Get());
 		}
 	}
 	else
@@ -320,7 +356,7 @@ void ADeltaPlayableCharacter::SetLockTarget(bool bWantsLockOn)
 
 		if (ADeltaPlayerController* PlayerController = Cast<ADeltaPlayerController>(Controller))
 		{
-			PlayerController->LockTargetLost();
+			PlayerController->TargetLost();
 		}
 	}
 	

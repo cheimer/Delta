@@ -4,7 +4,9 @@
 #include "UI/PlayWidget.h"
 
 #include "Characters/DeltaBaseCharacter.h"
+#include "Components/ManaComponent.h"
 #include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
 #include "Controllers/DeltaPlayerController.h"
 #include "UI/SkillInfoWidget.h"
 #include "UI/TargetInfoWidget.h"
@@ -22,15 +24,39 @@ void UPlayWidget::NativeConstruct()
 	const APawn* OwnerPawn = GetOwningPlayer() ? Cast<APawn>(GetOwningPlayer()->GetPawn()) : nullptr;
 	if (!OwnerPawn) return;
 
-	if (HealthBar)
+	PlayerController = PlayerController ? PlayerController : Cast<ADeltaPlayerController>(GetOwningPlayer());
+	if (!PlayerController) return;
+
+	if (HealthBar && CurrentHealthText && MaxHealthText)
 	{
-		HealthBar->SetPercent(1.0f);
+		if (UHealthComponent* HealthComp = Cast<UHealthComponent>(OwnerPawn->FindComponentByClass<UHealthComponent>()))
 		{
-			if (UHealthComponent* HealthComp = Cast<UHealthComponent>(OwnerPawn->FindComponentByClass<UHealthComponent>()))
-			{
-				HealthComp->OnHealthChanged.AddDynamic(this, &ThisClass::HandleHealthChanged);
-			}
+			float CurrentHealth =  HealthComp->GetCurrentHealth();
+			float MaxHealth = HealthComp->GetMaxHealth();
+			HandleHealthChanged(CurrentHealth, MaxHealth, false);
+			
+			HealthComp->OnHealthChanged.AddDynamic(this, &ThisClass::HandleHealthChanged);
 		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Health related widget not construct"));
+	}
+	
+	if (ManaBar && CurrentManaText && MaxManaText)
+	{
+		if (UManaComponent* ManaComp = Cast<UManaComponent>(OwnerPawn->FindComponentByClass<UManaComponent>()))
+		{
+			float CurrentMana = ManaComp->GetCurrentMana();
+			float MaxMana = ManaComp->GetMaxMana();
+			HandleManaChanged(CurrentMana, MaxMana);
+			
+			ManaComp->OnManaChanged.AddDynamic(this, &ThisClass::HandleManaChanged);
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Health related widget not construct"));
 	}
 
 	if (TargetInfoWidget)
@@ -44,12 +70,10 @@ void UPlayWidget::NativeConstruct()
 
 	if (!SkillInfoArray.IsEmpty())
 	{
-		if (ADeltaPlayerController* DeltaPC = Cast<ADeltaPlayerController>(GetOwningPlayer()))
+		for (int i = 0; i < SkillInfoArray.Num(); i++)
 		{
-			for (int i = 0; i < SkillInfoArray.Num(); i++)
-			{
-				SkillInfoArray[i]->SetImages(DeltaPC->GetSkillTextures(i));
-			}
+			SkillInfoArray[i]->SetImages(PlayerController->GetSkillTextures(i));
+			SkillInfoArray[i]->SetCostTexts(PlayerController->GetSkillCosts(i));
 		}
 	}
 	
@@ -69,12 +93,22 @@ void UPlayWidget::NativeConstruct()
 	CachedChangeSkillSet2.LeftAnim = SkillChange2To1Anim;
 	SkillChangeAnims.Add(2, CachedChangeSkillSet2);
 	
-	
 }
 
 void UPlayWidget::HandleHealthChanged(float CurrentHealth, float MaxHealth, bool bIsDamaged)
 {
 	HealthBar->SetPercent(CurrentHealth / MaxHealth);
+
+	CurrentHealthText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), CurrentHealth)));
+	MaxHealthText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), MaxHealth)));
+}
+
+void UPlayWidget::HandleManaChanged(float CurrentMana, float MaxMana)
+{
+	ManaBar->SetPercent(CurrentMana / MaxMana);
+	
+	CurrentManaText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), CurrentMana)));
+	MaxManaText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), MaxMana)));
 }
 
 void UPlayWidget::ShowTargetInfo(const AActor* Target) const
@@ -113,4 +147,11 @@ void UPlayWidget::ChangeSkillSet(const int BeforeIndex, const int AfterIndex)
 			}
 		}
 	}
+}
+
+void UPlayWidget::SelectSkill(const int SelectSet, const int SelectIndex, const bool bIsSelect)
+{
+	if (!SkillInfoArray.IsValidIndex(SelectSet)) return;
+
+	SkillInfoArray[SelectSet]->SetSelectImage(SelectIndex, bIsSelect);
 }

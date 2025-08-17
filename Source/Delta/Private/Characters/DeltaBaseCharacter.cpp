@@ -98,8 +98,11 @@ void ADeltaBaseCharacter::PlaySkillAnimation(const EDeltaSkillType SkillType)
 	if (!GetMesh()) return;
 	AnimInstance = AnimInstance ? AnimInstance : Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 	if (!AnimInstance) return;
+	
+	if (!ManaComponent) return;
 
 	AnimInstance->SetAnimMontage(SkillData->AnimMontage);
+	ManaComponent->UseSkill(SkillData->Cost);
 }
 
 void ADeltaBaseCharacter::EndSkillAnimation()

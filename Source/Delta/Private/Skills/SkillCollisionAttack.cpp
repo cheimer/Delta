@@ -33,6 +33,18 @@ void USkillCollisionAttack::BeginSkill(UCombatComponent* InCombatComponent)
 	SkillCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnTargetOverlap);
 	SkillCollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
+	TArray<AActor*> OverlappingActors;
+	SkillCollisionBox->GetOverlappingActors(OverlappingActors);
+	
+	for (auto OverlapActor : OverlappingActors)
+	{
+		if (!OverlappedActors.Contains(OverlapActor))
+		{
+			OverlappedActors.Add(OverlapActor);
+			CombatComponent->ApplySkillDamage(OverlapActor, CombatComponent->GetOwner(), SkillDamage);
+		}
+	}
+
 }
 
 void USkillCollisionAttack::EndSkill()

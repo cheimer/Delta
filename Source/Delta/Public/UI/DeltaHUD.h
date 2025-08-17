@@ -21,9 +21,11 @@ public:
 	void ChangeHUDMode(const EDeltaHUDMode HUDMode);
 	void ChangeWidgetType(const EDeltaWidgetType WidgetType, bool bDoHiddenBefore = true);
 
-	void ShowLockTarget(const AActor* Target) const;
-	void HideLockTarget() const;
+	void ShowTarget(const AActor* Target) const;
+	void HideTarget() const;
+	
 	void ChangeSkillSet(int BeforeIndex, int AfterIndex);
+	void SelectSkill(int SelectSet, int SelectIndex, bool bIsSelect);
 
 protected:
 	virtual void BeginPlay() override;

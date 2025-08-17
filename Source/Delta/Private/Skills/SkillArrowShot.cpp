@@ -16,7 +16,6 @@ void USkillArrowShot::BeginSkill(UCombatComponent* InCombatComponent)
 {
 	Super::BeginSkill(InCombatComponent);
 
-	UE_LOG(LogTemp, Warning, TEXT("roTLqkf"));
 	if (!InCombatComponent) return;
 	if (!SpawnedProjectile.IsValid()) return;
 	
@@ -24,5 +23,6 @@ void USkillArrowShot::BeginSkill(UCombatComponent* InCombatComponent)
 	{
 		SpawnedProjectile->SetActorScale3D(FVector::One() * 3.0f);
 		SpawnedProjectile->SetGravityScale(0.0f);
+		SpawnedProjectile->SetProjectileDamage(SkillDamage * LastSkillDamageMul);
 	}
 }

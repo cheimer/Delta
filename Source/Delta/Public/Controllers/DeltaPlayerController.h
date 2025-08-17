@@ -16,15 +16,22 @@ class DELTA_API ADeltaPlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
-	void LockTargetDetected(AActor* Target) const;
-	void LockTargetLost() const;
+	void TargetDetected(const AActor* Target);
+	void TargetLost();
 
 	TArray<UTexture2D*>& GetSkillTextures(int Index);
+	TArray<int32> GetSkillCosts(int Index);
 
 protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
 	void HandleChangeSkillSet(int BeforeIndex, int AfterIndex);
+
+	UFUNCTION()
+	void HandleSelectSkill(int SelectSet, int SelectIndex, bool bIsSelect);
+
+private:
+	TWeakObjectPtr<ADeltaHUD> DeltaHUD;
 	
 };

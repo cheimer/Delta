@@ -6,6 +6,7 @@
 #include "UI/DeltaBaseWidget.h"
 #include "PlayWidget.generated.h"
 
+class UTextBlock;
 class USkillInfoWidget;
 class UTargetInfoWidget;
 class UProgressBar;
@@ -44,6 +45,7 @@ public:
 	void HideTargetInfo() const;
 
 	void ChangeSkillSet(const int BeforeIndex, const int AfterIndex);
+	void SelectSkill(const int SelectSet, const int SelectIndex, const bool bIsSelect);
 
 protected:
 	virtual void NativePreConstruct() override;
@@ -51,12 +53,22 @@ protected:
 
 	UFUNCTION()
 	void HandleHealthChanged(float CurrentHealth, float MaxHealth, bool bIsDamaged);
+	UFUNCTION()
+	void HandleManaChanged(float CurrentMana, float MaxMana);
 	
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* HealthBar;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* CurrentHealthText;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* MaxHealthText;
 	
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* ManaBar;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* CurrentManaText;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* MaxManaText;
 
 	UPROPERTY(meta = (BindWidget))
 	UTargetInfoWidget* TargetInfoWidget;

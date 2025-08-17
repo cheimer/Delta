@@ -9,6 +9,8 @@
 
 class ADeltaBaseCharacter;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnManaChanged, float, CurrentMana, float, MaxMana);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DELTA_API UManaComponent : public UActorComponent
 {
@@ -17,32 +19,39 @@ class DELTA_API UManaComponent : public UActorComponent
 public:	
 	UManaComponent();
 
+	bool CanUseSkill(const float Amount) const;
 	void UseSkill(const float Amount);
-	
-	void StartManaRecoveryTimer();
-	void StopManaRecoveryTimer();
 
+	FOnManaChanged OnManaChanged;
+	
 protected:
 	virtual void BeginPlay() override;
+	virtual void BeginDestroy() override;
+
+	void SetCurrentMana(const float NewMana);
 
 	void ManaRecoveryOnce();
 	
 private:
-	UPROPERTY(EditAnywhere, Category = "Mana")
+	UPROPERTY(EditAnywhere, Category = "Values")
 	float MaxMana = 10.0f;
 	
-	UPROPERTY(EditAnywhere, Category = "Mana")
-	float ManaRecoveryTime = 0.5f;
-	
+	UPROPERTY(EditAnywhere, Category = "Values")
+	float ManaPerSecond = 0.5f;
+
 	float CurrentMana;
 	FTimerHandle ManaRecoveryTimer;
 	
 	UPROPERTY()
 	ADeltaBaseCharacter* OwnerDeltaCharacter;
 
+	float TickRate = 0.1f;
+
 public:
 #pragma region GetSet
 	float GetCurrentMana() const {return CurrentMana;}
+	float GetMaxMana() const {return MaxMana;}
+	float GetManaPercentage ()const {return CurrentMana / MaxMana;}
 	
 #pragma endregion GetSet
 	

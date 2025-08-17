@@ -23,5 +23,8 @@ public:
 private:
 	UPROPERTY(EditAnywhere, Category = "Values")
 	int32 MaxSkillCount = 4;
+	
+	UPROPERTY(EditAnywhere, Category = "Values")
+	int32 LastSkillDamageMul = 5.0f;
 
 };

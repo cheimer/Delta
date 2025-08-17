@@ -35,5 +35,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Classes")
 	TWeakObjectPtr<UHealthComponent> TargetHealth;
+
+private:
+	TWeakObjectPtr<AActor> TargetActor;
 	
 };

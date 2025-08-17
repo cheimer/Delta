@@ -4,6 +4,40 @@
 #include "UI/SkillInfoWidget.h"
 
 #include "Components/Image.h"
+#include "Components/TextBlock.h"
+
+void USkillInfoWidget::NativePreConstruct()
+{
+	Super::NativePreConstruct();
+
+	ImageArray.Add(SkillImage0);
+	ImageArray.Add(SkillImage1);
+	ImageArray.Add(SkillImage2);
+	for (int i = 0; i < ImageArray.Num(); i++)
+	{
+		if (ImageArray.IsValidIndex(i))
+		{
+			ImageArray[i]->SetDesiredSizeOverride(ImagesSize);
+		}
+	}
+
+	SelectImageArray.Add(SkillSelectImage0);
+	SelectImageArray.Add(SkillSelectImage1);
+	SelectImageArray.Add(SkillSelectImage2);
+	for (int i = 0; i < SelectImageArray.Num(); i++)
+	{
+		if (SelectImageArray.IsValidIndex(i))
+		{
+			SelectImageArray[i]->SetDesiredSizeOverride(ImagesSize);
+			SelectImageArray[i]->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+
+	CostTextArray.Add(SkillCostText0);
+	CostTextArray.Add(SkillCostText1);
+	CostTextArray.Add(SkillCostText2);
+	
+}
 
 void USkillInfoWidget::SetImages(TArray<UTexture2D*>& ImageTextures)
 {
@@ -19,20 +53,20 @@ void USkillInfoWidget::SetImages(TArray<UTexture2D*>& ImageTextures)
 	
 }
 
-void USkillInfoWidget::NativePreConstruct()
+void USkillInfoWidget::SetCostTexts(TArray<int> Costs)
 {
-	Super::NativePreConstruct();
+	if (CostTextArray.Num() != Costs.Num()) return;
 
-	ImageArray.Add(SkillImage0);
-	ImageArray.Add(SkillImage1);
-	ImageArray.Add(SkillImage2);
-	
-	for (int i = 0; i < ImageArray.Num(); i++)
+	for (int i = 0; i < CostTextArray.Num(); i++)
 	{
-		if (ImageArray.IsValidIndex(i))
-		{
-			ImageArray[i]->SetDesiredSizeOverride(ImagesSize);
-		}
+		CostTextArray[i]->SetText(FText::FromString(FString::FromInt(Costs[i])));
 	}
-	
+}
+
+void USkillInfoWidget::SetSelectImage(int Index, bool bIsSelect)
+{
+	if (!SelectImageArray.IsValidIndex(Index)) return;
+
+	ESlateVisibility SelectVisibility = bIsSelect ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+	SelectImageArray[Index]->SetVisibility(SelectVisibility);
 }

@@ -13,31 +13,46 @@ void ADeltaPlayerController::BeginPlay()
 	if (ADeltaPlayableCharacter* PlayerCharacter = Cast<ADeltaPlayableCharacter>(GetPawn()))
 	{
 		PlayerCharacter->OnChangeSkillSet.AddDynamic(this, &ThisClass::HandleChangeSkillSet);
+		PlayerCharacter->OnSelectSkill.AddDynamic(this, &ThisClass::HandleSelectSkill);
 	}
+
+	DeltaHUD = Cast<ADeltaHUD>(GetHUD());
 }
 
 void ADeltaPlayerController::HandleChangeSkillSet(int BeforeIndex, int AfterIndex)
 {
-	if (ADeltaHUD* DeltaHUD = Cast<ADeltaHUD>(GetHUD()))
-	{
-		DeltaHUD->ChangeSkillSet(BeforeIndex, AfterIndex);
-	}
+	DeltaHUD = DeltaHUD.IsValid() ? DeltaHUD.Get() : Cast<ADeltaHUD>(GetHUD());
+	if (!DeltaHUD.IsValid()) return;
+	
+	DeltaHUD->ChangeSkillSet(BeforeIndex, AfterIndex);
+	
 }
 
-void ADeltaPlayerController::LockTargetDetected(AActor* Target) const
+void ADeltaPlayerController::HandleSelectSkill(int SelectSet, int SelectIndex, bool bIsSelect)
 {
-	if (ADeltaHUD* DeltaHUD = Cast<ADeltaHUD>(GetHUD()))
-	{
-		DeltaHUD->ShowLockTarget(Target);
-	}
+	DeltaHUD = DeltaHUD.IsValid() ? DeltaHUD.Get() : Cast<ADeltaHUD>(GetHUD());
+	if (!DeltaHUD.IsValid()) return;
+	
+	DeltaHUD->SelectSkill(SelectSet, SelectIndex, bIsSelect);
+	
 }
 
-void ADeltaPlayerController::LockTargetLost() const
+void ADeltaPlayerController::TargetDetected(const AActor* Target)
 {
-	if (ADeltaHUD* DeltaHUD = Cast<ADeltaHUD>(GetHUD()))
-	{
-		DeltaHUD->HideLockTarget();
-	}
+	DeltaHUD = DeltaHUD.IsValid() ? DeltaHUD : Cast<ADeltaHUD>(GetHUD());
+	if (!DeltaHUD.IsValid()) return;
+	
+	DeltaHUD->ShowTarget(Target);
+	
+}
+
+void ADeltaPlayerController::TargetLost()
+{
+	DeltaHUD = DeltaHUD.IsValid() ? DeltaHUD.Get() : Cast<ADeltaHUD>(GetHUD());
+	if (!DeltaHUD.IsValid()) return;
+	
+	DeltaHUD->HideTarget();
+	
 }
 
 TArray<UTexture2D*>& ADeltaPlayerController::GetSkillTextures(int Index)
@@ -52,4 +67,16 @@ TArray<UTexture2D*>& ADeltaPlayerController::GetSkillTextures(int Index)
 		return EmptyArray;
 	}
 	
+}
+
+TArray<int32> ADeltaPlayerController::GetSkillCosts(int Index)
+{
+	if (ADeltaPlayableCharacter* PlayerCharacter = Cast<ADeltaPlayableCharacter>(GetPawn()))
+	{
+		return PlayerCharacter->GetSkillCosts(Index);
+	}
+	else
+	{
+		return TArray<int32>();
+	}
 }

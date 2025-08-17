@@ -27,6 +27,7 @@ void UTargetInfoWidget::NativeDestruct()
 void UTargetInfoWidget::RegisterInfo(const AActor* Target)
 {
 	if (!IsValid(Target)) return;
+	if (TargetActor.IsValid() && TargetActor == Target) return;
 	
 	if (const ADeltaBaseCharacter* DeltaTarget = Cast<ADeltaBaseCharacter>(Target))
 	{

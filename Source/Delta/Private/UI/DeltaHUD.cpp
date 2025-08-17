@@ -71,7 +71,7 @@ void ADeltaHUD::ChangeWidgetType(const EDeltaWidgetType WidgetType, const bool b
 	
 }
 
-void ADeltaHUD::ShowLockTarget(const AActor* Target) const
+void ADeltaHUD::ShowTarget(const AActor* Target) const
 {
 	if (!DeltaWidgets.Contains(EDeltaWidgetType::Play)) return;
 
@@ -81,7 +81,7 @@ void ADeltaHUD::ShowLockTarget(const AActor* Target) const
 	}
 }
 
-void ADeltaHUD::HideLockTarget() const
+void ADeltaHUD::HideTarget() const
 {
 	if (!DeltaWidgets.Contains(EDeltaWidgetType::Play)) return;
 
@@ -99,4 +99,15 @@ void ADeltaHUD::ChangeSkillSet(int BeforeIndex, int AfterIndex)
 	{
 		PlayWidget->ChangeSkillSet(BeforeIndex, AfterIndex);
 	}
+}
+
+void ADeltaHUD::SelectSkill(int SelectSet, int SelectIndex, bool bIsSelect)
+{
+	if (!DeltaWidgets.Contains(EDeltaWidgetType::Play)) return;
+
+	if (UPlayWidget* PlayWidget = Cast<UPlayWidget>(DeltaWidgets[EDeltaWidgetType::Play]))
+	{
+		PlayWidget->SelectSkill(SelectSet, SelectIndex, bIsSelect);
+	}
+
 }

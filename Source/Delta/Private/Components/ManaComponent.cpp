@@ -19,35 +19,40 @@ void UManaComponent::BeginPlay()
 	Super::BeginPlay();
 
 	OwnerDeltaCharacter = OwnerDeltaCharacter ? OwnerDeltaCharacter : Cast<ADeltaBaseCharacter>(GetOwner());
-	StartManaRecoveryTimer();
+	if (!OwnerDeltaCharacter) return;
 	
+	GetWorld()->GetTimerManager().SetTimer(ManaRecoveryTimer, this, &ThisClass::ManaRecoveryOnce, TickRate, true);
+	
+}
+
+void UManaComponent::BeginDestroy()
+{
+	if (GetWorld() && GetWorld()->GetTimerManager().IsTimerPending(ManaRecoveryTimer))
+	{
+		GetWorld()->GetTimerManager().ClearTimer(ManaRecoveryTimer);
+	}
+	
+	Super::BeginDestroy();
+}
+
+void UManaComponent::SetCurrentMana(const float NewMana)
+{
+	CurrentMana = FMath::Clamp(NewMana, 0.0f, MaxMana);
+	
+	OnManaChanged.Broadcast(CurrentMana, MaxMana);
+}
+
+bool UManaComponent::CanUseSkill(const float Amount) const
+{
+	return CurrentMana > Amount || FMath::IsNearlyEqual(CurrentMana, Amount);
 }
 
 void UManaComponent::UseSkill(const float Amount)
 {
-	CurrentMana = FMath::Clamp(CurrentMana - Amount, 0.0f, MaxMana);
+	SetCurrentMana(CurrentMana - Amount);
 }
-
-void UManaComponent::StartManaRecoveryTimer()
-{
-	if (!GetWorld()) return;
-	
-	GetWorld()->GetTimerManager().SetTimer(ManaRecoveryTimer, this, &ThisClass::ManaRecoveryOnce, ManaRecoveryTime, true);
-}
-
-void UManaComponent::StopManaRecoveryTimer()
-{
-	if (!GetWorld()) return;
-	
-	GetWorld()->GetTimerManager().ClearTimer(ManaRecoveryTimer);
-}
-
 
 void UManaComponent::ManaRecoveryOnce()
 {
-	ADeltaGameState* GameState = GetWorld()->GetGameState<ADeltaGameState>();
-	
-	if (!GameState || GameState->GetIsGamePaused()) return;
-	
-	CurrentMana = FMath::Clamp(CurrentMana + 1.0f, 0.0f, MaxMana);
+	SetCurrentMana(CurrentMana + ManaPerSecond * TickRate);
 }

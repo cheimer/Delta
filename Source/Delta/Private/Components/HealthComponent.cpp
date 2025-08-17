@@ -19,6 +19,7 @@ void UHealthComponent::BeginPlay()
 	OwnerDeltaCharacter = OwnerDeltaCharacter ? OwnerDeltaCharacter : Cast<ADeltaBaseCharacter>(GetOwner());
 	
 	CurrentHealth = MaxHealth;
+	OnHealthChanged.Broadcast(CurrentHealth, MaxHealth, false);
 }
 
 void UHealthComponent::TakeDamage(float Damage)

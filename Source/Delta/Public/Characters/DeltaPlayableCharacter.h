@@ -15,6 +15,7 @@ class USpringArmComponent;
 class USkillBase;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangeSkillSet, int, BeforeIndex, int, AfterIndex);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnSelectSkill, int, SelectSet, int, SelectIndex, bool, bIsSelect);
 
 UENUM(BlueprintType)
 enum class EPlayerStatus : uint8
@@ -59,11 +60,13 @@ public:
 	virtual void EndSkillAnimation() override;
 
 	TArray<UTexture2D*>& GetSkillTextures(const int Index);
+	TArray<int32> GetSkillCosts(const int Index);
 
 	void LookAtCameraCenter();
 	void LookAtForward();
 
 	FOnChangeSkillSet OnChangeSkillSet;
+	FOnSelectSkill OnSelectSkill;
 
 protected:
 	virtual void PossessedBy(AController* NewController) override;
@@ -133,9 +136,11 @@ private:
 	float WaitingSkillTime = 0.0f;
 
 	int CurrentSkillSetIndex = 0;
+	int CurrentSkillKeyIndex = 0;
 
 	double CachedPitch = 0.0f;
 	bool bIsLookingCameraCenter = false;
+	bool bIsTargetUpdate = false;
 	
 #pragma region Components
 	UPROPERTY(VisibleAnywhere, Category = "Components")
