@@ -7,7 +7,7 @@
 
 ## 🎬 데모 영상
 
-<img width="80%" src="[https://user-images.githubusercontent.com/16822641/109461495-913fc480-7aa5-11eb-9d0e-aff762669f98.gif](https://private-user-images.githubusercontent.com/56589691/478758764-52b1cad1-b74c-41fa-a401-517299db503c.gif?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTU0MTg5NjMsIm5iZiI6MTc1NTQxODY2MywicGF0aCI6Ii81NjU4OTY5MS80Nzg3NTg3NjQtNTJiMWNhZDEtYjc0Yy00MWZhLWE0MDEtNTE3Mjk5ZGI1MDNjLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNTA4MTclMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjUwODE3VDA4MTc0M1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWQzNjc0YjJjNjRiYTVkMjMwZGMwYTZhOGY2Nzc3ZDEwYjhmZmExZjJlMTM1NTI4MWY4MTExYmUzYzM5N2YyN2UmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.HqTfEobQxi4Yluu1j4eLk-EnF6oPTL52146-Kk3cO1g)"/>
+<img width="50%" src="https://github.com/user-attachments/assets/52b1cad1-b74c-41fa-a401-517299db503c"/>
 
 
 **주요 시연 내용:**
