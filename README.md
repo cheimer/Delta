@@ -5,6 +5,20 @@
 **Delta**는 Unreal Engine 5.5와 C++로 개발한 3D 액션 RPG 게임입니다. 
 모듈화된 아키텍처와 확장 가능한 시스템 설계에 중점을 두고 개발했습니다.
 
+## 🎬 데모 영상
+
+<img width="80%" src="[https://user-images.githubusercontent.com/16822641/109461495-913fc480-7aa5-11eb-9d0e-aff762669f98.gif](https://private-user-images.githubusercontent.com/56589691/478758764-52b1cad1-b74c-41fa-a401-517299db503c.gif?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTU0MTg5NjMsIm5iZiI6MTc1NTQxODY2MywicGF0aCI6Ii81NjU4OTY5MS80Nzg3NTg3NjQtNTJiMWNhZDEtYjc0Yy00MWZhLWE0MDEtNTE3Mjk5ZGI1MDNjLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNTA4MTclMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjUwODE3VDA4MTc0M1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWQzNjc0YjJjNjRiYTVkMjMwZGMwYTZhOGY2Nzc3ZDEwYjhmZmExZjJlMTM1NTI4MWY4MTExYmUzYzM5N2YyN2UmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.HqTfEobQxi4Yluu1j4eLk-EnF6oPTL52146-Kk3cO1g)"/>
+
+
+**주요 시연 내용:**
+- 다양한 스킬 사용법
+- AI와의 전투 시스템
+- 보스전 페이즈 변화
+- UI 인터랙션
+
+---
+
+
 ### 🎮 주요 특징
 - **다양한 스킬 시스템**: 10여 가지 고유한 스킬 (투사체, 근접공격, 방어 등)
 - **고급 AI 시스템**: Behavior Tree 기반 적응형 AI
