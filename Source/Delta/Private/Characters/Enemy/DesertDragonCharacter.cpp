@@ -6,6 +6,7 @@
 #include "MotionWarpingComponent.h"
 #include "Animations/DeltaCharacterAnimInstance.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/CutSceneComponent.h"
 #include "Components/PhaseComponent.h"
 #include "DataAssets/Skill/SkillDataAsset.h"
 #include "DeltaTypes/DeltaNamespaceTypes.h"
@@ -20,7 +21,7 @@ ADesertDragonCharacter::ADesertDragonCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0, 360.0f, 0);
 
 	PhaseComponent = CreateDefaultSubobject<UPhaseComponent>("PhaseComponent");
-	
+	CutSceneComponent = CreateDefaultSubobject<UCutSceneComponent>("CutSceneComponent");
 
 }
 
@@ -30,7 +31,7 @@ void ADesertDragonCharacter::BeginPlay()
 
 	if (PhaseComponent)
 	{
-		PhaseComponent->OnPhaseChanged.AddDynamic(this, &ThisClass::HandleNextPhase);
+		PhaseComponent->OnPhaseChanged.AddUniqueDynamic(this, &ThisClass::HandleNextPhase);
 	}
 
 }
@@ -46,7 +47,7 @@ void ADesertDragonCharacter::HandleCharacterDeath(AActor* DeathCharacter)
 	GetCharacterMovement()->MovementMode = MOVE_Falling;
 	
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	LandedDelegate.AddDynamic(this, &ThisClass::HandleCharacterLanded);
+	LandedDelegate.AddUniqueDynamic(this, &ThisClass::HandleCharacterLanded);
 
 }
 

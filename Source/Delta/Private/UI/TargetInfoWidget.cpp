@@ -38,7 +38,7 @@ void UTargetInfoWidget::RegisterInfo(const AActor* Target)
 	TargetHealth = Target->FindComponentByClass<UHealthComponent>();
 	if (TargetHealth.IsValid())
 	{
-		TargetHealth->OnHealthChanged.AddDynamic(this, &ThisClass::HandleHealthChanged);
+		TargetHealth->OnHealthChanged.AddUniqueDynamic(this, &ThisClass::HandleHealthChanged);
 		HealthBar->SetPercent(TargetHealth->GetHealthPercentage());
 		HealthBar->SetVisibility(ESlateVisibility::Visible);
 	}
@@ -47,7 +47,7 @@ void UTargetInfoWidget::RegisterInfo(const AActor* Target)
 
 void UTargetInfoWidget::RemoveInfo()
 {
-	if (TargetHealth.IsValid())
+	if (TargetHealth.IsValid() && TargetHealth->OnHealthChanged.IsAlreadyBound(this, &ThisClass::HandleHealthChanged))
 	{
 		TargetHealth->OnHealthChanged.RemoveDynamic(this, &ThisClass::HandleHealthChanged);
 	}

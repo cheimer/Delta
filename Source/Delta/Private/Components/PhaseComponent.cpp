@@ -28,7 +28,6 @@ void UPhaseComponent::BeginPlay()
 		}
 	}
 
-	
 }
 
 void UPhaseComponent::HandleHealthChanged(float CurrentHealth, float MaxHealth, bool bIsDamaged)

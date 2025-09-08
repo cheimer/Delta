@@ -9,6 +9,7 @@
 
 #define DRAGON_SKILL_NUM 8
 
+class UCutSceneComponent;
 class UPhaseComponent;
 class UFloatingPawnMovement;
 /**
@@ -49,6 +50,9 @@ protected:
 #pragma region Components
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UPhaseComponent* PhaseComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UCutSceneComponent* CutSceneComponent;
 
 #pragma endregion Components
 

@@ -4,7 +4,6 @@
 #include "AI/BTDecorator_IsAtSpawnLocation.h"
 
 #include "AIController.h"
-#include "Characters/Enemy/DeltaEnemyCharacter.h"
 #include "Controllers/DeltaAIController.h"
 
 UBTDecorator_IsAtSpawnLocation::UBTDecorator_IsAtSpawnLocation()

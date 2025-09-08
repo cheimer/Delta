@@ -5,8 +5,8 @@
 
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
-#include "Characters/DeltaBaseCharacter.h"
 #include "Components/CombatComponent.h"
+#include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -21,9 +21,9 @@ void USkillRailGun::BeginSkill(UCombatComponent* InCombatComponent)
 	
 	if (!InCombatComponent) return;
 
-	ADeltaBaseCharacter* OwnerDeltaCharacter = Cast<ADeltaBaseCharacter>(InCombatComponent->GetOwner());
-	if (!IsValid(OwnerDeltaCharacter) || !OwnerDeltaCharacter->GetMesh()) return;
-	if (!OwnerDeltaCharacter->GetMesh()->DoesSocketExist(SpawnSocketName))
+	ACharacter* OwnerCharacter = Cast<ACharacter>(InCombatComponent->GetOwner());
+	if (!IsValid(OwnerCharacter) || !OwnerCharacter->GetMesh()) return;
+	if (!OwnerCharacter->GetMesh()->DoesSocketExist(SpawnSocketName))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Cannot find %s. check Character Mesh"), *SpawnSocketName.ToString());
 		return;
@@ -34,8 +34,8 @@ void USkillRailGun::BeginSkill(UCombatComponent* InCombatComponent)
 		return;
 	}
 	
-	FVector SpawnLocation = OwnerDeltaCharacter->GetMesh()->GetSocketLocation(SpawnSocketName);
-	FRotator SpawnRotation = (OwnerDeltaCharacter->GetSkillTargetLocation() - SpawnLocation).Rotation();
+	FVector SpawnLocation = OwnerCharacter->GetMesh()->GetSocketLocation(SpawnSocketName);
+	FRotator SpawnRotation = (InCombatComponent->GetSkillTargetLocation(true) - SpawnLocation).Rotation();
 	
 	SpawnVFX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, RailGunVFX, SpawnLocation, SpawnRotation);
 
@@ -50,7 +50,7 @@ void USkillRailGun::BeginSkill(UCombatComponent* InCombatComponent)
 	TArray<AActor*> DamagedActor;
 	for (auto Hit : HitResults)
 	{
-		if (ADeltaBaseCharacter* HitActor = Cast<ADeltaBaseCharacter>(Hit.GetActor()))
+		if (AActor* HitActor = Cast<AActor>(Hit.GetActor()))
 		{
 			if (InCombatComponent->GetIsOpponent(HitActor) && !DamagedActor.Contains(HitActor))
 			{

@@ -50,6 +50,7 @@ public:
 protected:
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 
 	UFUNCTION()
 	void HandleHealthChanged(float CurrentHealth, float MaxHealth, bool bIsDamaged);

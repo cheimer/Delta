@@ -241,6 +241,7 @@ void ADeltaPlayableCharacter::EndSkillAnimation()
 	Super::EndSkillAnimation();
 	
 	CurrentStatus = CachedStatus;
+	OnSelectSkill.Broadcast(CurrentSkillSetIndex, CurrentSkillKeyIndex, false);
 }
 
 TArray<UTexture2D*>& ADeltaPlayableCharacter::GetSkillTextures(const int Index)

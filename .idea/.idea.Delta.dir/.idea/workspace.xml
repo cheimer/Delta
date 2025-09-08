@@ -9,51 +9,40 @@
   <component name="ChangeListManager">
     <list default="true" id="c074b4c0-ef47-49ba-acd2-e6c7d4e99a18" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Delta.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Delta.dir/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/EnemyCharacters/DesertDragon/Animations/ABP_DesertDragon_Default.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/EnemyCharacters/DesertDragon/Animations/ABP_DesertDragon_Default.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Characters/EnemyCharacters/DesertDragon/BP_Enemy_DesertDragon.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/EnemyCharacters/DesertDragon/BP_Enemy_DesertDragon.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/PlayableCharacters/Phase/BP_Character_Back.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/PlayableCharacters/Phase/BP_Character_Back.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Fly/BP_Skill_FlySpitFire.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Fly/BP_Skill_FlySpitFire.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Ground/BP_Skill_SpitFire.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Ground/BP_Skill_SpitFire.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Ground/BP_Skill_SpreadFire.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Ground/BP_Skill_SpreadFire.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/BP_Skill_Flashes.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/BP_Skill_Flashes.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/BP_Skill_FlyingDisk.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/BP_Skill_FlyingDisk.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/BP_Skill_GroundCrack.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/BP_Skill_GroundCrack.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/EnemyCharacters/DesertDragon/BT_DesertDragon.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/EnemyCharacters/DesertDragon/BT_DesertDragon.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/PlayableCharacters/Phase/Animations/Skill/AM_Skill_GroundCrack.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/PlayableCharacters/Phase/Animations/Skill/AM_Skill_GroundCrack.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/PlayableCharacters/Phase/Animations/Skill/AM_Skill_Railgun.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/PlayableCharacters/Phase/Animations/Skill/AM_Skill_Railgun.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/PlayableCharacters/Phase/Animations/Skill/AM_Skill_Slash.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/PlayableCharacters/Phase/Animations/Skill/AM_Skill_Slash.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Maps/TestMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/TestMap.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Fly/BP_Skill_FlySpreadFire.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Fly/BP_Skill_FlySpreadFire.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/BP_Skill_Lightning.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/BP_Skill_Lightning.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/BP_Skill_MeteorShower.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/BP_Skill_MeteorShower.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/BP_Skill_Railgun.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/BP_Skill_Railgun.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/BP_Skill_Shield.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/BP_Skill_Shield.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/BP_Skill_Slash.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/BP_Skill_Slash.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_ArrowShot.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_ArrowShot.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_Flashes.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_Flashes.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_FlyingDisk.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_FlyingDisk.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_GroundCrack.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_GroundCrack.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_Lightning.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_Lightning.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_MeteorShower.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_MeteorShower.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_RailGun.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_RailGun.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_Shield.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_Shield.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_Slash.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_Slash.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UI/PlayWidgets/WBP_Play.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UI/PlayWidgets/WBP_Play.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UI/PlayWidgets/WBP_SkillInfo.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UI/PlayWidgets/WBP_SkillInfo.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Delta.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/Delta.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/UI/BP_DeltaHUD.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UI/BP_DeltaHUD.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Delta.uproject.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/Delta.uproject.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Delta.Build.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Delta.Build.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/AI/BTDecorator_IsAtSpawnLocation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/AI/BTDecorator_IsAtSpawnLocation.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Characters/DeltaBaseCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Characters/DeltaBaseCharacter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Characters/DeltaPlayableCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Characters/DeltaPlayableCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Components/HealthComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Components/HealthComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Components/ManaComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Components/ManaComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Characters/Enemy/DesertDragonCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Characters/Enemy/DesertDragonCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Components/PhaseComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Components/PhaseComponent.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Controllers/DeltaPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Controllers/DeltaPlayerController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Skills/SkillArrowShot.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Skills/SkillArrowShot.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Skills/SkillCollisionAttack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Skills/SkillCollisionAttack.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/GameModes/DeltaBaseGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/GameModes/DeltaBaseGameMode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Skills/SkillProjectile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Skills/SkillProjectile.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Skills/SkillRailGun.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Skills/SkillRailGun.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Delta/Private/UI/DeltaHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/UI/DeltaHUD.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Delta/Private/UI/PlayWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/UI/PlayWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/UI/SkillInfoWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/UI/SkillInfoWidget.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Delta/Private/UI/TargetInfoWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/UI/TargetInfoWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Characters/DeltaPlayableCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Characters/DeltaPlayableCharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Components/HealthComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Components/HealthComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Components/ManaComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Components/ManaComponent.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Characters/DeltaBaseCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Characters/DeltaBaseCharacter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Characters/Enemy/DesertDragonCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Characters/Enemy/DesertDragonCharacter.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Controllers/DeltaPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Controllers/DeltaPlayerController.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Skills/SkillArrowShot.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Skills/SkillArrowShot.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/GameModes/DeltaBaseGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/GameModes/DeltaBaseGameMode.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Delta/Public/UI/DeltaHUD.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/UI/DeltaHUD.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Delta/Public/UI/PlayWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/UI/PlayWidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/UI/SkillInfoWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/UI/SkillInfoWidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/UI/TargetInfoWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/UI/TargetInfoWidget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/TODOList.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/TODOList.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,9 +68,37 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="cidr-memory-view://0" root0="FORCE_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://9" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Delta/Private/Components/CutSceneComponent.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Developer/AITestSuite/Classes/BehaviorTree/TestBTTask_LatentWithFlags.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Developer/MassEntityTestSuite/Public/MassEntityTestTypes.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Developer/SlateReflector/Private/Widgets/SWidgetReflector.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Editor/DetailCustomizations/Private/MovieSceneSequenceLoopCountCustomization.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Editor/EditorConfig/Private/EditorConfigSubystem.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Editor/MovieSceneTools/Private/AutomatedLevelSequenceCapture.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Editor/SequencerCore/Public/MVVM/ViewModels/ViewModel.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Editor/UnrealEd/Private/ObjectTools.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/AIModule/Classes/AITypes.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/AIModule/Classes/BehaviorTree/BTNode.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Public/Containers/BitArray.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Public/Containers/LockFreeFixedSizeAllocator.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Public/HAL/FMemory.inl" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Public/UObject/ScriptDelegates.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/CoreUObject/Public/UObject/Class.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/CoreUObject/Public/UObject/Object.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/CoreUObject/Public/UObject/ObjectHandle.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/CoreUObject/Public/UObject/UnrealType.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Private/Subsystems/SubsystemCollection.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Public/Subsystems/EngineSubsystem.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Public/Subsystems/Subsystem.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Public/Subsystems/WorldSubsystem.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/LevelSequence/Private/LevelSequencePlayer.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/LevelSequence/Public/LevelSequence.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/LevelSequence/Public/LevelSequenceActor.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/LevelSequence/Public/LevelSequencePlayer.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/MovieScene/Private/Evaluation/MovieSceneRootOverridePath.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/MovieScene/Public/MovieSceneSequencePlayer.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/UMG/Private/UserWidget.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/UMG/Public/Blueprint/UserWidget.h" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -94,23 +111,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;Uproject.Delta.executor&quot;: &quot;Debug&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Uproject.Delta.executor": "Debug",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "editor.preferences.tabs",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="Delta" type="Uproject" factoryName="rider.uproject">
       <configuration_1 setup="1">
@@ -195,8 +212,22 @@
       <updated>1747374379907</updated>
       <workItem from="1747374380957" duration="12000" />
       <workItem from="1755326436553" duration="3693000" />
-      <workItem from="1755390785150" duration="4880000" />
+      <workItem from="1755390785150" duration="10581000" />
+      <workItem from="1755408968304" duration="2536000" />
+      <workItem from="1756895861978" duration="1310000" />
+      <workItem from="1756901195231" duration="1301000" />
+      <workItem from="1756954059813" duration="2060000" />
+      <workItem from="1757295010877" duration="18796000" />
     </task>
+    <task id="LOCAL-00001" summary="Add Mana, Edit TargetInfo">
+      <option name="closed" value="true" />
+      <created>1755396271895</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1755396271895</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -206,6 +237,8 @@
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="Add Mana, Edit TargetInfo" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Mana, Edit TargetInfo" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

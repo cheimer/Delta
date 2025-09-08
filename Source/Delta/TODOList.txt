@@ -1,8 +1,19 @@
-// 할거
+// 한 거
+스킬 쓸 때 딜레이 추가
+적 잡을 때 시네마틱 추가
+
+// 할 거
+시네마틱 도중 움직임 멈추기 -> 입력 관련 컨트롤러로 이동
+
+적 추가, 레벨 추가
+
+UI 강의 보고
+시작, 끝 추가
+
 GameInstance, SaveGame
 
-적 잡을 때 시네마틱 추가 후 연동
+AudioSubsystem
 
-// 필요하면
+// 고민
 Status -> StatusComponent로 관리
-SubSystem - SE, BGM
+동료 캐릭터 추가

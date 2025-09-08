@@ -111,3 +111,8 @@ void ADeltaHUD::SelectSkill(int SelectSet, int SelectIndex, bool bIsSelect)
 	}
 
 }
+
+void ADeltaHUD::SetHudVisibility(const ESlateVisibility Visibility)
+{
+	CurrentWidget->SetVisibility(Visibility);
+}

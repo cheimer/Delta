@@ -4,6 +4,7 @@
 #include "Controllers/DeltaPlayerController.h"
 
 #include "Characters/DeltaPlayableCharacter.h"
+#include "Components/SlateWrapperTypes.h"
 #include "UI/DeltaHUD.h"
 
 void ADeltaPlayerController::BeginPlay()
@@ -79,4 +80,13 @@ TArray<int32> ADeltaPlayerController::GetSkillCosts(int Index)
 	{
 		return TArray<int32>();
 	}
+}
+
+void ADeltaPlayerController::SetHudVisible(const bool bIsVisible)
+{
+	DeltaHUD = DeltaHUD.IsValid() ? DeltaHUD.Get() : Cast<ADeltaHUD>(GetHUD());
+	if (!DeltaHUD.IsValid()) return;
+	
+	DeltaHUD->SetHudVisibility(bIsVisible ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	
 }

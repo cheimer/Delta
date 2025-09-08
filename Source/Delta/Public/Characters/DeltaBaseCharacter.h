@@ -48,6 +48,9 @@ public:
 	void MoveCharacterMesh(const FVector& NewLocation, const float DurationTime);
 
 	void SetVisibleMesh(const FName MeshName, const bool bIsVisible);
+
+	bool BeginAttackDilation(const float MaxDuration, const float TimeDilation);
+	void EndAttackDilation();
 	
 	FOnCharacterDeath OnCharacterDeath;
 	

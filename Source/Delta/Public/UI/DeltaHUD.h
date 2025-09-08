@@ -27,6 +27,8 @@ public:
 	void ChangeSkillSet(int BeforeIndex, int AfterIndex);
 	void SelectSkill(int SelectSet, int SelectIndex, bool bIsSelect);
 
+	void SetHudVisibility(const ESlateVisibility Visibility);
+
 protected:
 	virtual void BeginPlay() override;
 

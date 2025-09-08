@@ -13,6 +13,7 @@
 #include "DataAssets/Skill/SkillDataAsset.h"
 #include "DeltaTypes/DeltaNamespaceTypes.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Subsystem/HitStopSubsystem.h"
 
 ADeltaBaseCharacter::ADeltaBaseCharacter()
 {
@@ -57,6 +58,7 @@ void ADeltaBaseCharacter::HandleCharacterDeath(AActor* DeathActor)
 	AnimInstance = AnimInstance ? AnimInstance : Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 	if (!AnimInstance) return;
 
+	AnimInstance->StopAllMontages(0.5f);
 	AnimInstance->SetBoolValue(AnimValue::IsDeath, true);
 }
 
@@ -202,6 +204,27 @@ void ADeltaBaseCharacter::SetVisibleMesh(const FName MeshName, const bool bIsVis
 	if (!SMMesh) return;
 
 	SMMesh->SetVisibility(bIsVisible);
+}
+
+bool ADeltaBaseCharacter::BeginAttackDilation(const float MaxDuration, const float TimeDilation)
+{
+	if (!GetWorld()) return false;
+
+	UHitStopSubsystem* HitStopSubsystem = GetWorld()->GetSubsystem<UHitStopSubsystem>();
+	if (!HitStopSubsystem) return false;
+
+	return HitStopSubsystem->StartHitStop(MaxDuration, TimeDilation, EHitStopPriority::Player);
+}
+
+void ADeltaBaseCharacter::EndAttackDilation()
+{
+	if (!GetWorld()) return;
+
+	UHitStopSubsystem* HitStopSubsystem = GetWorld()->GetSubsystem<UHitStopSubsystem>();
+	if (!HitStopSubsystem) return;
+	
+	HitStopSubsystem->EndHitStop();
+	
 }
 
 void ADeltaBaseCharacter::RestoreCharacterMeshLocation()

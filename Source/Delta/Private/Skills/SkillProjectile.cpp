@@ -3,8 +3,8 @@
 
 #include "Skills/SkillProjectile.h"
 
-#include "Characters/DeltaBaseCharacter.h"
 #include "Components/CombatComponent.h"
+#include "GameFramework/Character.h"
 #include "Skills/Projectiles/ProjectileBase.h"
 
 void USkillProjectile::BeginSkill(UCombatComponent* InCombatComponent)
@@ -13,19 +13,19 @@ void USkillProjectile::BeginSkill(UCombatComponent* InCombatComponent)
 
 	if (!InCombatComponent || !InCombatComponent->GetOwner() || !ProjectileClass) return;
 
-	ADeltaBaseCharacter* OwnerDeltaCharacter = Cast<ADeltaBaseCharacter>(InCombatComponent->GetOwner());
-	if (!IsValid(OwnerDeltaCharacter) || !OwnerDeltaCharacter->GetMesh()) return;
-	if (!OwnerDeltaCharacter->GetMesh()->DoesSocketExist(SpawnSocketName))
+	ACharacter* OwnerCharacter = Cast<ACharacter>(InCombatComponent->GetOwner());
+	if (!IsValid(OwnerCharacter) || !OwnerCharacter->GetMesh()) return;
+	if (!OwnerCharacter->GetMesh()->DoesSocketExist(SpawnSocketName))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Cannot find %s. check Character Mesh"), *SpawnSocketName.ToString());
 		return;
 	}
 	
 	FTransform SpawnTransform = FTransform::Identity;
-	SpawnTransform.SetLocation(OwnerDeltaCharacter->GetMesh()->GetSocketLocation(SpawnSocketName));
-	SpawnTransform.SetRotation(OwnerDeltaCharacter->GetActorRotation().Quaternion());
+	SpawnTransform.SetLocation(OwnerCharacter->GetMesh()->GetSocketLocation(SpawnSocketName));
+	SpawnTransform.SetRotation(OwnerCharacter->GetActorRotation().Quaternion());
 
-	SpawnedProjectile = GetWorld()->SpawnActorDeferred<AProjectileBase>(ProjectileClass, SpawnTransform, OwnerDeltaCharacter);
+	SpawnedProjectile = GetWorld()->SpawnActorDeferred<AProjectileBase>(ProjectileClass, SpawnTransform, OwnerCharacter);
 	if (!SpawnedProjectile.Get()) return;
 	
 	SpawnedProjectile->SetProjectileDamage(SkillDamage);

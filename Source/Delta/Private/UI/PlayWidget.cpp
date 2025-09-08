@@ -35,7 +35,7 @@ void UPlayWidget::NativeConstruct()
 			float MaxHealth = HealthComp->GetMaxHealth();
 			HandleHealthChanged(CurrentHealth, MaxHealth, false);
 			
-			HealthComp->OnHealthChanged.AddDynamic(this, &ThisClass::HandleHealthChanged);
+			HealthComp->OnHealthChanged.AddUniqueDynamic(this, &ThisClass::HandleHealthChanged);
 		}
 	}
 	else
@@ -51,7 +51,7 @@ void UPlayWidget::NativeConstruct()
 			float MaxMana = ManaComp->GetMaxMana();
 			HandleManaChanged(CurrentMana, MaxMana);
 			
-			ManaComp->OnManaChanged.AddDynamic(this, &ThisClass::HandleManaChanged);
+			ManaComp->OnManaChanged.AddUniqueDynamic(this, &ThisClass::HandleManaChanged);
 		}
 	}
 	else
@@ -93,6 +93,29 @@ void UPlayWidget::NativeConstruct()
 	CachedChangeSkillSet2.LeftAnim = SkillChange2To1Anim;
 	SkillChangeAnims.Add(2, CachedChangeSkillSet2);
 	
+}
+
+void UPlayWidget::NativeDestruct()
+{
+	if (const APawn* OwnerPawn = GetOwningPlayer() ? Cast<APawn>(GetOwningPlayer()->GetPawn()) : nullptr)
+	{
+		if (UHealthComponent* HealthComp = Cast<UHealthComponent>(OwnerPawn->FindComponentByClass<UHealthComponent>()))
+		{
+			if (HealthComp->OnHealthChanged.IsAlreadyBound(this, &ThisClass::HandleHealthChanged))
+			{
+				HealthComp->OnHealthChanged.RemoveDynamic(this, &ThisClass::HandleHealthChanged);
+			}
+		}
+		if (UManaComponent* ManaComp = Cast<UManaComponent>(OwnerPawn->FindComponentByClass<UManaComponent>()))
+		{
+			if (ManaComp->OnManaChanged.IsAlreadyBound(this, &ThisClass::HandleManaChanged))
+			{
+				ManaComp->OnManaChanged.RemoveDynamic(this, &ThisClass::HandleManaChanged);
+			}
+		}
+	}
+
+	Super::NativeDestruct();
 }
 
 void UPlayWidget::HandleHealthChanged(float CurrentHealth, float MaxHealth, bool bIsDamaged)

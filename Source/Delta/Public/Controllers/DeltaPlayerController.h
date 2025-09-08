@@ -22,6 +22,8 @@ public:
 	TArray<UTexture2D*>& GetSkillTextures(int Index);
 	TArray<int32> GetSkillCosts(int Index);
 
+	void SetHudVisible(const bool bIsVisible);
+
 protected:
 	virtual void BeginPlay() override;
 
