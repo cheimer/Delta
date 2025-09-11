@@ -24,6 +24,7 @@ public:
 
 	void SetHudVisible(const bool bIsVisible);
 
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -35,5 +36,14 @@ protected:
 
 private:
 	TWeakObjectPtr<ADeltaHUD> DeltaHUD;
+
+	bool bIsInputEnable = true;
+
+public:
+#pragma region GetSet
+	void SetInputEnable(const bool InInputEnable) {bIsInputEnable = InInputEnable;}
+	bool GetInputEnable() const {return bIsInputEnable;}
+
+#pragma endregion GetSet
 	
 };

@@ -49,12 +49,12 @@ void UCutSceneComponent::StartCutScene(const ECutSceneType SceneType)
 			{
 				if (bHideHUD)
 				{
-					PlayerController->SetHudVisible(!bHideHUD);
+					PlayerController->SetHudVisible(false);
 				}
 
 				if (bDisableInput)
 				{
-					// TODO
+					PlayerController->SetInputEnable(false);
 				}
 			}
 		}
@@ -80,7 +80,7 @@ void UCutSceneComponent::EndCutScene()
 		
 		if (bDisableInput)
 		{
-			// TODO
+			PlayerController->SetInputEnable(true);
 		}
 	}
 	

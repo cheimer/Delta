@@ -14,6 +14,8 @@ enum class EDeltaSkillState : uint8
 	//Enemy
 	DesertDragon_Ground,
 	DesertDragon_Fly,
+
+	WoodMon,
 	
 	Max UMETA(Hidden)
 };
@@ -45,6 +47,13 @@ enum class EDeltaSkillType : uint8
 	SpreadFire UMETA(DisplayName = "SpreadFire"),
 	FlySpitFire UMETA(DisplayName = "FlySpitFire"),
 	FlySpreadFire UMETA(DisplayName = "FlySpreadFire"),
+
+	//Wood Mon
+	Swing UMETA(DisplayName = "Swing"),
+	BlowAway UMETA(DisplayName = "BlowAway"),
+	ThrowRock UMETA(DisplayName = "ThrowRock"),
+	TreeBloom UMETA(DisplayName = "TreeBloom"),
+	ForestBoom UMETA(DisplayName = "ForestBoom"),
 	
 	Max UMETA(Hidden)
 };

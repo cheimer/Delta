@@ -22,6 +22,7 @@ public:
 	void BeginSkill(const TSubclassOf<USkillBase>& SkillClass);
 	void EndSkill();
 	void ReleaseSkill();
+	void CancelSkill(float BlendOutTime);
 
 	void ApplySkillDamage(AActor* DamagedActor, AActor* DamageCauser, const float SkillDamage);
 
@@ -35,6 +36,8 @@ public:
 	TOptional<bool> IsFirstSection();
 	
 	void MoveCharacterMesh(const FVector& NewLocation);
+
+	void ApplyKnockback(AActor* TargetActor, const FVector& ImpulseForce);
 
 protected:
 	virtual void BeginPlay() override;

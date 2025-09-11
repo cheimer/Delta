@@ -56,7 +56,8 @@ void ADeltaPlayableCharacter::PossessedBy(AController* NewController)
 	
 	if(HasAuthority())
 	{
-		if(const APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+		PlayerController = Cast<ADeltaPlayerController>(GetController());
+		if(PlayerController.IsValid())
 		{
 			if(UEnhancedInputLocalPlayerSubsystem* Subsystem =
 				ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -65,6 +66,7 @@ void ADeltaPlayableCharacter::PossessedBy(AController* NewController)
 			}
 		}
 	}
+
 }
 
 void ADeltaPlayableCharacter::BeginPlay()
@@ -76,7 +78,8 @@ void ADeltaPlayableCharacter::BeginPlay()
 	
 	if(!HasAuthority())
 	{
-		if(const APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+		PlayerController = Cast<ADeltaPlayerController>(GetController());
+		if(PlayerController.IsValid())
 		{
 			if(UEnhancedInputLocalPlayerSubsystem* Subsystem =
 				ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -91,6 +94,9 @@ void ADeltaPlayableCharacter::BeginPlay()
 void ADeltaPlayableCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
+	if (!PlayerController.IsValid()) return;
 	
 	if (!FMath::IsNearlyEqual(SpringArmComponent->TargetArmLength, TargetArmLengthGoTo))
 	{
@@ -113,9 +119,8 @@ void ADeltaPlayableCharacter::Tick(float DeltaTime)
 			SetLockTarget(false);
 		}
 	}
-	
-	ADeltaPlayerController* PlayerController = Cast<ADeltaPlayerController>(Controller);
-	if ((CurrentStatus == EPlayerStatus::WaitingSkill || CurrentStatus == EPlayerStatus::Skill) && PlayerController)
+
+	if ((CurrentStatus == EPlayerStatus::WaitingSkill || CurrentStatus == EPlayerStatus::Skill))
 	{
 		WaitingSkillTime += DeltaTime;
 		if (WaitingSkillTime > 0.1f)
@@ -317,6 +322,9 @@ void ADeltaPlayableCharacter::LookAtForward()
 
 void ADeltaPlayableCharacter::SetLockTarget(bool bWantsLockOn)
 {
+	PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
+	if (!PlayerController.IsValid()) return;
+	
 	if (bWantsLockOn)
 	{
 		if (CurrentStatus == EPlayerStatus::Skill || CurrentStatus == EPlayerStatus::WaitingSkill)
@@ -332,8 +340,7 @@ void ADeltaPlayableCharacter::SetLockTarget(bool bWantsLockOn)
 		
 		UpdateLockTarget();
 
-		ADeltaPlayerController* PlayerController = Cast<ADeltaPlayerController>(Controller);
-		if (CurrentLockTarget.IsValid() && PlayerController)
+		if (CurrentLockTarget.IsValid())
 		{
 			PlayerController->TargetDetected(CurrentLockTarget.Get());
 		}
@@ -355,10 +362,7 @@ void ADeltaPlayableCharacter::SetLockTarget(bool bWantsLockOn)
 		
 		CurrentLockTarget = nullptr;
 
-		if (ADeltaPlayerController* PlayerController = Cast<ADeltaPlayerController>(Controller))
-		{
-			PlayerController->TargetLost();
-		}
+		PlayerController->TargetLost();
 	}
 	
 }
@@ -419,7 +423,10 @@ void ADeltaPlayableCharacter::HandleCharacterDeath(AActor* DeathActor)
 
 void ADeltaPlayableCharacter::Move(const FInputActionValue& Value)
 {
-	if (HealthComponent->GetIsDead()) return;
+	PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
+	if (!PlayerController.IsValid() || !PlayerController->GetInputEnable()) return;
+	
+	if (!GetWorld() || HealthComponent->GetIsDead()) return;
 
 	if (CurrentStatus == EPlayerStatus::Skill && !bCanInterruptSkill) return;
 
@@ -456,6 +463,9 @@ void ADeltaPlayableCharacter::Move(const FInputActionValue& Value)
 
 void ADeltaPlayableCharacter::Look(const FInputActionValue& Value)
 {
+	PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
+	if (!PlayerController.IsValid() || !PlayerController->GetInputEnable()) return;
+	
 	const FVector2D LookAxisVector = Value.Get<FVector2D>();
 
 	bool bCanLookUp = CurrentStatus == EPlayerStatus::Default ||
@@ -476,6 +486,9 @@ void ADeltaPlayableCharacter::Look(const FInputActionValue& Value)
 
 void ADeltaPlayableCharacter::Scroll(const FInputActionValue& Value)
 {
+	PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
+	if (!PlayerController.IsValid() || !PlayerController->GetInputEnable()) return;
+	
 	const float ScrollValue = Value.Get<float>();
 
 	if (ScrollValue > 0.0f)
@@ -491,6 +504,9 @@ void ADeltaPlayableCharacter::Scroll(const FInputActionValue& Value)
 
 void ADeltaPlayableCharacter::LockTarget(const FInputActionValue& Value)
 {
+	PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
+	if (!PlayerController.IsValid() || !PlayerController->GetInputEnable()) return;
+	
 	if (HealthComponent->GetIsDead() || bIsLookingCameraCenter) return;
 
 	switch (CurrentStatus)
@@ -518,6 +534,9 @@ void ADeltaPlayableCharacter::LockTarget(const FInputActionValue& Value)
 
 void ADeltaPlayableCharacter::Execute(const FInputActionValue& Value)
 {
+	PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
+	if (!PlayerController.IsValid() || !PlayerController->GetInputEnable()) return;
+	
 	switch (CurrentStatus)
 	{
 	case EPlayerStatus::Default:
@@ -543,6 +562,9 @@ void ADeltaPlayableCharacter::Execute(const FInputActionValue& Value)
 
 void ADeltaPlayableCharacter::Parrying(const FInputActionValue& Value)
 {
+	PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
+	if (!PlayerController.IsValid() || !PlayerController->GetInputEnable()) return;
+	
 	switch (CurrentStatus)
 	{
 	case EPlayerStatus::Default:
@@ -560,26 +582,41 @@ void ADeltaPlayableCharacter::Parrying(const FInputActionValue& Value)
 
 void ADeltaPlayableCharacter::SkillFirst(const FInputActionValue& Value)
 {
+	PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
+	if (!PlayerController.IsValid() || !PlayerController->GetInputEnable()) return;
+	
 	StartWaitingSkill(0);
 }
 
 void ADeltaPlayableCharacter::SkillSecond(const FInputActionValue& Value)
 {
+	PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
+	if (!PlayerController.IsValid() || !PlayerController->GetInputEnable()) return;
+	
 	StartWaitingSkill(1);
 }
 
 void ADeltaPlayableCharacter::SkillThird(const FInputActionValue& Value)
 {
+	PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
+	if (!PlayerController.IsValid() || !PlayerController->GetInputEnable()) return;
+	
 	StartWaitingSkill(2);
 }
 
 void ADeltaPlayableCharacter::SkillBefore(const FInputActionValue& Value)
 {
+	PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
+	if (!PlayerController.IsValid() || !PlayerController->GetInputEnable()) return;
+	
 	ChangeSkillList(false);
 }
 
 void ADeltaPlayableCharacter::SkillNext(const FInputActionValue& Value)
 {
+	PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
+	if (!PlayerController.IsValid() || !PlayerController->GetInputEnable()) return;
+	
 	ChangeSkillList(true);
 }
 

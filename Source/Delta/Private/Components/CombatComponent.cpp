@@ -5,6 +5,7 @@
 
 #include "Characters/DeltaBaseCharacter.h"
 #include "Characters/DeltaPlayableCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Skills/SkillBase.h"
 
@@ -27,9 +28,6 @@ void UCombatComponent::BeginSkill(const TSubclassOf<USkillBase>& SkillClass)
 {
 	if (!SkillClass) return;
 
-	OwnerDeltaCharacter = OwnerDeltaCharacter ? OwnerDeltaCharacter : Cast<ADeltaBaseCharacter>(GetOwner());
-	if (!OwnerDeltaCharacter) return;
-
 	if (USkillBase* Skill = NewObject<USkillBase>(this, SkillClass))
 	{
 		CachedSkill = Skill;
@@ -50,6 +48,21 @@ void UCombatComponent::ReleaseSkill()
 {
 	CachedSkill = nullptr;
 	CurrentSkillCount = 0;
+}
+
+void UCombatComponent::CancelSkill(float BlendOutTime)
+{
+	OwnerDeltaCharacter = OwnerDeltaCharacter ? OwnerDeltaCharacter : Cast<ADeltaBaseCharacter>(GetOwner());
+	if (!OwnerDeltaCharacter || !OwnerDeltaCharacter->GetMesh() || !OwnerDeltaCharacter->GetMesh()->GetAnimInstance()) return;
+
+	EndSkill();
+	ReleaseSkill();
+
+	UAnimInstance* OwnerAnimIns = OwnerDeltaCharacter->GetMesh()->GetAnimInstance();
+	if (OwnerAnimIns->IsAnyMontagePlaying())
+	{
+		OwnerAnimIns->Montage_Stop(BlendOutTime);
+	}
 }
 
 void UCombatComponent::ApplySkillDamage(AActor* DamagedActor, AActor* DamageCauser, const float SkillDamage)
@@ -109,6 +122,14 @@ void UCombatComponent::MoveCharacterMesh(const FVector& NewLocation)
 	if (!OwnerDeltaCharacter) return;
 
 	OwnerDeltaCharacter->MoveCharacterMesh(NewLocation, OwnerDeltaCharacter->GetMontageRemainTime().Get(0.0f) - 0.1f);
+}
+
+void UCombatComponent::ApplyKnockback(AActor* TargetActor, const FVector& ImpulseForce)
+{
+	ACharacter* TargetCharacter = Cast<ACharacter>(TargetActor);
+	if (!TargetCharacter || !TargetCharacter->GetCharacterMovement()) return;
+	
+	TargetCharacter->GetCharacterMovement()->AddImpulse(ImpulseForce, true);
 }
 
 TOptional<bool> UCombatComponent::GetIsOpponent(const AActor* CheckActor)

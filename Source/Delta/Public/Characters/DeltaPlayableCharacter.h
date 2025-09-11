@@ -8,6 +8,7 @@
 #include "DeltaTypes/DeltaEnumTypes.h"
 #include "DeltaPlayableCharacter.generated.h"
 
+class ADeltaPlayerController;
 class USkillDataAsset;
 class UInputDataAsset;
 class UCameraComponent;
@@ -141,6 +142,8 @@ private:
 	double CachedPitch = 0.0f;
 	bool bIsLookingCameraCenter = false;
 	bool bIsTargetUpdate = false;
+
+	TWeakObjectPtr<ADeltaPlayerController> PlayerController;
 	
 #pragma region Components
 	UPROPERTY(VisibleAnywhere, Category = "Components")
