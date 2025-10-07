@@ -59,9 +59,10 @@ enum class EDeltaSkillType : uint8
 };
 ENUM_RANGE_BY_COUNT(EDeltaSkillType, EDeltaSkillType::Max);
 
-//////////////////////////////
-/// UI
-//////////////////////////////
+///////////
+/// UI	
+///////////
+
 UENUM(BlueprintType)
 enum class EDeltaHUDMode : uint8
 {
@@ -84,4 +85,34 @@ enum class EDeltaWidgetType : uint8
 	Pause,
 	Lose,
 	Win
+};
+
+UENUM(BlueprintType)
+enum class EDeltaConfirmType : uint8
+{
+	OK,
+	YesNo,
+	OKCancel,
+	
+	Unknown UMETA(Hidden)
+};
+
+UENUM(BlueprintType)
+enum class EDeltaConfirmButtonType : uint8
+{
+	Confirmed,
+	Cancelled,
+	Closed,
+	
+	Unknown UMETA(Hidden)
+};
+
+UENUM(BlueprintType)
+enum class EDeltaOptionsListDataModifyReasonType : uint8
+{
+	DirectlyModified,
+	DependencyModified,
+	ResetToDefault,
+	
+	Unknown UMETA(Hidden)
 };

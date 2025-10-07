@@ -12,7 +12,9 @@
 				"Engine",
 				"CoreUObject",
 				"AIModule",
-				"UMG"
+				"UMG",
+				"CommonUI",
+				"DeveloperSettings"
 			]
 		}
 	],
@@ -34,6 +36,14 @@
 		},
 		{
 			"Name": "MotionWarping",
+			"Enabled": true
+		},
+		{
+			"Name": "CommonUI",
+			"Enabled": true
+		},
+		{
+			"Name": "MediaMovieStreamer",
 			"Enabled": true
 		}
 	]

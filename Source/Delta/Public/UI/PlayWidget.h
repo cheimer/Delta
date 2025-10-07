@@ -56,7 +56,8 @@ protected:
 	void HandleHealthChanged(float CurrentHealth, float MaxHealth, bool bIsDamaged);
 	UFUNCTION()
 	void HandleManaChanged(float CurrentMana, float MaxMana);
-	
+
+#pragma region Bindings
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* HealthBar;
 	UPROPERTY(meta = (BindWidget))
@@ -89,6 +90,8 @@ protected:
 	UWidgetAnimation* SkillChange1To0Anim;
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	UWidgetAnimation* SkillChange2To1Anim;
+
+#pragma endregion Bindings
 
 private:
 	UPROPERTY()

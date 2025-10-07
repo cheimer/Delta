@@ -138,14 +138,16 @@ TOptional<bool> UCombatComponent::GetIsOpponent(const AActor* CheckActor)
 	if (!OwnerDeltaCharacter) return TOptional<bool>();
 	if (!IsValid(CheckActor)) return TOptional<bool>();
 
-	if (OwnerDeltaCharacter->GetClass() != CheckActor->GetClass())
-	{
-		return true;
-	}
-	else
+	UClass* OwnerClass = OwnerDeltaCharacter->GetClass();
+	UClass* CheckClass = CheckActor->GetClass();
+	
+	if (OwnerClass == CheckClass || OwnerClass->IsChildOf(CheckClass) || CheckClass->IsChildOf(OwnerClass))
 	{
 		return false;
 	}
+
+	return true;
+	
 }
 
 void UCombatComponent::GetTargetTraceChannel(TArray<TEnumAsByte<EObjectTypeQuery>>& OutObjectTypes)

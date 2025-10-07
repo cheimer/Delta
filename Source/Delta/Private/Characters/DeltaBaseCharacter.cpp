@@ -210,7 +210,7 @@ bool ADeltaBaseCharacter::BeginAttackDilation(const float MaxDuration, const flo
 {
 	if (!GetWorld()) return false;
 
-	UHitStopSubsystem* HitStopSubsystem = GetWorld()->GetSubsystem<UHitStopSubsystem>();
+	UHitStopSubsystem* HitStopSubsystem = UHitStopSubsystem::Get(GetWorld());
 	if (!HitStopSubsystem) return false;
 
 	return HitStopSubsystem->StartHitStop(MaxDuration, TimeDilation, EHitStopPriority::Player);
@@ -220,7 +220,7 @@ void ADeltaBaseCharacter::EndAttackDilation()
 {
 	if (!GetWorld()) return;
 
-	UHitStopSubsystem* HitStopSubsystem = GetWorld()->GetSubsystem<UHitStopSubsystem>();
+	UHitStopSubsystem* HitStopSubsystem = UHitStopSubsystem::Get(GetWorld());
 	if (!HitStopSubsystem) return;
 	
 	HitStopSubsystem->EndHitStop();

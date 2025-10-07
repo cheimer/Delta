@@ -17,6 +17,7 @@
 #include "DeltaTypes/DeltaNamespaceTypes.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Helper/DeltaDebugHelper.h"
 #include "Kismet/GameplayStatics.h"
 
 ADeltaPlayableCharacter::ADeltaPlayableCharacter()
@@ -431,8 +432,8 @@ void ADeltaPlayableCharacter::Move(const FInputActionValue& Value)
 	if (CurrentStatus == EPlayerStatus::Skill && !bCanInterruptSkill) return;
 
 	const FVector2D MovementVector = Value.Get<FVector2D>();
+	
 	FRotator MovementRotation;
-
 	EPlayerStatus CheckStatus = (CurrentStatus == EPlayerStatus::Skill || CurrentStatus == EPlayerStatus::WaitingSkill) ? CachedStatus : CurrentStatus;
 	if (CheckStatus == EPlayerStatus::Default)
 	{
@@ -447,13 +448,13 @@ void ADeltaPlayableCharacter::Move(const FInputActionValue& Value)
 		UE_LOG(LogTemp, Warning, TEXT("Undefined status. Check Move Func"));
 	}
 	
-	if (MovementVector.Y != 0.0f)
+	if (MovementVector.Y > 0.2f || MovementVector.Y < -0.2f)
 	{
 		const FVector ForwardDirection = MovementRotation.RotateVector(FVector::ForwardVector);
 
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 	}
-	if (MovementVector.X != 0.0f)
+	if (MovementVector.X > 0.2f || MovementVector.X < -0.2f)
 	{
 		const FVector RightDirection = MovementRotation.RotateVector(FVector::RightVector);
 
@@ -473,11 +474,11 @@ void ADeltaPlayableCharacter::Look(const FInputActionValue& Value)
 
 	if (bCanLookUp)
 	{
-		if (LookAxisVector.X != 0.0f)
+		if (LookAxisVector.X > 0.2f || LookAxisVector.X < -0.2f)
 		{
 			AddControllerYawInput(LookAxisVector.X);
 		}
-		if (LookAxisVector.Y != 0.0f)
+		if (LookAxisVector.Y > 0.2f || LookAxisVector.Y < -0.2f)
 		{
 			AddControllerPitchInput(LookAxisVector.Y);
 		}

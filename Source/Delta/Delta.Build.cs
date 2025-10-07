@@ -18,7 +18,11 @@ public class Delta : ModuleRules
 			
 			"UMG",
 			"Niagara",
+			"Slate",
 			"SlateCore",
+			"CommonUI",
+			"CommonInput",
+			
 			"MotionWarping",
 			
 			"AIModule",
@@ -26,10 +30,16 @@ public class Delta : ModuleRules
 			"GameplayTasks",
 			
 			"LevelSequence",
-			"MovieScene"
+			"MovieScene",
+			
+			"GameplayTags",
+			
+			"PropertyPath",
+			
+			"PreLoadScreen"
 		});
 
-		PrivateDependencyModuleNames.AddRange(new string[] {  });
+		PrivateDependencyModuleNames.AddRange(new string[] { });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

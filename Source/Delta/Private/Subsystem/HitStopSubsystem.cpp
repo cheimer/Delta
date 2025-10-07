@@ -5,6 +5,27 @@
 
 #include "Kismet/GameplayStatics.h"
 
+UHitStopSubsystem* UHitStopSubsystem::Get(const UObject* WorldContextObject)
+{
+	if (GEngine)
+	{
+		if (UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull))
+		{
+			return World->GetSubsystem<UHitStopSubsystem>();
+		}
+	}
+
+	return nullptr;
+}
+
+bool UHitStopSubsystem::ShouldCreateSubsystem(UObject* Outer) const
+{
+	TArray<UClass*> FoundClasses;
+	GetDerivedClasses(GetClass(), FoundClasses);
+
+	return FoundClasses.IsEmpty();
+}
+
 bool UHitStopSubsystem::StartHitStop(const float MaxDuration, const float TimeDilation, const EHitStopPriority Priority)
 {
 	if (!GetWorld()) return false;

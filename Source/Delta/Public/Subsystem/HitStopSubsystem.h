@@ -24,6 +24,9 @@ class DELTA_API UHitStopSubsystem : public UWorldSubsystem
 	GENERATED_BODY()
 
 public:
+	static UHitStopSubsystem* Get(const UObject* WorldContextObject);
+	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
+	
 	bool StartHitStop(const float MaxDuration, const float TimeDilation, const EHitStopPriority Priority = EHitStopPriority::Default);
 	void EndHitStop();
 

@@ -19,24 +19,4 @@ class DELTA_API UDeltaGameInstance : public UGameInstance
 public:
 	UDeltaGameInstance();
 
-	void SaveGameData();
-	void LoadGameData();
-
-	void SaveGameSetting();
-	void LoadGameSetting();
-
-private:
-	void CreateSaveGameData();
-	
-	void CreateSaveGameSetting();
-	
-	UPROPERTY()
-	USaveGameData* CurrentSaveData;
-	UPROPERTY()
-	USaveGameSetting* CurrentSaveSetting;
-
-	FString SaveDataSlotName;
-	FString SaveSettingSlotName;
-
-	int32 UserIndex = 0;
 };
