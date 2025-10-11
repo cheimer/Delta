@@ -25,6 +25,12 @@ public:
 	
 	virtual void SetCurrentSkill();
 	EDeltaSkillType GetCurrentSkill() const;
+	
+#pragma region ISaveGameInterface
+	virtual void SaveData_Implementation(UDeltaSaveGame* DeltaSaveGame) override;
+	virtual void LoadData_Implementation(UDeltaSaveGame* DeltaSaveGame) override;
+
+#pragma endregion ISaveGameInterface
 
 protected:
 	virtual void PossessedBy(AController* NewController) override;

@@ -44,9 +44,9 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 		GameDifficulty->SetDataDisplayName(FText::FromString(TEXT("Difficulty")));
 		GameDifficulty->SetDescriptionRichText(FText::FromString(
 			"Adjust game experience.\n\n"
-			"<Bold>Easy : </>Default\n"
-			"<Bold>Normal : </>Enemy damage + 50%\n"
-			"<Bold>Hard : </>Enemy damage + 100%\n"
+			"<Bold>Easy : </>Enemy damage - 50%\n"
+			"<Bold>Normal : </>Default\n"
+			"<Bold>Hard : </>Enemy damage + 50%\n"
 			));
 		
 		GameDifficulty->AddDynamicOption(TEXT("Easy"), FText::FromString(TEXT("Easy")));
@@ -61,16 +61,6 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 		GameDifficulty->SetShouldApplySettingsImmediately(true);
 
 		GameplayTabCollection->AddChildListData(GameDifficulty);
-	}
-
-	// Test
-	{
-		UListDataObjectString* TestItem = NewObject<UListDataObjectString>();
-		TestItem->SetDataID(FName("TestItem"));
-		TestItem->SetDataDisplayName(FText::FromString(TEXT("Test Image")));
-		TestItem->SetSoftDescriptionImage(UFrontFunctionLibrary::GetOptionsSoftImageByTag(FrontGameplayTags::Front_Image_TestImage));
-		
-		GameplayTabCollection->AddChildListData(TestItem);
 	}
 
 	RegisteredOptionsTabCollections.Add(GameplayTabCollection);

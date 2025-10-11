@@ -25,6 +25,9 @@ public:
 	bool LoadGame();
 	
 	UFUNCTION(BlueprintCallable, Category = "SaveGame")
+	void ClearSaveGame();
+	
+	UFUNCTION(BlueprintCallable, Category = "SaveGame")
 	bool HaveSaveFile() const;
 
 	UFUNCTION(BlueprintCallable, Category = "SaveGame")

@@ -59,35 +59,3 @@ public:
 	void SetForcedStringValue(const FString& InForcedValue) {DisabledForcedStringValue = InForcedValue;}
 	
 };
-
-USTRUCT(BlueprintType)
-struct FCharacterSaveData
-{
-	GENERATED_BODY()
-
-	FCharacterSaveData()
-	{
-		CharacterCurrentHealth = 0.0f;
-		CharacterMaxHealth = 0.0f;
-		CharacterMaxMana = 0.0f;
-		CharacterCurrentMana = 0.0f;
-	}
- 
-	UPROPERTY(SaveGame)
-	FGuid CharacterGUID;
-	
-	UPROPERTY(SaveGame)
-	FTransform CharacterTransform;
-	
-	UPROPERTY(SaveGame)
-	float CharacterCurrentHealth;
-	
-	UPROPERTY(SaveGame)
-	float CharacterMaxHealth;
-	
-	UPROPERTY(SaveGame)
-	float CharacterCurrentMana;
-	
-	UPROPERTY(SaveGame)
-	float CharacterMaxMana;
-};

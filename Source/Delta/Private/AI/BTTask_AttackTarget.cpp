@@ -19,7 +19,7 @@ EBTNodeResult::Type UBTTask_AttackTarget::ExecuteTask(UBehaviorTreeComponent& Ow
 
 	UObject* TargetObject = OwnerComp.GetBlackboardComponent()->GetValueAsObject(TargetActorKey.SelectedKeyName);
 	if (!TargetObject) return EBTNodeResult::Failed;
-\
+
 	ADeltaAIController* OwnerAIController = Cast<ADeltaAIController>(OwnerComp.GetAIOwner());
 	if (!OwnerAIController) return EBTNodeResult::Failed;
 	

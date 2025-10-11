@@ -169,22 +169,28 @@ void ADeltaPlayerController::ContinueGame()
 	DeltaHUD->ChangeWidgetType(EDeltaWidgetType::Play);
 }
 
-void ADeltaPlayerController::GoMain()
+void ADeltaPlayerController::GoMain(const bool bIsSave)
 {
-	if (USaveGameSubsystem* SaveGameSubsystem = USaveGameSubsystem::Get(GetWorld()))
+	if (bIsSave)
 	{
-		SaveGameSubsystem->SaveGame();
+		if (USaveGameSubsystem* SaveGameSubsystem = USaveGameSubsystem::Get(GetWorld()))
+		{
+			SaveGameSubsystem->SaveGame();
+		}
 	}
 	
 	UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), MainLevel);
 	
 }
 
-void ADeltaPlayerController::QuitGame()
+void ADeltaPlayerController::QuitGame(const bool bIsSave)
 {
-	if (USaveGameSubsystem* SaveGameSubsystem = USaveGameSubsystem::Get(GetWorld()))
+	if (bIsSave)
 	{
-		SaveGameSubsystem->SaveGame();
+		if (USaveGameSubsystem* SaveGameSubsystem = USaveGameSubsystem::Get(GetWorld()))
+		{
+			SaveGameSubsystem->SaveGame();
+		}
 	}
 	
 	UKismetSystemLibrary::QuitGame(GetWorld(), this, EQuitPreference::Quit, false);

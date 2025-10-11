@@ -48,7 +48,7 @@ struct FSkillTypeWrapper
  * 
  */
 UCLASS()
-class DELTA_API ADeltaPlayableCharacter : public ADeltaBaseCharacter, public ISaveGameInterface
+class DELTA_API ADeltaPlayableCharacter : public ADeltaBaseCharacter
 {
 	GENERATED_BODY()
 

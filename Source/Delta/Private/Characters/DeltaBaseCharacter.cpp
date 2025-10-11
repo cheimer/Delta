@@ -12,6 +12,7 @@
 #include "Components/ManaComponent.h"
 #include "DataAssets/Skill/SkillDataAsset.h"
 #include "DeltaTypes/DeltaNamespaceTypes.h"
+#include "GameUserSettings/FrontGameUserSettings.h"
 #include "Helper/DeltaDebugHelper.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "SaveGame/DeltaSaveGame.h"
@@ -34,6 +35,16 @@ ADeltaBaseCharacter::ADeltaBaseCharacter()
 void ADeltaBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	
+}
+
+void ADeltaBaseCharacter::SaveData_Implementation(UDeltaSaveGame* DeltaSaveGame)
+{
+	
+}
+
+void ADeltaBaseCharacter::LoadData_Implementation(UDeltaSaveGame* DeltaSaveGame)
+{
 	
 }
 

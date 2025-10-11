@@ -417,13 +417,14 @@ ADeltaBaseCharacter* ADeltaPlayableCharacter::FindEnemyFromFront() const
 void ADeltaPlayableCharacter::HandleCharacterDeath(AActor* DeathActor)
 {
 	Super::HandleCharacterDeath(DeathActor);
-
 	
 }
 
 #pragma region ISaveGameInterface
 void ADeltaPlayableCharacter::SaveData_Implementation(UDeltaSaveGame* DeltaSaveGame)
 {
+	Super::SaveData_Implementation(DeltaSaveGame);
+	
 	if (!DeltaSaveGame || !HealthComponent || !ManaComponent) return;
 	
 	DeltaSaveGame->CharacterSaveData.CharacterTransform = GetActorTransform();
@@ -435,6 +436,8 @@ void ADeltaPlayableCharacter::SaveData_Implementation(UDeltaSaveGame* DeltaSaveG
 
 void ADeltaPlayableCharacter::LoadData_Implementation(UDeltaSaveGame* DeltaSaveGame)
 {
+	Super::LoadData_Implementation(DeltaSaveGame);
+	
 	if (!DeltaSaveGame || !HealthComponent || !ManaComponent) return;
 	
 	SetActorTransform(DeltaSaveGame->CharacterSaveData.CharacterTransform);

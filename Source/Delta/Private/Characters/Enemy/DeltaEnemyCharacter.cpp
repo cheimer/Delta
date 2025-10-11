@@ -6,9 +6,12 @@
 #include "BrainComponent.h"
 #include "MotionWarpingComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/CombatComponent.h"
 #include "Controllers/DeltaAIController.h"
 #include "DataAssets/Skill/SkillDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameUserSettings/FrontGameUserSettings.h"
+#include "Helper/DeltaDebugHelper.h"
 
 ADeltaEnemyCharacter::ADeltaEnemyCharacter()
 {
@@ -74,4 +77,42 @@ EDeltaSkillType ADeltaEnemyCharacter::GetCurrentSkill() const
 	if (!CachedSkillData.IsValid()) return EDeltaSkillType::Max;
 
 	return CachedSkillData->Type;
+}
+
+void ADeltaEnemyCharacter::SaveData_Implementation(UDeltaSaveGame* DeltaSaveGame)
+{
+	Super::SaveData_Implementation(DeltaSaveGame);
+
+	
+}
+
+void ADeltaEnemyCharacter::LoadData_Implementation(UDeltaSaveGame* DeltaSaveGame)
+{
+	Super::LoadData_Implementation(DeltaSaveGame);
+
+	if (!DeltaSaveGame || !CombatComponent || !UFrontGameUserSettings::Get()) return;
+
+	UFrontGameUserSettings* FrontGameUserSetting = UFrontGameUserSettings::Get();
+	const FString& GameDifficulty = FrontGameUserSetting->GetCurrentGameDifficulty();
+	
+	float DamageMultiplier;
+	if (GameDifficulty == "Easy")
+	{
+		DamageMultiplier = 0.5f;
+	}
+	else if (GameDifficulty == "Normal")
+	{
+		DamageMultiplier = 1.0f;
+	}
+	else if (GameDifficulty == "Hard")
+	{
+		DamageMultiplier = 1.5f;
+	}
+	else
+	{
+		DeltaDebug::Print(TEXT("Cannot find difficulty"));
+		return;
+	}
+	
+	CombatComponent->SetDamageMultiplier(DamageMultiplier);
 }

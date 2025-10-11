@@ -90,6 +90,16 @@ bool USaveGameSubsystem::LoadGame()
 	return true;
 }
 
+void USaveGameSubsystem::ClearSaveGame()
+{
+	if (HaveSaveFile())
+	{
+		UGameplayStatics::DeleteGameInSlot(SaveSlotString, SaveUserIndex);
+	}
+	
+	CurrentSaveGame = nullptr;
+}
+
 bool USaveGameSubsystem::HaveSaveFile() const
 {
 	return UGameplayStatics::DoesSaveGameExist(SaveSlotString, SaveUserIndex);

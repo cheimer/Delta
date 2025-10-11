@@ -19,14 +19,14 @@ void UResultWidget::NativeConstruct()
 	MainButton->OnClicked().AddLambda(
 		[this]()
 		{
-			PlayerController->GoMain();
+			PlayerController->GoMain(false);
 		});
 
 	check(QuitButton);
 	QuitButton->OnClicked().AddLambda(
 		[this]()
 		{
-			PlayerController->QuitGame();
+			PlayerController->QuitGame(false);
 		});
 
 }
@@ -59,7 +59,5 @@ void UResultWidget::OpenWidget()
 	TimeCommonNumericText->SetCurrentValue(PlayerController->GetPlayingTime());
 	RemainHealthCommonNumericText->SetCurrentValue(PlayerController->GetPlayerHealth());
 	TotalDamageCommonNumericText->SetCurrentValue(PlayerController->GetTotalDamage());
-
-	
 	
 }

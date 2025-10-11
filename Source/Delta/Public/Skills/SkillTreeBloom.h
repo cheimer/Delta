@@ -30,6 +30,9 @@ protected:
 	float BlendOutTime = 0.25;
 	
 	UPROPERTY(EditAnywhere, Category = "Values")
+	float SkillDamage = 50;
+	
+	UPROPERTY(EditAnywhere, Category = "Values")
 	FName AttachSocketName = NAME_None;
 
 	UPROPERTY(EditAnywhere, Category = "VFX")

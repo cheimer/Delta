@@ -33,8 +33,8 @@ public:
 	void Exit();
 
 	void ContinueGame();
-	void GoMain();
-	void QuitGame();
+	void GoMain(const bool bIsSave = true);
+	void QuitGame(const bool bIsSave = true);
 
 	float GetPlayingTime();
 	float GetPlayerHealth();

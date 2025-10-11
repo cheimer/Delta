@@ -49,13 +49,15 @@ void USkillTreeBloom::EndSkill()
 
 	if (bIsInterrupted) return;
 
-	if (!CombatComponent.IsValid() || !CombatComponent->GetSkillTargetActor()) return;
+	if (!CombatComponent.IsValid() || !CombatComponent->GetSkillTargetActor() || !CombatComponent->GetOwner()) return;
 	FVector SpawnLocation = CombatComponent->GetSkillTargetActor()->GetActorLocation();
 
 	if (BloomVFX)
 	{
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloomVFX, SpawnLocation, FRotator::ZeroRotator, FVector(0.4f, 0.4f, 0.4f));
 	}
+
+	CombatComponent->ApplySkillDamage(CombatComponent->GetSkillTargetActor(), CombatComponent->GetOwner(), SkillDamage);
 
 	if (!SpawnedAttachNiagara) return;
 	SpawnedAttachNiagara->DestroyInstance();

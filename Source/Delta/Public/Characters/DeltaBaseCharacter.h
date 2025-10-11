@@ -21,7 +21,7 @@ class UMotionWarpingComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterDeath, AActor*, DeathActor);
 
 UCLASS()
-class DELTA_API ADeltaBaseCharacter : public ACharacter
+class DELTA_API ADeltaBaseCharacter : public ACharacter, public ISaveGameInterface
 {
 	GENERATED_BODY()
 
@@ -56,6 +56,12 @@ public:
 	void AddTotalDealing(const float AddDealing) {TotalDealing += AddDealing;}
 
 	FOnCharacterDeath OnCharacterDeath;
+	
+#pragma region ISaveGameInterface
+	virtual void SaveData_Implementation(UDeltaSaveGame* DeltaSaveGame) override;
+	virtual void LoadData_Implementation(UDeltaSaveGame* DeltaSaveGame) override;
+
+#pragma endregion ISaveGameInterface
 	
 protected:
 	virtual void BeginPlay() override;

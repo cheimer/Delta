@@ -9,8 +9,25 @@
   <component name="ChangeListManager">
     <list default="true" id="c074b4c0-ef47-49ba-acd2-e6c7d4e99a18" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Delta.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Delta.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/GameModes/DeltaBaseGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/GameModes/DeltaBaseGameMode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/WoodMon/BP_Skill_Swing.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/WoodMon/BP_Skill_Swing.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/WoodMon/BP_Skill_ThrowRock.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/WoodMon/BP_Skill_ThrowRock.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/AI/BTTask_AttackTarget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/AI/BTTask_AttackTarget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Characters/DeltaBaseCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Characters/DeltaBaseCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Characters/DeltaPlayableCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Characters/DeltaPlayableCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Characters/Enemy/DeltaEnemyCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Characters/Enemy/DeltaEnemyCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Controllers/DeltaPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Controllers/DeltaPlayerController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Skills/SkillTreeBloom.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Skills/SkillTreeBloom.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Subsystem/SaveGameSubsystem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Subsystem/SaveGameSubsystem.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/UI/Options/OptionsDataRegistry.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/UI/Options/OptionsDataRegistry.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Delta/Private/UI/Plays/ResultWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/UI/Plays/ResultWidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Characters/DeltaBaseCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Characters/DeltaBaseCharacter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Characters/DeltaPlayableCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Characters/DeltaPlayableCharacter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Characters/Enemy/DeltaEnemyCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Characters/Enemy/DeltaEnemyCharacter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Controllers/DeltaPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Controllers/DeltaPlayerController.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/DeltaTypes/DeltaStructTypes.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/DeltaTypes/DeltaStructTypes.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/SaveGame/DeltaSaveGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/SaveGame/DeltaSaveGame.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Skills/SkillTreeBloom.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Skills/SkillTreeBloom.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Subsystem/SaveGameSubsystem.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Subsystem/SaveGameSubsystem.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,11 +53,14 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="cidr-memory-view://0" root0="FORCE_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://1" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/AsyncAction/AsyncActionPushConfirmScreen.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/AsyncAction/AsyncActionPushSoftWidget.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/BlueprintFunctionLibrary/FrontFunctionLibrary.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/Components/CutSceneComponent.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/GameModes/DeltaBaseGameMode.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/GameModes/DeltaBaseGameMode.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/GameModes/DeltaBaseGameMode.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/Interfaces/LoadingScreenInterface.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/Interfaces/SaveGameInterface.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/Skills/SkillBlowAway.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -60,6 +80,9 @@
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/UI/Options/ListEntries/ListEntryWidgetBase.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/UI/Options/ListEntries/ListEntryWidgetKeyRemap.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/UI/Options/OptionsDataInteractionHelper.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/UI/Plays/ResultWidget.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/UI/Plays/ResultWidget.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/UI/Plays/ResultWidget.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/UI/PrimaryLayOutWidget.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Public/AsyncAction/AsyncActionPushSoftWidget.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Public/BlueprintFunctionLibrary/FrontFunctionLibrary.h" root0="FORCE_HIGHLIGHTING" />
@@ -364,7 +387,7 @@
       <workItem from="1760145188247" duration="5170000" />
       <workItem from="1760160583360" duration="10469000" />
       <workItem from="1760184205899" duration="2660000" />
-      <workItem from="1760188695550" duration="1001000" />
+      <workItem from="1760188695550" duration="4557000" />
     </task>
     <task id="LOCAL-00001" summary="Add Mana, Edit TargetInfo">
       <option name="closed" value="true" />
@@ -406,7 +429,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760189390433</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Add Start/End, Save/Load">
+      <option name="closed" value="true" />
+      <created>1760189715517</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1760189715517</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
