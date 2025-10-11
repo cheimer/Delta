@@ -6,6 +6,7 @@
 #include "Components/HealthComponent.h"
 #include "DeltaTypes/DeltaEnumTypes.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/SaveGameInterface.h"
 #include "DeltaBaseCharacter.generated.h"
 
 class UDeltaCharacterAnimInstance;
@@ -52,6 +53,8 @@ public:
 	bool BeginAttackDilation(const float MaxDuration, const float TimeDilation);
 	void EndAttackDilation();
 	
+	void AddTotalDealing(const float AddDealing) {TotalDealing += AddDealing;}
+
 	FOnCharacterDeath OnCharacterDeath;
 	
 protected:
@@ -102,6 +105,8 @@ private:
 	FVector CachedMeshLocation = FVector::ZeroVector;
 
 	FTimerHandle RestoreMeshTimerHandle;
+
+	float TotalDealing = 0.0f;
 	
 public:
 #pragma region GetSet
@@ -119,7 +124,9 @@ public:
 	bool GetIsDead() const {return HealthComponent->GetIsDead();}
 
 	const TArray<TEnumAsByte<EObjectTypeQuery>>& GetTargetTraceChannel() const {return TargetTraceChannel;}
-	
+
+	float GetTotalDealing() const {return TotalDealing;}
+
 #pragma endregion GetSet
 
 };

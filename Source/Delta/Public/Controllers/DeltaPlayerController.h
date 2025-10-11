@@ -4,14 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Interfaces/SaveGameInterface.h"
 #include "DeltaPlayerController.generated.h"
 
+class ADeltaPlayableCharacter;
+class UInputDataAsset;
 class ADeltaHUD;
 /**
  * 
  */
 UCLASS()
-class DELTA_API ADeltaPlayerController : public APlayerController
+class DELTA_API ADeltaPlayerController : public APlayerController, public ISaveGameInterface
 {
 	GENERATED_BODY()
 
@@ -24,9 +27,29 @@ public:
 
 	void SetHudVisible(const bool bIsVisible);
 
+	void GameEnd();
 
+	UFUNCTION()
+	void Exit();
+
+	void ContinueGame();
+	void GoMain();
+	void QuitGame();
+
+	float GetPlayingTime();
+	float GetPlayerHealth();
+	float GetTotalDamage();
+	bool IsPlayerWin();
+
+#pragma region ISaveGameInterface
+	virtual void SaveData_Implementation(UDeltaSaveGame* DeltaSaveGame) override;
+	virtual void LoadData_Implementation(UDeltaSaveGame* DeltaSaveGame) override;
+
+#pragma endregion ISaveGameInterface
+	
 protected:
 	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
 
 	UFUNCTION()
 	void HandleChangeSkillSet(int BeforeIndex, int AfterIndex);
@@ -36,8 +59,17 @@ protected:
 
 private:
 	TWeakObjectPtr<ADeltaHUD> DeltaHUD;
+	TWeakObjectPtr<ADeltaPlayableCharacter> OwningPlayerCharacter;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputDataAsset* ControllerInputDataAsset;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Level")
+	TSoftObjectPtr<UWorld> MainLevel;
+	
 	bool bIsInputEnable = true;
+
+	FDateTime LastSavedTime;
 
 public:
 #pragma region GetSet

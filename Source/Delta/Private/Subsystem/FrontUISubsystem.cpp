@@ -49,7 +49,6 @@ void UFrontUISubsystem::PushSoftWidgetToStackAsync(const FGameplayTag& WidgetSta
 {
 	 check(!InSoftWidgetClass.IsNull());
 
-	// Check: 비동기 부분. 이해 및 구현 가능하게
 	UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(
 		InSoftWidgetClass.ToSoftObjectPath(),
 		FStreamableDelegate::CreateLambda(

@@ -48,7 +48,7 @@ struct FSkillTypeWrapper
  * 
  */
 UCLASS()
-class DELTA_API ADeltaPlayableCharacter : public ADeltaBaseCharacter
+class DELTA_API ADeltaPlayableCharacter : public ADeltaBaseCharacter, public ISaveGameInterface
 {
 	GENERATED_BODY()
 
@@ -69,6 +69,12 @@ public:
 	FOnChangeSkillSet OnChangeSkillSet;
 	FOnSelectSkill OnSelectSkill;
 
+#pragma region ISaveGameInterface
+	virtual void SaveData_Implementation(UDeltaSaveGame* DeltaSaveGame) override;
+	virtual void LoadData_Implementation(UDeltaSaveGame* DeltaSaveGame) override;
+
+#pragma endregion ISaveGameInterface
+	
 protected:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void BeginPlay() override;
@@ -131,6 +137,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Skill")
 	TArray<FSkillTypeWrapper> SkillSetArray;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputDataAsset* PlayerInputDataAsset;
+	
 	EPlayerStatus CurrentStatus = EPlayerStatus::Default;
 	EPlayerStatus CachedStatus = EPlayerStatus::Default;
 	
@@ -153,12 +162,6 @@ private:
 	UCameraComponent* CameraComponent;
 	
 #pragma endregion Components
-
-#pragma region Inputs
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	UInputDataAsset* PlayerInputDataAsset;
-	
-#pragma endregion Inputs
 
 #pragma region Setting Values
 	const float TargetArmLengthMin = 100.0f;

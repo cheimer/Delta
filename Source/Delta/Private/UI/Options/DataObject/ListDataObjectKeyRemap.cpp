@@ -11,8 +11,7 @@ bool UListDataObjectKeyRemap::IsPossibleToEdit(const FPlayerKeyMapping& KeyMappi
 {
 	bool bIsEditableValue = KeyMapping.GetMappingName() != "ID_Move" &&
 		KeyMapping.GetMappingName() != "ID_Look" &&
-		KeyMapping.GetMappingName() != "ID_Scroll" &&
-		KeyMapping.GetMappingName() != "ID_Cancel";
+		KeyMapping.GetMappingName() != "ID_Scroll";
 	
 	return bIsEditableValue;
 }
@@ -98,8 +97,6 @@ FPlayerKeyMapping* UListDataObjectKeyRemap::GetOwningKeyMapping() const
 	FMapPlayerKeyArgs KeyArgs;
 	KeyArgs.MappingName = CachedOwningMappingName;
 	KeyArgs.Slot = CachedOwningMappableKeySlot;
-
-	DeltaDebug::Print(KeyArgs.MappingName.ToString());
 
 	return CachedOwningKeyProfile->FindKeyMapping(KeyArgs);
 }

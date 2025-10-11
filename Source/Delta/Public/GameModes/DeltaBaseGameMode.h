@@ -29,24 +29,30 @@ public:
 	ADeltaBaseGameMode();
 
 	void GameStart();
+
+	float GetPlayingTime();
+	void SetPlayingTime(float NewPlayingTime);
+	
+	bool IsPlayerWin();
 		
 protected:
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
+
+	void GameEnd();
 
 private:
 	UFUNCTION()
-	void HandleCharacterDeath(AActor* DeathActor);
-	void EnemyCharacterDeath(ADeltaEnemyCharacter* DeathEnemy);
-	void PlayableCharacterDeath(ADeltaPlayableCharacter* DeathPlayable);
-
-	void FinishEnemyDeath();
+	void HandleEnemyCharacterDeath(AActor* DeathEnemy);
+	UFUNCTION()
+	void HandlePlayableCharacterDeath(AActor* DeathPlayable);
 
 	EGameModeState CurrentState;
 	float GameStartTime;
 	bool bIsStarted = false;
+	bool bIsWin = false;
 
-	TArray<TWeakObjectPtr<ADeltaBaseCharacter>> Characters;
+	TArray<TWeakObjectPtr<ADeltaBaseCharacter>> PlayableCharacters;
+	TArray<TWeakObjectPtr<ADeltaBaseCharacter>> EnemyCharacters;
 	
 };

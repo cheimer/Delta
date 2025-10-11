@@ -4,7 +4,6 @@
 #include "Components/ManaComponent.h"
 
 #include "Characters/DeltaBaseCharacter.h"
-#include "GameStates/DeltaGameState.h"
 
 UManaComponent::UManaComponent()
 {

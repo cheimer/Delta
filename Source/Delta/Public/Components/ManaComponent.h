@@ -22,13 +22,13 @@ public:
 	bool CanUseSkill(const float Amount) const;
 	void UseSkill(const float Amount);
 
+	void SetCurrentMana(const float NewMana);
+	
 	FOnManaChanged OnManaChanged;
 	
 protected:
 	virtual void BeginPlay() override;
 	virtual void BeginDestroy() override;
-
-	void SetCurrentMana(const float NewMana);
 
 	void ManaRecoveryOnce();
 	

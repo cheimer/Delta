@@ -7,21 +7,19 @@
 #include "Characters/Enemy/DeltaEnemyCharacter.h"
 #include "Characters/DeltaPlayableCharacter.h"
 #include "Controllers/DeltaPlayerController.h"
-#include "GameStates/DeltaGameState.h"
+#include "Helper/DeltaDebugHelper.h"
 #include "Kismet/GameplayStatics.h"
-#include "PlayerState/DeltaPlayerState.h"
+#include "Subsystem/SaveGameSubsystem.h"
 #include "UI/DeltaHUD.h"
 
 ADeltaBaseGameMode::ADeltaBaseGameMode()
 {
-	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = true;
+	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bStartWithTickEnabled = false;
 
 	DefaultPawnClass = ADeltaBaseCharacter::StaticClass();
 	HUDClass = ADeltaHUD::StaticClass();
 	PlayerControllerClass = ADeltaPlayerController::StaticClass();
-	GameStateClass = ADeltaGameState::StaticClass();
-	PlayerStateClass = ADeltaPlayerState::StaticClass();
 
 	CurrentState = EGameModeState::WaitForStart;
 	GameStartTime = 0.0f;
@@ -43,18 +41,17 @@ void ADeltaBaseGameMode::BeginPlay()
 	UGameplayStatics::GetAllActorsOfClass(this, ADeltaBaseCharacter::StaticClass(), TempActors);
 	for (AActor* TempActor : TempActors)
 	{
-		if (ADeltaBaseCharacter* CachedCharacter = Cast<ADeltaBaseCharacter>(TempActor))
+		if (ADeltaPlayableCharacter* PlayableCharacter = Cast<ADeltaPlayableCharacter>(TempActor))
 		{
-			Characters.Add(CachedCharacter);
-			CachedCharacter->OnCharacterDeath.AddDynamic(this, &ThisClass::HandleCharacterDeath);
+			PlayableCharacters.Add(PlayableCharacter);
+			PlayableCharacter->OnCharacterDeath.AddDynamic(this, &ThisClass::HandlePlayableCharacterDeath);
+		}
+		else if (ADeltaEnemyCharacter* EnemyCharacter = Cast<ADeltaEnemyCharacter>(TempActor))
+		{
+			EnemyCharacters.Add(EnemyCharacter);
+			EnemyCharacter->OnCharacterDeath.AddDynamic(this, &ThisClass::HandleEnemyCharacterDeath);
 		}
 	}
-}
-
-void ADeltaBaseGameMode::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
 }
 
 void ADeltaBaseGameMode::GameStart()
@@ -63,39 +60,76 @@ void ADeltaBaseGameMode::GameStart()
 	GameStartTime = GetWorld()->GetTimeSeconds();
 
 	CurrentState = EGameModeState::Playing;
+
+	if (USaveGameSubsystem* SaveGameSubsystem = USaveGameSubsystem::Get(GetWorld()))
+	{
+		SaveGameSubsystem->LoadGame();
+	}
+
 }
 
-void ADeltaBaseGameMode::HandleCharacterDeath(AActor* DeathActor)
+void ADeltaBaseGameMode::GameEnd()
 {
-	ADeltaEnemyCharacter* EnemyCharacter = Cast<ADeltaEnemyCharacter>(DeathActor);
-	if (EnemyCharacter)
+	check(GetWorld());
+	
+	if (ADeltaPlayerController* PlayerController = Cast<ADeltaPlayerController>(GetWorld()->GetFirstPlayerController()))
 	{
-		EnemyCharacterDeath(EnemyCharacter);
+		PlayerController->GameEnd();
+	}
+}
+
+void ADeltaBaseGameMode::HandleEnemyCharacterDeath(AActor* DeathEnemy)
+{
+	check(DeathEnemy);
+	
+	ADeltaEnemyCharacter* CachedDeathEnemy = Cast<ADeltaEnemyCharacter>(DeathEnemy);
+	if (!EnemyCharacters.Contains(CachedDeathEnemy))
+	{
+		DeltaDebug::Print(DeathEnemy->GetName() + " cannot find in GameMode");
+		return;
+	}
+
+	EnemyCharacters.Remove(CachedDeathEnemy);
+	
+	if (EnemyCharacters.Num() == 0)
+	{
+		CurrentState = EGameModeState::Result;
+		bIsWin = true;
+		GameEnd();
 	}
 	
-	ADeltaPlayableCharacter* PlayableCharacter = Cast<ADeltaPlayableCharacter>(DeathActor);
-	if (PlayableCharacter)
+}
+
+void ADeltaBaseGameMode::HandlePlayableCharacterDeath(AActor* DeathPlayable)
+{
+	check(DeathPlayable);
+	
+	ADeltaPlayableCharacter* CachedDeathPlayable = Cast<ADeltaPlayableCharacter>(DeathPlayable);
+	if (!PlayableCharacters.Contains(CachedDeathPlayable))
 	{
-		PlayableCharacterDeath(PlayableCharacter);
+		DeltaDebug::Print(DeathPlayable->GetName() + " cannot find in GameMode");
+		return;
 	}
-}
 
-void ADeltaBaseGameMode::EnemyCharacterDeath(ADeltaEnemyCharacter* DeathEnemy)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Enemy Death"));
-	
-	FTimerHandle DelayEnemyDeathTimer;
-	GetWorldTimerManager().SetTimer(DelayEnemyDeathTimer, this, &ThisClass::FinishEnemyDeath, 5.0f);
-}
+	PlayableCharacters.Remove(CachedDeathPlayable);
 
-void ADeltaBaseGameMode::PlayableCharacterDeath(ADeltaPlayableCharacter* DeathPlayable)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Player Death"));
-
+	bIsWin = false;
+	CurrentState = EGameModeState::Result;
+	GameEnd();
 	
 }
 
-void ADeltaBaseGameMode::FinishEnemyDeath()
+float ADeltaBaseGameMode::GetPlayingTime()
 {
-	
+	return GetWorld()->GetTimeSeconds() - GameStartTime;
+}
+
+void ADeltaBaseGameMode::SetPlayingTime(float NewPlayingTime)
+{
+	GameStartTime = GetWorld()->GetTimeSeconds() - NewPlayingTime;
+}
+
+bool ADeltaBaseGameMode::IsPlayerWin()
+{
+	return bIsWin;
 }

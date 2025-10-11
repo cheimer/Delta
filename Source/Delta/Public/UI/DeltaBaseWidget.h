@@ -18,10 +18,13 @@ class DELTA_API UDeltaBaseWidget : public UUserWidget
 
 public:
 	virtual void InItWidget(const EDeltaWidgetType InWidgetType);
+	
+	virtual void OpenWidget() {}
+	virtual void CloseWidget() {}
 
 protected:
 	virtual void NativeConstruct() override;
-	
+
 	EDeltaWidgetType WidgetType;
 
 	UPROPERTY()
