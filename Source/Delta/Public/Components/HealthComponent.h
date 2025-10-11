@@ -18,7 +18,7 @@ class DELTA_API UHealthComponent : public UActorComponent
 public:	
 	UHealthComponent();
 
-	void TakeDamage(float Damage);
+	void TakeDamage(float Damage, AActor* DamageCauser);
 
 	float GetHealthPercentage() const;
 	void SetHealthPercentage(const float HealthPercentage);
@@ -34,7 +34,8 @@ private:
 	
 	UPROPERTY()
 	ADeltaBaseCharacter* OwnerDeltaCharacter;
-	
+
+	UPROPERTY(Transient)
 	float CurrentHealth;
 	bool bIsDead = false;
 	

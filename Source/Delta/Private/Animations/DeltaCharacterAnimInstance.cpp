@@ -36,7 +36,6 @@ void UDeltaCharacterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		float AngleRadians = FMath::Acos(FVector::DotProduct(ForwardVector, Velocity));
 		float AngleDegrees = FMath::RadiansToDegrees(AngleRadians);
 
-		// Check Direction (Left / Right)
 		float Direction = FVector::CrossProduct(ForwardVector, Velocity).Z >= 0 ? 1.f : -1.f;
 		CurrentAngle = AngleDegrees * Direction;
 

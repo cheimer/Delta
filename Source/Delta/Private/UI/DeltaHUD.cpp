@@ -4,7 +4,7 @@
 #include "UI/DeltaHUD.h"
 
 #include "UI/DeltaBaseWidget.h"
-#include "UI/PlayWidget.h"
+#include "UI/Plays/PlayWidget.h"
 
 void ADeltaHUD::BeginPlay()
 {
@@ -44,10 +44,12 @@ void ADeltaHUD::ChangeHUDMode(const EDeltaHUDMode HUDMode)
 					CachedWidget->SetVisibility(ESlateVisibility::Visible);
 					DefaultWidgetNum++;
 					CurrentWidget = CachedWidget;
+					CachedWidget->OpenWidget();
 				}
 				else
 				{
 					CachedWidget->SetVisibility(ESlateVisibility::Hidden);
+					CachedWidget->CloseWidget();
 				}
 			}
 		}
@@ -61,13 +63,18 @@ void ADeltaHUD::ChangeWidgetType(const EDeltaWidgetType WidgetType, const bool b
 {
 	if (!DeltaWidgets.Contains(WidgetType)) return;
 
-	if (bDoHiddenBefore && IsValid(CurrentWidget))
+	if (IsValid(CurrentWidget))
 	{
-		CurrentWidget->SetVisibility(ESlateVisibility::Hidden);
+		CurrentWidget->CloseWidget();
+		if (bDoHiddenBefore)
+		{
+			CurrentWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
 	}
 	
 	CurrentWidget = DeltaWidgets[WidgetType];
 	CurrentWidget->SetVisibility(ESlateVisibility::Visible);
+	CurrentWidget->OpenWidget();
 	
 }
 

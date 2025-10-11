@@ -83,8 +83,7 @@ enum class EDeltaWidgetType : uint8
 	// HUDMode : Play
 	Play,
 	Pause,
-	Lose,
-	Win
+	Result
 };
 
 UENUM(BlueprintType)
@@ -113,6 +112,19 @@ enum class EDeltaOptionsListDataModifyReasonType : uint8
 	DirectlyModified,
 	DependencyModified,
 	ResetToDefault,
+	
+	Unknown UMETA(Hidden)
+};
+
+//////////////
+/// Input
+//////////////
+
+UENUM(BlueprintType)
+enum class EInputPriority : uint8
+{
+	Character = 0,
+	Controller = 1,
 	
 	Unknown UMETA(Hidden)
 };

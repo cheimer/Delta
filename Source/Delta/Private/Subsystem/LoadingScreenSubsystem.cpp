@@ -5,7 +5,10 @@
 #include "PreLoadScreenManager.h"
 #include "Blueprint/UserWidget.h"
 #include "DeveloperSettings/LoadingScreenDeveloperSettings.h"
+#include "GameModes/DeltaBaseGameMode.h"
+#include "Helper/DeltaDebugHelper.h"
 #include "Interfaces/LoadingScreenInterface.h"
+#include "Kismet/GameplayStatics.h"
 
 bool ULoadingScreenSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 {
@@ -89,6 +92,7 @@ void ULoadingScreenSubsystem::OnMapPreLoaded(const FWorldContext& WorldContext, 
 	bIsCurrentlyLoadingMap = true;
 
 	TryUpdateLoadingScreen();
+
 }
 
 void ULoadingScreenSubsystem::OnMapPostLoaded(UWorld* LoadedWorld)
@@ -96,6 +100,22 @@ void ULoadingScreenSubsystem::OnMapPostLoaded(UWorld* LoadedWorld)
 	if (LoadedWorld && LoadedWorld->GetGameInstance() == GetGameInstance())
 	{
 		bIsCurrentlyLoadingMap = false;
+	}
+
+	
+	const ULoadingScreenDeveloperSettings* LoadingScreenSettings = GetDefault<ULoadingScreenDeveloperSettings>();
+	
+	UGameplayStatics::SetGamePaused(LoadedWorld, true);
+	if (!LoadingScreenSettings->bShouldLoadingScreenInEditor)
+	{
+		UGameplayStatics::SetGamePaused(LoadedWorld, false);
+		if (LoadedWorld)
+		{
+			if (ADeltaBaseGameMode* DeltaGameMode = Cast<ADeltaBaseGameMode>(LoadedWorld->GetAuthGameMode()))
+			{
+				DeltaGameMode->GameStart();
+			}
+		}
 	}
 }
 
@@ -115,7 +135,7 @@ void ULoadingScreenSubsystem::TryUpdateLoadingScreen()
 
 		HoldLoadingScreenStartUpTime = -1.0f;
 		
-		NotifyLoadingScreenVisibilityCahgend(false);
+		NotifyLoadingScreenVisibilityChanged(false);
 		
 		SetTickableTickType(ETickableTickType::Never);
 	}
@@ -215,11 +235,16 @@ void ULoadingScreenSubsystem::TryDisplayLoadingScreenIfNone()
 
 	GetGameInstance()->GetGameViewportClient()->AddViewportWidgetContent(CachedCreatedWidget.ToSharedRef(), 1000);
 
-	NotifyLoadingScreenVisibilityCahgend(true);
+	NotifyLoadingScreenVisibilityChanged(true);
 }
 
 void ULoadingScreenSubsystem::TryRemoveLoadingScreen()
 {
+	if (UWorld* World = GetGameInstance()->GetWorld())
+	{
+		UGameplayStatics::SetGamePaused(World, false);
+	}
+	
 	if (!CachedCreatedWidget.IsValid())
 	{
 		return;
@@ -230,7 +255,7 @@ void ULoadingScreenSubsystem::TryRemoveLoadingScreen()
 
 }
 
-void ULoadingScreenSubsystem::NotifyLoadingScreenVisibilityCahgend(bool bIsVisible)
+void ULoadingScreenSubsystem::NotifyLoadingScreenVisibilityChanged(bool bIsVisible)
 {
 	for (ULocalPlayer* ExistLocalPlayer : GetGameInstance()->GetLocalPlayers())
 	{
@@ -238,6 +263,14 @@ void ULoadingScreenSubsystem::NotifyLoadingScreenVisibilityCahgend(bool bIsVisib
 
 		if (APlayerController* PC = ExistLocalPlayer->GetPlayerController(GetGameInstance()->GetWorld()))
 		{
+			if (!bIsVisible)
+			{
+				FInputModeGameOnly InputMode;
+				InputMode.SetConsumeCaptureMouseDown(false);
+				PC->SetInputMode(InputMode);
+				PC->SetShowMouseCursor(false);
+			}
+			
 			if (PC->Implements<ULoadingScreenInterface>())
 			{
 				if (bIsVisible)
@@ -265,7 +298,20 @@ void ULoadingScreenSubsystem::NotifyLoadingScreenVisibilityCahgend(bool bIsVisib
 				}
 			}
 		}
-
+		
+		if (UWorld* World = GetGameInstance()->GetWorld())
+		{
+			if (!bIsVisible)
+			{
+				UGameplayStatics::SetGamePaused(World, false);
+				
+				if (ADeltaBaseGameMode* DeltaGameMode = Cast<ADeltaBaseGameMode>(World->GetAuthGameMode()))
+				{
+					DeltaGameMode->GameStart();
+				}
+				
+			}
+		}
 		
 	}
 }

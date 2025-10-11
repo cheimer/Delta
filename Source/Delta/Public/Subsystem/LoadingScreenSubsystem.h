@@ -28,6 +28,7 @@ public:
 	virtual ETickableTickType GetTickableTickType() const override;
 	virtual bool IsTickable() const override;
 	virtual TStatId GetStatId() const override;
+	virtual bool IsTickableWhenPaused() const override { return true; }
 	//~ End FTickableGameObject
 
 	UPROPERTY(BlueprintAssignable)
@@ -49,7 +50,7 @@ private:
 
 	void TryRemoveLoadingScreen();
 
-	void NotifyLoadingScreenVisibilityCahgend(bool bIsVisible);
+	void NotifyLoadingScreenVisibilityChanged(bool bIsVisible);
 
 	bool bIsCurrentlyLoadingMap = false;
 

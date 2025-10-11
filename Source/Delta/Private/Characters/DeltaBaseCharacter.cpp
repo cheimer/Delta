@@ -12,7 +12,9 @@
 #include "Components/ManaComponent.h"
 #include "DataAssets/Skill/SkillDataAsset.h"
 #include "DeltaTypes/DeltaNamespaceTypes.h"
+#include "Helper/DeltaDebugHelper.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "SaveGame/DeltaSaveGame.h"
 #include "Subsystem/HitStopSubsystem.h"
 
 ADeltaBaseCharacter::ADeltaBaseCharacter()
@@ -46,7 +48,8 @@ void ADeltaBaseCharacter::BeginPlay()
 
 void ADeltaBaseCharacter::TakeSkillDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
-	HealthComponent->TakeDamage(Damage);
+	HealthComponent->TakeDamage(Damage, DamageCauser);
+
 }
 
 void ADeltaBaseCharacter::HandleCharacterDeath(AActor* DeathActor)

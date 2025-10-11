@@ -22,7 +22,7 @@ void UHealthComponent::BeginPlay()
 	OnHealthChanged.Broadcast(CurrentHealth, MaxHealth, false);
 }
 
-void UHealthComponent::TakeDamage(float Damage)
+void UHealthComponent::TakeDamage(float Damage, AActor* DamageCauser)
 {
 	OwnerDeltaCharacter = OwnerDeltaCharacter ? OwnerDeltaCharacter : Cast<ADeltaBaseCharacter>(GetOwner());
 	
@@ -37,6 +37,11 @@ void UHealthComponent::TakeDamage(float Damage)
 	float BeforeHealth = CurrentHealth;
 	CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.0f, MaxHealth);
 	
+	if (ADeltaBaseCharacter* DamageCauserCharacter = Cast<ADeltaBaseCharacter>(DamageCauser))
+	{
+		DamageCauserCharacter->AddTotalDealing(BeforeHealth - CurrentHealth);
+	}
+	
 	if (!FMath::IsNearlyEqual(BeforeHealth, CurrentHealth))
 	{
 		OnHealthChanged.Broadcast(CurrentHealth, MaxHealth, BeforeHealth > CurrentHealth);
@@ -47,6 +52,7 @@ void UHealthComponent::TakeDamage(float Damage)
 		bIsDead = true;
 		OwnerDeltaCharacter->OnCharacterDeath.Broadcast(OwnerDeltaCharacter);
 	}
+
 }
 
 float UHealthComponent::GetHealthPercentage() const

@@ -19,6 +19,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Helper/DeltaDebugHelper.h"
 #include "Kismet/GameplayStatics.h"
+#include "SaveGame/DeltaSaveGame.h"
 
 ADeltaPlayableCharacter::ADeltaPlayableCharacter()
 {
@@ -53,17 +54,17 @@ void ADeltaPlayableCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	check(PlayerInputDataAsset);
+	check(PlayerInputDataAsset && PlayerInputDataAsset->InputMappingContext);
 	
 	if(HasAuthority())
 	{
 		PlayerController = Cast<ADeltaPlayerController>(GetController());
 		if(PlayerController.IsValid())
 		{
-			if(UEnhancedInputLocalPlayerSubsystem* Subsystem =
+			if(UEnhancedInputLocalPlayerSubsystem* EnhancedInputSubsystem =
 				ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 			{
-				Subsystem->AddMappingContext(PlayerInputDataAsset->InputMappingContext, 0);
+				EnhancedInputSubsystem->AddMappingContext(PlayerInputDataAsset->InputMappingContext, static_cast<int32>(EInputPriority::Character));
 			}
 		}
 	}
@@ -82,10 +83,10 @@ void ADeltaPlayableCharacter::BeginPlay()
 		PlayerController = Cast<ADeltaPlayerController>(GetController());
 		if(PlayerController.IsValid())
 		{
-			if(UEnhancedInputLocalPlayerSubsystem* Subsystem =
+			if(UEnhancedInputLocalPlayerSubsystem* EnhancedInputSubsystem =
 				ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 			{
-				Subsystem->AddMappingContext(PlayerInputDataAsset->InputMappingContext, 0);
+				EnhancedInputSubsystem->AddMappingContext(PlayerInputDataAsset->InputMappingContext, static_cast<int32>(EInputPriority::Character));
 			}
 		}
 	}
@@ -419,6 +420,29 @@ void ADeltaPlayableCharacter::HandleCharacterDeath(AActor* DeathActor)
 
 	
 }
+
+#pragma region ISaveGameInterface
+void ADeltaPlayableCharacter::SaveData_Implementation(UDeltaSaveGame* DeltaSaveGame)
+{
+	if (!DeltaSaveGame || !HealthComponent || !ManaComponent) return;
+	
+	DeltaSaveGame->CharacterSaveData.CharacterTransform = GetActorTransform();
+	DeltaSaveGame->CharacterSaveData.CharacterCurrentHealth = HealthComponent->GetCurrentHealth();
+	DeltaSaveGame->CharacterSaveData.CharacterMaxHealth = HealthComponent->GetMaxHealth();
+	DeltaSaveGame->CharacterSaveData.CharacterCurrentMana = ManaComponent->GetCurrentMana();
+	DeltaSaveGame->CharacterSaveData.CharacterMaxMana = ManaComponent->GetMaxMana();
+}
+
+void ADeltaPlayableCharacter::LoadData_Implementation(UDeltaSaveGame* DeltaSaveGame)
+{
+	if (!DeltaSaveGame || !HealthComponent || !ManaComponent) return;
+	
+	SetActorTransform(DeltaSaveGame->CharacterSaveData.CharacterTransform);
+	HealthComponent->SetHealthPercentage(DeltaSaveGame->CharacterSaveData.CharacterCurrentHealth / DeltaSaveGame->CharacterSaveData.CharacterMaxHealth);
+	ManaComponent->SetCurrentMana(DeltaSaveGame->CharacterSaveData.CharacterCurrentMana);
+}
+
+#pragma endregion ISaveGameInterface
 
 #pragma region Input
 
