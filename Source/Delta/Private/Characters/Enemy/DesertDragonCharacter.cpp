@@ -67,6 +67,7 @@ void ADesertDragonCharacter::HandleNextPhase(const int PhaseNum)
 void ADesertDragonCharacter::DoPhaseOne()
 {
 	GetCharacterMovement()->MovementMode = MOVE_Flying;
+	GetCharacterMovement()->GravityScale = 0.0f;
 	
 	if (GetMesh() && FlyStartMontage)
 	{

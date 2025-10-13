@@ -8,26 +8,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c074b4c0-ef47-49ba-acd2-e6c7d4e99a18" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Delta.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Delta.dir/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultGame.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultGame.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/EnemyCharacters/DesertDragon/Animations/ABP_DesertDragon_Default.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/EnemyCharacters/DesertDragon/Animations/ABP_DesertDragon_Default.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/EnemyCharacters/DesertDragon/BP_Enemy_DesertDragon.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/EnemyCharacters/DesertDragon/BP_Enemy_DesertDragon.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/EnemyCharacters/DesertDragon/BT_DesertDragon.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/EnemyCharacters/DesertDragon/BT_DesertDragon.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/EnemyCharacters/WoodMon/BP_Enemy_WoodMon.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/EnemyCharacters/WoodMon/BP_Enemy_WoodMon.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/EnemyCharacters/WoodMon/BT_WoodMon.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/EnemyCharacters/WoodMon/BT_WoodMon.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Cinematics/Sequences/DesertDragonDeath/shot/shot0010/shot0010_01.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Cinematics/Sequences/DesertDragonDeath/shot/shot0010/shot0010_01.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Cinematics/Sequences/DesertDragonDeath/shot/shot0020/shot0020_01.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Cinematics/Sequences/DesertDragonDeath/shot/shot0020/shot0020_01.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/GameModes/BP_GameModeBase.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/GameModes/BP_GameModeBase.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Maps/TestMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/TestMap.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/WoodMon/BP_Skill_Swing.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/WoodMon/BP_Skill_Swing.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/WoodMon/BP_Skill_ThrowRock.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/WoodMon/BP_Skill_ThrowRock.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/AI/BTTask_AttackTarget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/AI/BTTask_AttackTarget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Characters/DeltaBaseCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Characters/DeltaBaseCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Characters/DeltaPlayableCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Characters/DeltaPlayableCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Characters/Enemy/DeltaEnemyCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Characters/Enemy/DeltaEnemyCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Controllers/DeltaPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Controllers/DeltaPlayerController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Skills/SkillTreeBloom.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Skills/SkillTreeBloom.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Subsystem/SaveGameSubsystem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Subsystem/SaveGameSubsystem.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/UI/Options/OptionsDataRegistry.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/UI/Options/OptionsDataRegistry.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/UI/Plays/ResultWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/UI/Plays/ResultWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Characters/DeltaBaseCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Characters/DeltaBaseCharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Characters/DeltaPlayableCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Characters/DeltaPlayableCharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Characters/Enemy/DeltaEnemyCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Characters/Enemy/DeltaEnemyCharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Controllers/DeltaPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Controllers/DeltaPlayerController.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/DeltaTypes/DeltaStructTypes.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/DeltaTypes/DeltaStructTypes.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/SaveGame/DeltaSaveGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/SaveGame/DeltaSaveGame.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Skills/SkillTreeBloom.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Skills/SkillTreeBloom.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Subsystem/SaveGameSubsystem.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Subsystem/SaveGameSubsystem.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/BP_Skill_Slash.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/BP_Skill_Slash.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/UI/CommonInputData/BP_ControllerData_Gamepad.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UI/CommonInputData/BP_ControllerData_Gamepad.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/UI/CommonInputData/BP_ControllerData_MouseKeyboard.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UI/CommonInputData/BP_ControllerData_MouseKeyboard.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/UI/FrontWidgets/Options/WBP_TabList_Options.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UI/FrontWidgets/Options/WBP_TabList_Options.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/UI/FrontWidgets/WBP_CAW_StoryScreen.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UI/FrontWidgets/WBP_CAW_StoryScreen.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Characters/Enemy/DesertDragonCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Characters/Enemy/DesertDragonCharacter.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,14 +53,11 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="cidr-memory-view://1" root0="FORCE_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://0" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/AsyncAction/AsyncActionPushConfirmScreen.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/AsyncAction/AsyncActionPushSoftWidget.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/BlueprintFunctionLibrary/FrontFunctionLibrary.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/Components/CutSceneComponent.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/GameModes/DeltaBaseGameMode.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/GameModes/DeltaBaseGameMode.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/GameModes/DeltaBaseGameMode.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/Interfaces/LoadingScreenInterface.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/Interfaces/SaveGameInterface.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/Skills/SkillBlowAway.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -75,14 +72,10 @@
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/UI/ConfirmScreenWidget.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/UI/Options/DataObject/ListDataObjectBase.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/UI/Options/DataObject/ListDataObjectCollection.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/UI/Options/DataObject/ListDataObjectKeyRemap.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/UI/Options/DataObject/ListDataObjectString.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/UI/Options/ListEntries/ListEntryWidgetBase.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/UI/Options/ListEntries/ListEntryWidgetKeyRemap.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/UI/Options/OptionsDataInteractionHelper.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/UI/Plays/ResultWidget.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/UI/Plays/ResultWidget.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/UI/Plays/ResultWidget.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/UI/PrimaryLayOutWidget.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Public/AsyncAction/AsyncActionPushSoftWidget.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Public/BlueprintFunctionLibrary/FrontFunctionLibrary.h" root0="FORCE_HIGHLIGHTING" />
@@ -387,7 +380,11 @@
       <workItem from="1760145188247" duration="5170000" />
       <workItem from="1760160583360" duration="10469000" />
       <workItem from="1760184205899" duration="2660000" />
-      <workItem from="1760188695550" duration="4557000" />
+      <workItem from="1760188695550" duration="4721000" />
+      <workItem from="1760235284318" duration="3962000" />
+      <workItem from="1760241361479" duration="1498000" />
+      <workItem from="1760321932900" duration="1811000" />
+      <workItem from="1760323856226" duration="1388000" />
     </task>
     <task id="LOCAL-00001" summary="Add Mana, Edit TargetInfo">
       <option name="closed" value="true" />
@@ -437,7 +434,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760189715517</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Add apply Difficulty.&#10;Fix Save/Load, Some Skill">
+      <option name="closed" value="true" />
+      <created>1760193419647</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1760193419647</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -463,7 +468,8 @@
     <MESSAGE value="Add Enemy" />
     <MESSAGE value="Add CommonUI main menu" />
     <MESSAGE value="Add Start/End, Save/Load" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Start/End, Save/Load" />
+    <MESSAGE value="Add apply Difficulty.&#10;Fix Save/Load, Some Skill" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add apply Difficulty.&#10;Fix Save/Load, Some Skill" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
