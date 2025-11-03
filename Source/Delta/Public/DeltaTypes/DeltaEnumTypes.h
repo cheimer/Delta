@@ -125,6 +125,21 @@ enum class EInputPriority : uint8
 {
 	Character = 0,
 	Controller = 1,
-	
+
 	Unknown UMETA(Hidden)
 };
+
+//////////////
+/// Gameplay
+//////////////
+
+UENUM(BlueprintType)
+enum class EDeltaGameDifficulty : uint8
+{
+	Easy UMETA(DisplayName = "Easy"),
+	Normal UMETA(DisplayName = "Normal"),
+	Hard UMETA(DisplayName = "Hard"),
+
+	Max UMETA(Hidden)
+};
+ENUM_RANGE_BY_COUNT(EDeltaGameDifficulty, EDeltaGameDifficulty::Max);

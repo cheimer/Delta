@@ -43,8 +43,9 @@ public:
 #pragma region GetSet
 	bool GetIsDead() const {return bIsDead;}
 	float GetMaxHealth() const {return MaxHealth;}
+	void SetMaxHealth(const float InMaxHealth);
 	float GetCurrentHealth() const {return CurrentHealth;}
-	
+
 #pragma endregion GetSet
 	
 };

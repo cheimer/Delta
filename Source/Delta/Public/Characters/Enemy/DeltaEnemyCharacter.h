@@ -22,9 +22,12 @@ public:
 	virtual void EndSkillAnimation() override;
 
 	virtual void UpdateSkillTarget() override;
-	
+
 	virtual void SetCurrentSkill();
 	EDeltaSkillType GetCurrentSkill() const;
+
+	// Apply difficulty modifiers to health and damage
+	void ApplyDifficultySettings();
 	
 #pragma region ISaveGameInterface
 	virtual void SaveData_Implementation(UDeltaSaveGame* DeltaSaveGame) override;
@@ -33,6 +36,8 @@ public:
 #pragma endregion ISaveGameInterface
 
 protected:
+	virtual void BeginPlay() override;
+
 	virtual void PossessedBy(AController* NewController) override;
 
 	virtual void HandleCharacterDeath(AActor* DeathCharacter) override;
