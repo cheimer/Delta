@@ -64,11 +64,28 @@ void UHealthComponent::SetHealthPercentage(const float HealthPercentage)
 {
 	float BeforeHealth = CurrentHealth;
 	CurrentHealth = FMath::Clamp(MaxHealth * HealthPercentage, 0.0f, MaxHealth);
-	
+
 	if (!FMath::IsNearlyEqual(BeforeHealth, CurrentHealth))
 	{
 		OnHealthChanged.Broadcast(CurrentHealth, MaxHealth, BeforeHealth > CurrentHealth);
 	}
-	
-	
+}
+
+void UHealthComponent::SetMaxHealth(const float InMaxHealth)
+{
+	if (InMaxHealth <= 0.0f)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SetMaxHealth: Invalid value %f"), InMaxHealth);
+		return;
+	}
+
+	const float HealthPercentage = GetHealthPercentage();
+	MaxHealth = InMaxHealth;
+
+	// If health was already initialized, maintain the same percentage
+	if (CurrentHealth > 0.0f)
+	{
+		CurrentHealth = FMath::Clamp(MaxHealth * HealthPercentage, 0.0f, MaxHealth);
+		OnHealthChanged.Broadcast(CurrentHealth, MaxHealth, false);
+	}
 }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameUserSettings.h"
+#include "DeltaTypes/DeltaEnumTypes.h"
 #include "FrontGameUserSettings.generated.h"
 
 /**
@@ -22,7 +23,7 @@ public:
 private:
 	//~ Begin Gameplay Tab
 	UPROPERTY(Config)
-	FString CurrentGameDifficulty;
+	EDeltaGameDifficulty CurrentGameDifficulty = EDeltaGameDifficulty::Normal;
 	//~ End Gameplay Tab
 
 	//~ Begin Audio Tab
@@ -40,10 +41,17 @@ private:
 	//~ End Audio Tab
 
 public:
+	// Enum-based API (recommended for code)
 	UFUNCTION()
-	FString GetCurrentGameDifficulty() const {return CurrentGameDifficulty;}
+	EDeltaGameDifficulty GetCurrentGameDifficulty() const {return CurrentGameDifficulty;}
 	UFUNCTION()
-	void SetCurrentGameDifficulty(const FString& InNewDifficulty) {CurrentGameDifficulty = InNewDifficulty;}
+	void SetCurrentGameDifficulty(const EDeltaGameDifficulty InNewDifficulty) {CurrentGameDifficulty = InNewDifficulty;}
+
+	// String-based API (for UI compatibility)
+	UFUNCTION()
+	FString GetCurrentGameDifficultyAsString() const;
+	UFUNCTION()
+	void SetCurrentGameDifficultyFromString(const FString& InDifficulty);
 
 	UFUNCTION()
 	float GetOverallVolume() const {return OverallVolume;}

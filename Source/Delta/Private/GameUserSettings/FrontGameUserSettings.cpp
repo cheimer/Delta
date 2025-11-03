@@ -20,6 +20,42 @@ UFrontGameUserSettings* UFrontGameUserSettings::Get()
 	return nullptr;
 }
 
+FString UFrontGameUserSettings::GetCurrentGameDifficultyAsString() const
+{
+	switch (CurrentGameDifficulty)
+	{
+	case EDeltaGameDifficulty::Easy:
+		return TEXT("Easy");
+	case EDeltaGameDifficulty::Normal:
+		return TEXT("Normal");
+	case EDeltaGameDifficulty::Hard:
+		return TEXT("Hard");
+	default:
+		return TEXT("Normal");
+	}
+}
+
+void UFrontGameUserSettings::SetCurrentGameDifficultyFromString(const FString& InDifficulty)
+{
+	if (InDifficulty == TEXT("Easy"))
+	{
+		CurrentGameDifficulty = EDeltaGameDifficulty::Easy;
+	}
+	else if (InDifficulty == TEXT("Normal"))
+	{
+		CurrentGameDifficulty = EDeltaGameDifficulty::Normal;
+	}
+	else if (InDifficulty == TEXT("Hard"))
+	{
+		CurrentGameDifficulty = EDeltaGameDifficulty::Hard;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UFrontGameUserSettings::SetCurrentGameDifficultyFromString - Unknown difficulty: %s, defaulting to Normal"), *InDifficulty);
+		CurrentGameDifficulty = EDeltaGameDifficulty::Normal;
+	}
+}
+
 void UFrontGameUserSettings::SetOverallVolume(const float InOverallVolume)
 {
 	OverallVolume = InOverallVolume;

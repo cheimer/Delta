@@ -44,19 +44,19 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 		GameDifficulty->SetDataDisplayName(FText::FromString(TEXT("Difficulty")));
 		GameDifficulty->SetDescriptionRichText(FText::FromString(
 			"Adjust game experience.\n\n"
-			"<Bold>Easy : </>Enemy damage - 50%\n"
+			"<Bold>Easy : </>Enemy health -25%, damage -50%\n"
 			"<Bold>Normal : </>Default\n"
-			"<Bold>Hard : </>Enemy damage + 50%\n"
+			"<Bold>Hard : </>Enemy health +50%, damage +50%\n"
 			));
-		
+
 		GameDifficulty->AddDynamicOption(TEXT("Easy"), FText::FromString(TEXT("Easy")));
 		GameDifficulty->AddDynamicOption(TEXT("Normal"), FText::FromString(TEXT("Normal")));
 		GameDifficulty->AddDynamicOption(TEXT("Hard"), FText::FromString(TEXT("Hard")));
 
 		GameDifficulty->SetDefaultValueFromString(TEXT("Normal"));
 
-		GameDifficulty->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetCurrentGameDifficulty));
-		GameDifficulty->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetCurrentGameDifficulty));
+		GameDifficulty->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetCurrentGameDifficultyAsString));
+		GameDifficulty->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetCurrentGameDifficultyFromString));
 
 		GameDifficulty->SetShouldApplySettingsImmediately(true);
 
