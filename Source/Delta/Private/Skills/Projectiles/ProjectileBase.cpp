@@ -44,7 +44,7 @@ void AProjectileBase::OnProjectileOverlap(UPrimitiveComponent* OverlappedCompone
 	if (ExcludeActors.Contains(OtherActor)) return;
 	ExcludeActors.Add(OtherActor);
 
-	if (CombatComponent->GetIsOpponent(OtherActor))
+	if (CombatComponent->GetIsOpponent(OtherActor).IsSet() && CombatComponent->GetIsOpponent(OtherActor).GetValue())
 	{
 		CombatComponent->ApplySkillDamage(OtherActor, GetOwner(), ProjectileDamage);
 

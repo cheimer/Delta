@@ -24,7 +24,6 @@ void ADeltaPlayerController::BeginPlay()
 				ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		EnhancedInputSubsystem->AddMappingContext(ControllerInputDataAsset->InputMappingContext, static_cast<int32>(EInputPriority::Controller));
-		
 	}
 
 	OwningPlayerCharacter = OwningPlayerCharacter.IsValid()? OwningPlayerCharacter : Cast<ADeltaPlayableCharacter>(GetPawn());

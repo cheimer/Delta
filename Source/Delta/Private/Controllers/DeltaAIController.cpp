@@ -83,6 +83,14 @@ TOptional<float> ADeltaAIController::GetCurrentSkillRange()
 	return DeltaOwnerCharacter->GetCurrentSkillRange();
 }
 
+float ADeltaAIController::GetCurrentSkillDuration()
+{
+	DeltaOwnerCharacter = DeltaOwnerCharacter.IsValid() ? DeltaOwnerCharacter.Get() : Cast<ADeltaEnemyCharacter>(GetPawn());
+	if (!DeltaOwnerCharacter.IsValid()) return 0.0f;
+
+	return DeltaOwnerCharacter->GetSkillDurationTime(DeltaOwnerCharacter->GetCurrentSkill());
+}
+
 void ADeltaAIController::AttackTarget()
 {
 	DeltaOwnerCharacter = DeltaOwnerCharacter.IsValid() ? DeltaOwnerCharacter.Get() : Cast<ADeltaEnemyCharacter>(GetPawn());

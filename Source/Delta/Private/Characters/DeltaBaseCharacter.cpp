@@ -61,6 +61,14 @@ void ADeltaBaseCharacter::TakeSkillDamage(AActor* DamagedActor, float Damage, co
 {
 	HealthComponent->TakeDamage(Damage, DamageCauser);
 
+	check(IsValid(GetMesh()));
+	
+	AnimInstance = AnimInstance ? AnimInstance : Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+	if (!AnimInstance) return;
+
+	EDeltaHitDirection HitDirection = CalcDirection(DamagedActor->GetActorForwardVector(),
+		DamageCauser->GetActorLocation() - DamagedActor->GetActorLocation());
+	AnimInstance->PlayHitReactAnim(HitDirection);
 }
 
 void ADeltaBaseCharacter::HandleCharacterDeath(AActor* DeathActor)
@@ -128,6 +136,14 @@ void ADeltaBaseCharacter::EndSkillAnimation()
 	CombatComponent->ReleaseSkill();
 	
 	bCanInterruptSkill = false;
+}
+
+float ADeltaBaseCharacter::GetSkillDurationTime(const EDeltaSkillType SkillType)
+{
+	USkillDataAsset* SkillData = FindSkillDataAsset(SkillType);
+	if (!SkillData || !SkillData->AnimMontage) return 0.0f;
+
+	return SkillData->AnimMontage->GetPlayLength();
 }
 
 void ADeltaBaseCharacter::EnableInterrupt()
@@ -246,4 +262,23 @@ void ADeltaBaseCharacter::RestoreCharacterMeshLocation()
 	if (!GetMesh()) return;
 
 	GetMesh()->SetRelativeLocation(CachedMeshLocation);
+}
+
+EDeltaHitDirection ADeltaBaseCharacter::CalcDirection(const FVector& DamagedForward, const FVector& ToAttackerDirection)
+{
+	FVector ForwardNormal = DamagedForward.GetSafeNormal();
+	FVector AttackerNormal = ToAttackerDirection.GetSafeNormal();
+
+	float AngleRadians = FMath::Acos(FVector::DotProduct(ForwardNormal, AttackerNormal));
+	float AngleDegrees = FMath::RadiansToDegrees(AngleRadians);
+
+	float Direction = FVector::CrossProduct(ForwardNormal, AttackerNormal).Z >= 0 ? 1.f : -1.f;
+	float CurrentAngle = AngleDegrees * Direction;
+
+	if (CurrentAngle > -45.0f && CurrentAngle < 45.0f) return EDeltaHitDirection::Forward;
+	if (CurrentAngle > 45.0f && CurrentAngle < 135.0f) return EDeltaHitDirection::Right;
+	if (CurrentAngle < -45.0f && CurrentAngle > -135.0f) return EDeltaHitDirection::Left;
+
+	return EDeltaHitDirection::Backward;
+
 }

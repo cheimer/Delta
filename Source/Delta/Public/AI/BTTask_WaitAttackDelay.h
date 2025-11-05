@@ -3,28 +3,23 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BehaviorTree/BTTaskNode.h"
-#include "BehaviorTree/ValueOrBBKey.h"
-#include "BTTask_AttackTarget.generated.h"
+#include "BehaviorTree/Tasks/BTTask_Wait.h"
+#include "BTTask_WaitAttackDelay.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DELTA_API UBTTask_AttackTarget : public UBTTaskNode
+class DELTA_API UBTTask_WaitAttackDelay : public UBTTask_Wait
 {
 	GENERATED_BODY()
-	
-public:
-	UBTTask_AttackTarget();
 
-protected:
+public:
+	UBTTask_WaitAttackDelay();
+	
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
 private:
-	UPROPERTY(EditAnywhere, Category = "Blackboard Key")
-	FBlackboardKeySelector TargetActorKey;
-	
 	UPROPERTY(EditAnywhere, Category = "Blackboard Key")
 	FBlackboardKeySelector AttackDelayTimeKey;
 	

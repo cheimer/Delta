@@ -57,7 +57,7 @@ void USkillMeteorShower::AttackUnderEnemy()
 	{
 		if (!HitResult.GetActor()) continue;
 
-		if (CombatComponent->GetIsOpponent(HitResult.GetActor()))
+		if (CombatComponent->GetIsOpponent(HitResult.GetActor()).Get(false))
 		{
 			CombatComponent->ApplySkillDamage(HitResult.GetActor(), CombatComponent->GetOwner(), SkillDamage);
 			return; // Hit only first target

@@ -50,12 +50,12 @@ void USkillRailGun::BeginSkill(UCombatComponent* InCombatComponent)
 	TArray<AActor*> DamagedActor;
 	for (auto Hit : HitResults)
 	{
-		if (AActor* HitActor = Cast<AActor>(Hit.GetActor()))
+		if (Hit.GetActor() && !DamagedActor.Contains(Hit.GetActor()))
 		{
-			if (InCombatComponent->GetIsOpponent(HitActor) && !DamagedActor.Contains(HitActor))
+			if (InCombatComponent->GetIsOpponent(Hit.GetActor()).IsSet() && InCombatComponent->GetIsOpponent(Hit.GetActor()).GetValue())
 			{
-				InCombatComponent->ApplySkillDamage(HitActor, InCombatComponent->GetOwner(), SkillDamage);
-				DamagedActor.Add(HitActor);
+				InCombatComponent->ApplySkillDamage(Hit.GetActor(), InCombatComponent->GetOwner(), SkillDamage);
+				DamagedActor.Add(Hit.GetActor());
 			}
 		}
 	}

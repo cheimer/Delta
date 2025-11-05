@@ -16,7 +16,7 @@ EBTNodeResult::Type UBTTask_MoveToDynamicRadius::ExecuteTask(UBehaviorTreeCompon
 	ADeltaAIController* OwnerController = Cast<ADeltaAIController>(OwnerComp.GetAIOwner());
 	if (!OwnerController) return EBTNodeResult::Failed;
 
-	TOptional<float> SkillRange =OwnerController->GetCurrentSkillRange();
+	TOptional<float> SkillRange = OwnerController->GetCurrentSkillRange();
 	if (!SkillRange.IsSet()) return EBTNodeResult::Failed;
 	
 	AcceptableRadius = SkillRange.GetValue();

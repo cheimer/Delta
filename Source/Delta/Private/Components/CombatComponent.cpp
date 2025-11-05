@@ -5,6 +5,7 @@
 
 #include "Characters/DeltaBaseCharacter.h"
 #include "Characters/DeltaPlayableCharacter.h"
+#include "Characters/Enemy/DeltaEnemyCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Skills/SkillBase.h"
@@ -140,14 +141,14 @@ TOptional<bool> UCombatComponent::GetIsOpponent(const AActor* CheckActor)
 
 	UClass* OwnerClass = OwnerDeltaCharacter->GetClass();
 	UClass* CheckClass = CheckActor->GetClass();
-	
-	if (OwnerClass == CheckClass || OwnerClass->IsChildOf(CheckClass) || CheckClass->IsChildOf(OwnerClass))
-	{
-		return false;
-	}
 
-	return true;
-	
+	bool bOwnerIsPlayable = OwnerClass->IsChildOf(ADeltaPlayableCharacter::StaticClass());
+	bool bCheckIsPlayable = CheckClass->IsChildOf(ADeltaPlayableCharacter::StaticClass());
+
+	bool bOwnerIsEnemy = OwnerClass->IsChildOf(ADeltaEnemyCharacter::StaticClass());
+	bool bCheckIsEnemy = CheckClass->IsChildOf(ADeltaEnemyCharacter::StaticClass());
+
+	return(bOwnerIsPlayable && bCheckIsEnemy) || (bOwnerIsEnemy && bCheckIsPlayable);
 }
 
 void UCombatComponent::GetTargetTraceChannel(TArray<TEnumAsByte<EObjectTypeQuery>>& OutObjectTypes)

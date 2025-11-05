@@ -26,7 +26,6 @@ public:
 	virtual void SetCurrentSkill();
 	EDeltaSkillType GetCurrentSkill() const;
 
-	// Apply difficulty modifiers to health and damage
 	void ApplyDifficultySettings();
 	
 #pragma region ISaveGameInterface

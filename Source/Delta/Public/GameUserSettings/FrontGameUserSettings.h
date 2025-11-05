@@ -41,13 +41,11 @@ private:
 	//~ End Audio Tab
 
 public:
-	// Enum-based API (recommended for code)
 	UFUNCTION()
 	EDeltaGameDifficulty GetCurrentGameDifficulty() const {return CurrentGameDifficulty;}
 	UFUNCTION()
 	void SetCurrentGameDifficulty(const EDeltaGameDifficulty InNewDifficulty) {CurrentGameDifficulty = InNewDifficulty;}
 
-	// String-based API (for UI compatibility)
 	UFUNCTION()
 	FString GetCurrentGameDifficultyAsString() const;
 	UFUNCTION()

@@ -17,6 +17,8 @@ EBTNodeResult::Type UBTTask_AttackTarget::ExecuteTask(UBehaviorTreeComponent& Ow
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
 
+	if (!IsValid(&OwnerComp) || !OwnerComp.GetBlackboardComponent()) return EBTNodeResult::Failed;
+	
 	UObject* TargetObject = OwnerComp.GetBlackboardComponent()->GetValueAsObject(TargetActorKey.SelectedKeyName);
 	if (!TargetObject) return EBTNodeResult::Failed;
 
@@ -31,40 +33,9 @@ EBTNodeResult::Type UBTTask_AttackTarget::ExecuteTask(UBehaviorTreeComponent& Ow
 
 	if (OwnerAnimIns->IsAnyMontagePlaying()) return EBTNodeResult::Failed;
 	
-	CurrentOwnerComp = &OwnerComp;
-
 	OwnerAIController->AttackTarget();
-	OwnerAnimIns->OnMontageEnded.AddDynamic(this, &ThisClass::HandleCurrentMontageEnd);
+	UE_LOG(LogTemp, Warning, TEXT("%f"), OwnerAIController->GetCurrentSkillDuration());
+	OwnerComp.GetBlackboardComponent()->SetValueAsFloat(AttackDelayTimeKey.SelectedKeyName, OwnerAIController->GetCurrentSkillDuration());
 	
-	return EBTNodeResult::InProgress;
-}
-
-void UBTTask_AttackTarget::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)
-{
-	CleanUpTask();
-	
-	Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult);
-}
-
-void UBTTask_AttackTarget::HandleCurrentMontageEnd(UAnimMontage* Montage, bool bInterrupted)
-{
-	const EBTNodeResult::Type Result = CurrentOwnerComp && !bInterrupted ? EBTNodeResult::Succeeded : EBTNodeResult::Failed;
-	
-	FinishLatentTask(*CurrentOwnerComp, Result);
-	
-	CleanUpTask();
-}
-
-void UBTTask_AttackTarget::CleanUpTask()
-{
-	if (!CurrentOwnerComp) return;
-	
-	ACharacter* OwnerCharacter = CurrentOwnerComp->GetAIOwner() ? Cast<ACharacter>(CurrentOwnerComp->GetAIOwner()->GetPawn()) : nullptr;
-	if (!OwnerCharacter) return;
-
-	UAnimInstance* OwnerAnimIns = OwnerCharacter->GetMesh() ? OwnerCharacter->GetMesh()->GetAnimInstance() : nullptr;
-	if (!OwnerAnimIns) return;
-
-	OwnerAnimIns->OnMontageEnded.RemoveDynamic(this, &ThisClass::HandleCurrentMontageEnd);
-	CurrentOwnerComp = nullptr;
+	return EBTNodeResult::Succeeded;
 }

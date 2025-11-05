@@ -18,7 +18,8 @@ class DELTA_API UFrontFunctionLibrary : public UBlueprintFunctionLibrary
 
 public:
 	UFUNCTION(BlueprintPure, Category = "Front Function Library")
-	static TSoftClassPtr<UActivatableBaseWidget> GetFrontSoftWidgetClassByTag(UPARAM(meta = (Categories = "Front.Widget")) FGameplayTag InWidgetTag);
+	static TSoftClassPtr<UActivatableBaseWidget> GetFrontSoftWidgetClassByTag(
+		UPARAM(meta = (Categories = "Front.Widget")) FGameplayTag InWidgetTag);
 	
 	UFUNCTION(BlueprintPure, Category = "Front Function Library")
 	static TSoftObjectPtr<UTexture2D> GetOptionsSoftImageByTag(UPARAM(meta = (Categories = "Front.Image")) FGameplayTag InImageTag);

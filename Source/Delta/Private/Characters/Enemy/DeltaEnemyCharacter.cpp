@@ -21,11 +21,11 @@ ADeltaEnemyCharacter::ADeltaEnemyCharacter()
 
 void ADeltaEnemyCharacter::BeginPlay()
 {
-	// Apply difficulty settings BEFORE Super::BeginPlay()
-	// This ensures MaxHealth is set before HealthComponent initializes CurrentHealth
 	ApplyDifficultySettings();
 
 	Super::BeginPlay();
+	
+	
 }
 
 void ADeltaEnemyCharacter::PossessedBy(AController* NewController)
@@ -106,18 +106,18 @@ void ADeltaEnemyCharacter::ApplyDifficultySettings()
 	switch (Difficulty)
 	{
 	case EDeltaGameDifficulty::Easy:
-		HealthMultiplier = 0.75f;  // 적 체력 25% 감소
-		DamageMultiplier = 0.5f;   // 적 데미지 50% 감소
+		HealthMultiplier = 0.75f;
+		DamageMultiplier = 0.5f;
 		break;
 
 	case EDeltaGameDifficulty::Normal:
-		HealthMultiplier = 1.0f;   // 기본값
-		DamageMultiplier = 1.0f;   // 기본값
+		HealthMultiplier = 1.0f;
+		DamageMultiplier = 1.0f;
 		break;
 
 	case EDeltaGameDifficulty::Hard:
-		HealthMultiplier = 1.5f;   // 적 체력 50% 증가
-		DamageMultiplier = 1.5f;   // 적 데미지 50% 증가
+		HealthMultiplier = 1.5f;
+		DamageMultiplier = 1.5f;
 		break;
 
 	default:
@@ -125,19 +125,15 @@ void ADeltaEnemyCharacter::ApplyDifficultySettings()
 		break;
 	}
 
-	// Apply multipliers
 	const float BaseMaxHealth = HealthComponent->GetMaxHealth();
 	HealthComponent->SetMaxHealth(BaseMaxHealth * HealthMultiplier);
 	CombatComponent->SetDamageMultiplier(DamageMultiplier);
 
-	UE_LOG(LogTemp, Log, TEXT("ADeltaEnemyCharacter::ApplyDifficultySettings - Difficulty: %d, Health: %.1f, DamageMult: %.2f"),
-		static_cast<int32>(Difficulty), HealthComponent->GetMaxHealth(), DamageMultiplier);
 }
 
 void ADeltaEnemyCharacter::SaveData_Implementation(UDeltaSaveGame* DeltaSaveGame)
 {
 	Super::SaveData_Implementation(DeltaSaveGame);
-
 	
 }
 
@@ -145,6 +141,4 @@ void ADeltaEnemyCharacter::LoadData_Implementation(UDeltaSaveGame* DeltaSaveGame
 {
 	Super::LoadData_Implementation(DeltaSaveGame);
 
-	// TODO: Load enemy-specific data from save game
-	// Note: Difficulty settings are applied in BeginPlay, not here
 }

@@ -25,6 +25,8 @@ public:
 
 	void SetCurrentSkill();
 	TOptional<float> GetCurrentSkillRange();
+	float GetCurrentSkillDuration();
+	
 	void AttackTarget();
 
 protected:

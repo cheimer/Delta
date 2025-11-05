@@ -64,6 +64,8 @@ void UDeltaCharacterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		}
 	}
 
+	HandleHitReactAnim(DeltaTime);
+
 }
 
 void UDeltaCharacterAnimInstance::SetBoolValue(const FString& PropertyName, const bool BoolValue)
@@ -97,4 +99,29 @@ void UDeltaCharacterAnimInstance::HandleMontageEnd(UAnimMontage* Montage, bool b
 
 	DeltaCharacter->EndSkillAnimation();
 
+}
+
+void UDeltaCharacterAnimInstance::PlayHitReactAnim(const EDeltaHitDirection HitDirection)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Hit : %s"), *(StaticEnum<EDeltaHitDirection>()->GetNameStringByIndex(static_cast<int32>(HitDirection))));
+	if (bDoPlayHitReactAnim && CurrentHitReactTime < MinHitReactTime) return;
+	
+	bDoPlayHitReactAnim = true;
+	
+	HitReactDirection = HitDirection;
+	HitReactWeight = 1.0f;
+	CurrentHitReactTime = 0.0f;
+}
+
+void UDeltaCharacterAnimInstance::HandleHitReactAnim(const float DeltaTime)
+{
+	if (!bDoPlayHitReactAnim) return;
+	
+	CurrentHitReactTime += DeltaTime;
+	if (CurrentHitReactTime > MaxHitReactTime)
+	{
+		HitReactWeight = 0.0f;
+		CurrentHitReactTime = 0.0f;
+		bDoPlayHitReactAnim = false;
+	}
 }

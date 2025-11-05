@@ -41,7 +41,10 @@ void USkillCollisionAttack::BeginSkill(UCombatComponent* InCombatComponent)
 		if (!OverlappedActors.Contains(OverlapActor))
 		{
 			OverlappedActors.Add(OverlapActor);
-			CombatComponent->ApplySkillDamage(OverlapActor, CombatComponent->GetOwner(), SkillDamage);
+			if (CombatComponent->GetIsOpponent(OverlapActor).IsSet() && CombatComponent->GetIsOpponent(OverlapActor).GetValue())
+			{
+				CombatComponent->ApplySkillDamage(OverlapActor, CombatComponent->GetOwner(), SkillDamage);
+			}
 		}
 	}
 
@@ -62,12 +65,14 @@ void USkillCollisionAttack::EndSkill()
 void USkillCollisionAttack::OnTargetOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                                      int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!OtherActor || !CombatComponent.IsValid() || !CombatComponent->GetIsOpponent(OtherActor)) return;
+	if (!OtherActor || !CombatComponent.IsValid() || !CombatComponent->GetIsOpponent(OtherActor).IsSet()) return;
 
 	if (OverlappedActors.Contains(OtherActor)) return;
-
 	OverlappedActors.Add(OtherActor);
-	
-	CombatComponent->ApplySkillDamage(OtherActor, CombatComponent->GetOwner(), SkillDamage);
-	bIsTargetOverlapping = true;
+
+	if (CombatComponent->GetIsOpponent(OtherActor).GetValue())
+	{
+		CombatComponent->ApplySkillDamage(OtherActor, CombatComponent->GetOwner(), SkillDamage);
+		bIsTargetOverlapping = true;
+	}
 }

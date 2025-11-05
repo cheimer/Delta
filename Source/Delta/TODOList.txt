@@ -1,12 +1,15 @@
 // 한 거
-스킬 쓸 때 딜레이 추가
-적 잡을 때 시네마틱 추가
-적 추가
-Common UI 추가
-시작, 끝 추가
-GameInstance, SaveGame
 
 // 할 거
+Input -> Class 를 이름을 받아서 바로
+동료 NPC 추가
+성능 최적화 프로파일링
+
+// 고민
+Automation Testing을 사용한 단위 테스트나 통합 테스트
+Procedural Content Generation 플러그인
+일반 적
+네트워크 플레이 추가
 
 //TODO: 해야할 일들
 //Check: 확인할 부분

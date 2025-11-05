@@ -143,3 +143,19 @@ enum class EDeltaGameDifficulty : uint8
 	Max UMETA(Hidden)
 };
 ENUM_RANGE_BY_COUNT(EDeltaGameDifficulty, EDeltaGameDifficulty::Max);
+
+////////////////
+/// Animation
+////////////////
+
+UENUM(BlueprintType)
+enum class EDeltaHitDirection : uint8
+{
+	Anywhere UMETA(DisplayName = "Anywhere"),
+	Forward UMETA(DisplayName = "Forward"),
+	Backward UMETA(DisplayName = "Backward"),
+	Left UMETA(DisplayName = "Left"),
+	Right UMETA(DisplayName = "Right"),
+	
+	Max UMETA(Hidden)
+};

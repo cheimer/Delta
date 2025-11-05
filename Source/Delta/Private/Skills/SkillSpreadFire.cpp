@@ -34,10 +34,11 @@ void USkillSpreadFire::EndSkill()
 void USkillSpreadFire::OnTargetOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!OtherActor || !CombatComponent.IsValid() || !CombatComponent->GetIsOpponent(OtherActor)) return;
+	if (!OtherActor || !CombatComponent.IsValid()) return;
 
+	if (!CombatComponent->GetIsOpponent(OtherActor).IsSet() || !CombatComponent->GetIsOpponent(OtherActor).GetValue()) return;
+	
 	if (OverlappedActors.Contains(OtherActor)) return;
-
 	OverlappedActors.Add(OtherActor);
 }
 
@@ -54,20 +55,12 @@ void USkillSpreadFire::OnAttackOverlapped()
 {
 	if (!CombatComponent.IsValid()) return;
 
-	TArray<AActor*> CopyOverlappedActors;
 	for (TWeakObjectPtr<AActor>& OverlappedActor: OverlappedActors)
 	{
-		if (OverlappedActor.IsValid())
+		if (OverlappedActor.IsValid() && OverlappedActor != OwnerDeltaCharacter
+			&& CombatComponent->GetIsOpponent(OverlappedActor.Get()).Get(false))
 		{
-			CopyOverlappedActors.Add(OverlappedActor.Get());
-		}
-	}
-	
-	for (AActor* OverlappedActor : CopyOverlappedActors)
-	{
-		if (IsValid(OverlappedActor) && OverlappedActor != OwnerDeltaCharacter)
-		{
-			CombatComponent->ApplySkillDamage(OverlappedActor, CombatComponent->GetOwner(), SkillDamage);
+			CombatComponent->ApplySkillDamage(OverlappedActor.Get(), CombatComponent->GetOwner(), SkillDamage);
 		}
 	}
 }

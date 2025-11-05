@@ -34,6 +34,7 @@ public:
 
 	virtual void PlaySkillAnimation(const EDeltaSkillType SkillType);
 	virtual void EndSkillAnimation();
+	float GetSkillDurationTime(const EDeltaSkillType SkillType);
 
 	void EnableInterrupt();
 
@@ -108,6 +109,7 @@ protected:
 #pragma endregion Components
 
 private:
+	EDeltaHitDirection CalcDirection(const FVector& DamagedForward, const FVector& ToAttackerDirection);
 	FVector CachedMeshLocation = FVector::ZeroVector;
 
 	FTimerHandle RestoreMeshTimerHandle;

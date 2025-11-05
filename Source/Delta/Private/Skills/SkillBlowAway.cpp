@@ -32,7 +32,7 @@ void USkillBlowAway::BeginSkill(UCombatComponent* InCombatComponent)
 	{
 		if (!HitActor) continue;
 
-		if (CombatComponent->GetIsOpponent(HitActor).Get(false))
+		if (CombatComponent->GetIsOpponent(HitActor).IsSet() && CombatComponent->GetIsOpponent(HitActor).GetValue())
 		{
 			if (!OverlappedActors.Contains(HitActor))
 			{
