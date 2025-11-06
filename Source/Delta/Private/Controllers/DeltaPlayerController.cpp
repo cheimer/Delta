@@ -5,6 +5,9 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "Characters/DeltaPlayableCharacter.h"
+#include "Characters/DeltaAllyCharacter.h"
+#include "Characters/DeltaBaseCharacter.h"
+#include "Controllers/DeltaAllyController.h"
 #include "Components/SlateWrapperTypes.h"
 #include "DataAssets/Input/InputDataAsset.h"
 #include "GameModes/DeltaBaseGameMode.h"
@@ -31,6 +34,9 @@ void ADeltaPlayerController::BeginPlay()
 	{
 		OwningPlayerCharacter->OnChangeSkillSet.AddDynamic(this, &ThisClass::HandleChangeSkillSet);
 		OwningPlayerCharacter->OnSelectSkill.AddDynamic(this, &ThisClass::HandleSelectSkill);
+
+		// Register the player character as the first team member
+		RegisterTeamMember(OwningPlayerCharacter.Get());
 	}
 
 	DeltaHUD = Cast<ADeltaHUD>(GetHUD());
@@ -254,3 +260,119 @@ void ADeltaPlayerController::LoadData_Implementation(UDeltaSaveGame* DeltaSaveGa
 }
 
 #pragma endregion ISaveGameInterface
+
+#pragma region Team Management
+
+void ADeltaPlayerController::RegisterTeamMember(ADeltaBaseCharacter* TeamMember)
+{
+	if (!TeamMember) return;
+
+	// Don't add duplicates
+	if (TeamMembers.Contains(TeamMember)) return;
+
+	TeamMembers.Add(TeamMember);
+
+	// If this is the first team member, possess it
+	if (TeamMembers.Num() == 1)
+	{
+		Possess(TeamMember);
+		CurrentCharacterIndex = 0;
+	}
+}
+
+void ADeltaPlayerController::UnregisterTeamMember(ADeltaBaseCharacter* TeamMember)
+{
+	if (!TeamMember) return;
+
+	int32 RemovedIndex = TeamMembers.Find(TeamMember);
+	if (RemovedIndex == INDEX_NONE) return;
+
+	TeamMembers.Remove(TeamMember);
+
+	// If we removed the current character, switch to another
+	if (RemovedIndex == CurrentCharacterIndex && TeamMembers.Num() > 0)
+	{
+		CurrentCharacterIndex = FMath::Clamp(CurrentCharacterIndex, 0, TeamMembers.Num() - 1);
+		SwitchCharacter(CurrentCharacterIndex);
+	}
+	else if (TeamMembers.Num() == 0)
+	{
+		CurrentCharacterIndex = 0;
+	}
+	else if (RemovedIndex < CurrentCharacterIndex)
+	{
+		CurrentCharacterIndex--;
+	}
+}
+
+void ADeltaPlayerController::SwitchToNextCharacter()
+{
+	if (TeamMembers.Num() <= 1) return;
+
+	int32 NextIndex = (CurrentCharacterIndex + 1) % TeamMembers.Num();
+	SwitchCharacter(NextIndex);
+}
+
+void ADeltaPlayerController::SwitchToPreviousCharacter()
+{
+	if (TeamMembers.Num() <= 1) return;
+
+	int32 PrevIndex = (CurrentCharacterIndex - 1 + TeamMembers.Num()) % TeamMembers.Num();
+	SwitchCharacter(PrevIndex);
+}
+
+void ADeltaPlayerController::SwitchToCharacterByIndex(int32 Index)
+{
+	if (Index < 0 || Index >= TeamMembers.Num()) return;
+
+	SwitchCharacter(Index);
+}
+
+void ADeltaPlayerController::SwitchCharacter(int32 NewIndex)
+{
+	if (NewIndex < 0 || NewIndex >= TeamMembers.Num()) return;
+	if (NewIndex == CurrentCharacterIndex && GetPawn() == TeamMembers[NewIndex]) return;
+
+	ADeltaBaseCharacter* CurrentCharacter = GetPawn() ? Cast<ADeltaBaseCharacter>(GetPawn()) : nullptr;
+	ADeltaBaseCharacter* NewCharacter = TeamMembers[NewIndex];
+
+	if (!NewCharacter || NewCharacter->GetIsDead()) return;
+
+	// Handle ally character transition
+	if (ADeltaAllyCharacter* CurrentAlly = Cast<ADeltaAllyCharacter>(CurrentCharacter))
+	{
+		CurrentAlly->OnPlayerControlEnd();
+	}
+
+	// Unpossess current character
+	if (CurrentCharacter)
+	{
+		UnPossess();
+	}
+
+	// Possess new character
+	Possess(NewCharacter);
+	CurrentCharacterIndex = NewIndex;
+
+	// Update OwningPlayerCharacter if switching to playable character
+	OwningPlayerCharacter = Cast<ADeltaPlayableCharacter>(NewCharacter);
+
+	// Handle ally character transition
+	if (ADeltaAllyCharacter* NewAlly = Cast<ADeltaAllyCharacter>(NewCharacter))
+	{
+		NewAlly->OnPlayerControlStart();
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("Switched to character %d: %s"), NewIndex, *NewCharacter->GetDisplayName());
+}
+
+ADeltaBaseCharacter* ADeltaPlayerController::GetCurrentCharacter() const
+{
+	if (CurrentCharacterIndex >= 0 && CurrentCharacterIndex < TeamMembers.Num())
+	{
+		return TeamMembers[CurrentCharacterIndex];
+	}
+	return nullptr;
+}
+
+#pragma endregion Team Management

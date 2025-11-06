@@ -6,6 +6,7 @@
 #include "Characters/DeltaBaseCharacter.h"
 #include "Characters/Enemy/DeltaEnemyCharacter.h"
 #include "Characters/DeltaPlayableCharacter.h"
+#include "Characters/DeltaAllyCharacter.h"
 #include "Controllers/DeltaPlayerController.h"
 #include "Helper/DeltaDebugHelper.h"
 #include "Kismet/GameplayStatics.h"
@@ -41,7 +42,13 @@ void ADeltaBaseGameMode::BeginPlay()
 	UGameplayStatics::GetAllActorsOfClass(this, ADeltaBaseCharacter::StaticClass(), TempActors);
 	for (AActor* TempActor : TempActors)
 	{
-		if (ADeltaPlayableCharacter* PlayableCharacter = Cast<ADeltaPlayableCharacter>(TempActor))
+		if (ADeltaAllyCharacter* AllyCharacter = Cast<ADeltaAllyCharacter>(TempActor))
+		{
+			// Allies are handled separately
+			AllyCharacters.Add(AllyCharacter);
+			AllyCharacter->OnCharacterDeath.AddDynamic(this, &ThisClass::HandleAllyCharacterDeath);
+		}
+		else if (ADeltaPlayableCharacter* PlayableCharacter = Cast<ADeltaPlayableCharacter>(TempActor))
 		{
 			PlayableCharacters.Add(PlayableCharacter);
 			PlayableCharacter->OnCharacterDeath.AddDynamic(this, &ThisClass::HandlePlayableCharacterDeath);
@@ -103,7 +110,7 @@ void ADeltaBaseGameMode::HandleEnemyCharacterDeath(AActor* DeathEnemy)
 void ADeltaBaseGameMode::HandlePlayableCharacterDeath(AActor* DeathPlayable)
 {
 	check(DeathPlayable);
-	
+
 	ADeltaPlayableCharacter* CachedDeathPlayable = Cast<ADeltaPlayableCharacter>(DeathPlayable);
 	if (!PlayableCharacters.Contains(CachedDeathPlayable))
 	{
@@ -113,10 +120,35 @@ void ADeltaBaseGameMode::HandlePlayableCharacterDeath(AActor* DeathPlayable)
 
 	PlayableCharacters.Remove(CachedDeathPlayable);
 
-	bIsWin = false;
-	CurrentState = EGameModeState::Result;
-	GameEnd();
-	
+	// Check if any player-team characters are still alive (including allies)
+	if (PlayableCharacters.Num() == 0 && AllyCharacters.Num() == 0)
+	{
+		bIsWin = false;
+		CurrentState = EGameModeState::Result;
+		GameEnd();
+	}
+}
+
+void ADeltaBaseGameMode::HandleAllyCharacterDeath(AActor* DeathAlly)
+{
+	check(DeathAlly);
+
+	ADeltaAllyCharacter* CachedDeathAlly = Cast<ADeltaAllyCharacter>(DeathAlly);
+	if (!AllyCharacters.Contains(CachedDeathAlly))
+	{
+		DeltaDebug::Print(DeathAlly->GetName() + " cannot find in GameMode");
+		return;
+	}
+
+	AllyCharacters.Remove(CachedDeathAlly);
+
+	// Check if any player-team characters are still alive
+	if (PlayableCharacters.Num() == 0 && AllyCharacters.Num() == 0)
+	{
+		bIsWin = false;
+		CurrentState = EGameModeState::Result;
+		GameEnd();
+	}
 }
 
 float ADeltaBaseGameMode::GetPlayingTime()
@@ -132,4 +164,21 @@ void ADeltaBaseGameMode::SetPlayingTime(float NewPlayingTime)
 bool ADeltaBaseGameMode::IsPlayerWin()
 {
 	return bIsWin;
+}
+
+void ADeltaBaseGameMode::RegisterAlly(ADeltaAllyCharacter* Ally)
+{
+	if (!Ally) return;
+
+	// Don't add duplicates
+	if (AllyCharacters.Contains(Ally)) return;
+
+	AllyCharacters.Add(Ally);
+	Ally->OnCharacterDeath.AddDynamic(this, &ThisClass::HandleAllyCharacterDeath);
+
+	// Register ally with player controller for team management
+	if (ADeltaPlayerController* PlayerController = Cast<ADeltaPlayerController>(GetWorld()->GetFirstPlayerController()))
+	{
+		PlayerController->RegisterTeamMember(Ally);
+	}
 }

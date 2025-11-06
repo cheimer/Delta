@@ -144,6 +144,17 @@ enum class EDeltaGameDifficulty : uint8
 };
 ENUM_RANGE_BY_COUNT(EDeltaGameDifficulty, EDeltaGameDifficulty::Max);
 
+UENUM(BlueprintType)
+enum class ETeamAffiliation : uint8
+{
+	Player UMETA(DisplayName = "Player"),
+	Enemy UMETA(DisplayName = "Enemy"),
+	Neutral UMETA(DisplayName = "Neutral"),
+
+	Max UMETA(Hidden)
+};
+ENUM_RANGE_BY_COUNT(ETeamAffiliation, ETeamAffiliation::Max);
+
 ////////////////
 /// Animation
 ////////////////

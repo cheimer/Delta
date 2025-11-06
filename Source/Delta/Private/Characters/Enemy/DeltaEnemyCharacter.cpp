@@ -16,7 +16,8 @@
 
 ADeltaEnemyCharacter::ADeltaEnemyCharacter()
 {
-
+	// Set default team affiliation for enemy characters
+	TeamAffiliation = ETeamAffiliation::Enemy;
 }
 
 void ADeltaEnemyCharacter::BeginPlay()

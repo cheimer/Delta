@@ -8,10 +8,12 @@
 #include "DeltaPlayerController.generated.h"
 
 class ADeltaPlayableCharacter;
+class ADeltaAllyCharacter;
+class ADeltaBaseCharacter;
 class UInputDataAsset;
 class ADeltaHUD;
 /**
- * 
+ *
  */
 UCLASS()
 class DELTA_API ADeltaPlayerController : public APlayerController, public ISaveGameInterface
@@ -21,6 +23,13 @@ class DELTA_API ADeltaPlayerController : public APlayerController, public ISaveG
 public:
 	void TargetDetected(const AActor* Target);
 	void TargetLost();
+
+	// Team management and character switching
+	void RegisterTeamMember(ADeltaBaseCharacter* TeamMember);
+	void UnregisterTeamMember(ADeltaBaseCharacter* TeamMember);
+	void SwitchToNextCharacter();
+	void SwitchToPreviousCharacter();
+	void SwitchToCharacterByIndex(int32 Index);
 
 	TArray<UTexture2D*>& GetSkillTextures(int Index);
 	TArray<int32> GetSkillCosts(int Index);
@@ -60,22 +69,34 @@ protected:
 private:
 	TWeakObjectPtr<ADeltaHUD> DeltaHUD;
 	TWeakObjectPtr<ADeltaPlayableCharacter> OwningPlayerCharacter;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputDataAsset* ControllerInputDataAsset;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Level")
 	TSoftObjectPtr<UWorld> MainLevel;
-	
+
 	bool bIsInputEnable = true;
 
 	FDateTime LastSavedTime;
+
+	// Team management
+	UPROPERTY()
+	TArray<ADeltaBaseCharacter*> TeamMembers;
+
+	int32 CurrentCharacterIndex = 0;
+
+	void SwitchCharacter(int32 NewIndex);
 
 public:
 #pragma region GetSet
 	void SetInputEnable(const bool InInputEnable) {bIsInputEnable = InInputEnable;}
 	bool GetInputEnable() const {return bIsInputEnable;}
 
+	const TArray<ADeltaBaseCharacter*>& GetTeamMembers() const { return TeamMembers; }
+	int32 GetCurrentCharacterIndex() const { return CurrentCharacterIndex; }
+	ADeltaBaseCharacter* GetCurrentCharacter() const;
+
 #pragma endregion GetSet
-	
+
 };

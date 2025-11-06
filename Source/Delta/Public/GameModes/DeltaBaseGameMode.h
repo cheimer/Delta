@@ -8,6 +8,7 @@
 
 class ADeltaPlayableCharacter;
 class ADeltaEnemyCharacter;
+class ADeltaAllyCharacter;
 
 enum class EGameModeState
 {
@@ -32,8 +33,11 @@ public:
 
 	float GetPlayingTime();
 	void SetPlayingTime(float NewPlayingTime);
-	
+
 	bool IsPlayerWin();
+
+	// Register ally character for tracking
+	void RegisterAlly(ADeltaAllyCharacter* Ally);
 		
 protected:
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
@@ -46,6 +50,8 @@ private:
 	void HandleEnemyCharacterDeath(AActor* DeathEnemy);
 	UFUNCTION()
 	void HandlePlayableCharacterDeath(AActor* DeathPlayable);
+	UFUNCTION()
+	void HandleAllyCharacterDeath(AActor* DeathAlly);
 
 	EGameModeState CurrentState;
 	float GameStartTime;
@@ -54,5 +60,5 @@ private:
 
 	TArray<TWeakObjectPtr<ADeltaBaseCharacter>> PlayableCharacters;
 	TArray<TWeakObjectPtr<ADeltaBaseCharacter>> EnemyCharacters;
-	
+	TArray<TWeakObjectPtr<ADeltaBaseCharacter>> AllyCharacters;
 };

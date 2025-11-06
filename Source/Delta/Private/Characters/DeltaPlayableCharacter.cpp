@@ -30,6 +30,9 @@ ADeltaPlayableCharacter::ADeltaPlayableCharacter()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
+	// Set default team affiliation for player characters
+	TeamAffiliation = ETeamAffiliation::Player;
+
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(500.0f, 500.0f, 0.0f);
 	GetCharacterMovement()->MaxWalkSpeed = 400.0f;

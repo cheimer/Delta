@@ -139,16 +139,22 @@ TOptional<bool> UCombatComponent::GetIsOpponent(const AActor* CheckActor)
 	if (!OwnerDeltaCharacter) return TOptional<bool>();
 	if (!IsValid(CheckActor)) return TOptional<bool>();
 
-	UClass* OwnerClass = OwnerDeltaCharacter->GetClass();
-	UClass* CheckClass = CheckActor->GetClass();
+	// Cast CheckActor to DeltaBaseCharacter to access team affiliation
+	const ADeltaBaseCharacter* CheckCharacter = Cast<ADeltaBaseCharacter>(CheckActor);
+	if (!CheckCharacter) return TOptional<bool>();
 
-	bool bOwnerIsPlayable = OwnerClass->IsChildOf(ADeltaPlayableCharacter::StaticClass());
-	bool bCheckIsPlayable = CheckClass->IsChildOf(ADeltaPlayableCharacter::StaticClass());
+	// Get team affiliations
+	ETeamAffiliation OwnerTeam = OwnerDeltaCharacter->GetTeamAffiliation();
+	ETeamAffiliation CheckTeam = CheckCharacter->GetTeamAffiliation();
 
-	bool bOwnerIsEnemy = OwnerClass->IsChildOf(ADeltaEnemyCharacter::StaticClass());
-	bool bCheckIsEnemy = CheckClass->IsChildOf(ADeltaEnemyCharacter::StaticClass());
+	// Neutral characters are opponents to everyone
+	if (OwnerTeam == ETeamAffiliation::Neutral || CheckTeam == ETeamAffiliation::Neutral)
+	{
+		return true;
+	}
 
-	return(bOwnerIsPlayable && bCheckIsEnemy) || (bOwnerIsEnemy && bCheckIsPlayable);
+	// Characters are opponents if they are on different teams
+	return OwnerTeam != CheckTeam;
 }
 
 void UCombatComponent::GetTargetTraceChannel(TArray<TEnumAsByte<EObjectTypeQuery>>& OutObjectTypes)
