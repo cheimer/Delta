@@ -8,7 +8,6 @@
 #include "DeltaPlayerController.generated.h"
 
 class ADeltaPlayableCharacter;
-class ADeltaAllyCharacter;
 class ADeltaBaseCharacter;
 class UInputDataAsset;
 class ADeltaHUD;

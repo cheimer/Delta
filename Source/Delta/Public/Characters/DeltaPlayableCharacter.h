@@ -45,7 +45,8 @@ struct FSkillTypeWrapper
 
 
 /**
- * 
+ * Playable character that can be controlled by either player or AI
+ * Supports switching between player control and AI control dynamically
  */
 UCLASS()
 class DELTA_API ADeltaPlayableCharacter : public ADeltaBaseCharacter
@@ -66,6 +67,21 @@ public:
 	void LookAtCameraCenter();
 	void LookAtForward();
 
+	// Called when player takes control of this character
+	void OnPlayerControlStart();
+
+	// Called when player switches away from this character
+	void OnPlayerControlEnd();
+
+	// Check if currently controlled by player
+	bool IsPlayerControlled() const { return bIsPlayerControlled; }
+
+	// For AI: Set random skill from skill set
+	void SetRandomSkill();
+
+	// For AI: Get current skill selected
+	EDeltaSkillType GetCurrentSkill() const { return CurrentAISkill; }
+
 	FOnChangeSkillSet OnChangeSkillSet;
 	FOnSelectSkill OnSelectSkill;
 
@@ -77,14 +93,25 @@ public:
 	
 protected:
 	virtual void PossessedBy(AController* NewController) override;
+	virtual void UnPossessed() override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
-	
+
 	virtual void HandleCharacterDeath(AActor* DeathActor) override;
-	
+
 	TWeakObjectPtr<ADeltaBaseCharacter> CurrentLockTarget = nullptr;
+
+	// Whether this character is currently controlled by player
+	bool bIsPlayerControlled = false;
+
+	// Previous controller before player took control
+	UPROPERTY()
+	AController* PreviousController = nullptr;
+
+	// Current skill type for AI
+	EDeltaSkillType CurrentAISkill = EDeltaSkillType::Max;
 	
 #pragma region Inputs
 	UFUNCTION()

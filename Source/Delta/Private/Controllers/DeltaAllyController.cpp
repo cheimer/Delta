@@ -2,7 +2,6 @@
 
 #include "Controllers/DeltaAllyController.h"
 #include "BehaviorTree/BehaviorTree.h"
-#include "Characters/DeltaAllyCharacter.h"
 #include "Characters/DeltaPlayableCharacter.h"
 #include "Characters/Enemy/DeltaEnemyCharacter.h"
 #include "Kismet/GameplayStatics.h"
@@ -18,7 +17,7 @@ void ADeltaAllyController::OnPossess(APawn* InPawn)
 	check(BehaviorTree && BehaviorTree->BlackboardAsset);
 	if (BehaviorTree && BehaviorTree->BlackboardAsset)
 	{
-		DeltaOwnerCharacter = DeltaOwnerCharacter.Get() ? DeltaOwnerCharacter.Get() : Cast<ADeltaAllyCharacter>(InPawn);
+		DeltaOwnerCharacter = DeltaOwnerCharacter.Get() ? DeltaOwnerCharacter.Get() : Cast<ADeltaPlayableCharacter>(InPawn);
 		if (!DeltaOwnerCharacter.IsValid()) return;
 
 		RunBehaviorTree(BehaviorTree);
@@ -92,21 +91,16 @@ ADeltaPlayableCharacter* ADeltaAllyController::GetPlayerLeader()
 
 void ADeltaAllyController::SetCurrentSkill()
 {
-	DeltaOwnerCharacter = DeltaOwnerCharacter.IsValid() ? DeltaOwnerCharacter.Get() : Cast<ADeltaAllyCharacter>(GetPawn());
+	DeltaOwnerCharacter = DeltaOwnerCharacter.IsValid() ? DeltaOwnerCharacter.Get() : Cast<ADeltaPlayableCharacter>(GetPawn());
 	if (!DeltaOwnerCharacter.IsValid()) return;
 
-	// For now, allies will use the same skill selection as enemies
-	// This can be extended later for more sophisticated ally behavior
-	if (ADeltaAllyCharacter* AllyCharacter = Cast<ADeltaAllyCharacter>(DeltaOwnerCharacter.Get()))
-	{
-		// Implement skill selection logic here
-		// For example, select based on distance to target, situation, etc.
-	}
+	// Select random skill from character's skill set
+	DeltaOwnerCharacter->SetRandomSkill();
 }
 
 TOptional<float> ADeltaAllyController::GetCurrentSkillRange()
 {
-	DeltaOwnerCharacter = DeltaOwnerCharacter.IsValid() ? DeltaOwnerCharacter.Get() : Cast<ADeltaAllyCharacter>(GetPawn());
+	DeltaOwnerCharacter = DeltaOwnerCharacter.IsValid() ? DeltaOwnerCharacter.Get() : Cast<ADeltaPlayableCharacter>(GetPawn());
 	if (!DeltaOwnerCharacter.IsValid()) return TOptional<float>();
 
 	return DeltaOwnerCharacter->GetCurrentSkillRange();
@@ -114,19 +108,22 @@ TOptional<float> ADeltaAllyController::GetCurrentSkillRange()
 
 float ADeltaAllyController::GetCurrentSkillDuration()
 {
-	DeltaOwnerCharacter = DeltaOwnerCharacter.IsValid() ? DeltaOwnerCharacter.Get() : Cast<ADeltaAllyCharacter>(GetPawn());
+	DeltaOwnerCharacter = DeltaOwnerCharacter.IsValid() ? DeltaOwnerCharacter.Get() : Cast<ADeltaPlayableCharacter>(GetPawn());
 	if (!DeltaOwnerCharacter.IsValid()) return 0.0f;
 
-	// For allies, we'll need to add skill tracking similar to enemies
-	// This will depend on implementing SetCurrentSkill properly
-	return 0.0f;
+	EDeltaSkillType CurrentSkill = DeltaOwnerCharacter->GetCurrentSkill();
+	if (CurrentSkill == EDeltaSkillType::Max) return 0.0f;
+
+	return DeltaOwnerCharacter->GetSkillDurationTime(CurrentSkill);
 }
 
 void ADeltaAllyController::AttackTarget()
 {
-	DeltaOwnerCharacter = DeltaOwnerCharacter.IsValid() ? DeltaOwnerCharacter.Get() : Cast<ADeltaAllyCharacter>(GetPawn());
+	DeltaOwnerCharacter = DeltaOwnerCharacter.IsValid() ? DeltaOwnerCharacter.Get() : Cast<ADeltaPlayableCharacter>(GetPawn());
 	if (!DeltaOwnerCharacter.IsValid()) return;
 
-	// For now, allies will need skill selection implemented
-	// This can use the existing skill system from DeltaBaseCharacter
+	EDeltaSkillType CurrentSkill = DeltaOwnerCharacter->GetCurrentSkill();
+	if (CurrentSkill == EDeltaSkillType::Max) return;
+
+	DeltaOwnerCharacter->PlaySkillAnimation(CurrentSkill);
 }

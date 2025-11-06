@@ -5,7 +5,6 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "Characters/DeltaPlayableCharacter.h"
-#include "Characters/DeltaAllyCharacter.h"
 #include "Characters/DeltaBaseCharacter.h"
 #include "Controllers/DeltaAllyController.h"
 #include "Components/SlateWrapperTypes.h"
@@ -338,10 +337,10 @@ void ADeltaPlayerController::SwitchCharacter(int32 NewIndex)
 
 	if (!NewCharacter || NewCharacter->GetIsDead()) return;
 
-	// Handle ally character transition
-	if (ADeltaAllyCharacter* CurrentAlly = Cast<ADeltaAllyCharacter>(CurrentCharacter))
+	// Handle playable character transition - notify when losing player control
+	if (ADeltaPlayableCharacter* CurrentPlayable = Cast<ADeltaPlayableCharacter>(CurrentCharacter))
 	{
-		CurrentAlly->OnPlayerControlEnd();
+		CurrentPlayable->OnPlayerControlEnd();
 	}
 
 	// Unpossess current character
@@ -354,13 +353,13 @@ void ADeltaPlayerController::SwitchCharacter(int32 NewIndex)
 	Possess(NewCharacter);
 	CurrentCharacterIndex = NewIndex;
 
-	// Update OwningPlayerCharacter if switching to playable character
+	// Update OwningPlayerCharacter when switching
 	OwningPlayerCharacter = Cast<ADeltaPlayableCharacter>(NewCharacter);
 
-	// Handle ally character transition
-	if (ADeltaAllyCharacter* NewAlly = Cast<ADeltaAllyCharacter>(NewCharacter))
+	// Handle playable character transition - notify when gaining player control
+	if (ADeltaPlayableCharacter* NewPlayable = Cast<ADeltaPlayableCharacter>(NewCharacter))
 	{
-		NewAlly->OnPlayerControlStart();
+		NewPlayable->OnPlayerControlStart();
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("Switched to character %d: %s"), NewIndex, *NewCharacter->GetDisplayName());

@@ -7,13 +7,12 @@
 #include "DeltaAllyController.generated.h"
 
 class ADeltaBaseCharacter;
-class ADeltaAllyCharacter;
 class ADeltaPlayableCharacter;
 
 /**
- * DeltaAllyController - AI Controller for ally characters
- * Handles AI behavior for allies including:
- * - Following the player
+ * DeltaAllyController - AI Controller for playable characters when not controlled by player
+ * Handles AI behavior for team members including:
+ * - Following the player-controlled character
  * - Attacking enemies
  * - Supporting team members
  */
@@ -44,7 +43,7 @@ protected:
 	UBehaviorTree* BehaviorTree;
 
 private:
-	TWeakObjectPtr<ADeltaAllyCharacter> DeltaOwnerCharacter;
+	TWeakObjectPtr<ADeltaPlayableCharacter> DeltaOwnerCharacter;
 	TWeakObjectPtr<ADeltaBaseCharacter> CurrentEnemyTarget;
 
 	UPROPERTY()

@@ -57,12 +57,14 @@ void ADeltaPlayableCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	check(PlayerInputDataAsset && PlayerInputDataAsset->InputMappingContext);
-	
-	if(HasAuthority())
+	// Check if possessed by player controller
+	PlayerController = Cast<ADeltaPlayerController>(NewController);
+	bIsPlayerControlled = PlayerController.IsValid();
+
+	// Only set up input if controlled by player
+	if (bIsPlayerControlled && PlayerInputDataAsset && PlayerInputDataAsset->InputMappingContext)
 	{
-		PlayerController = Cast<ADeltaPlayerController>(GetController());
-		if(PlayerController.IsValid())
+		if(HasAuthority())
 		{
 			if(UEnhancedInputLocalPlayerSubsystem* EnhancedInputSubsystem =
 				ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -71,35 +73,42 @@ void ADeltaPlayableCharacter::PossessedBy(AController* NewController)
 			}
 		}
 	}
+}
 
+void ADeltaPlayableCharacter::UnPossessed()
+{
+	Super::UnPossessed();
+
+	bIsPlayerControlled = false;
+	PlayerController = nullptr;
 }
 
 void ADeltaPlayableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	check(PlayerInputDataAsset);
-	check(PlayerInputDataAsset->InputMappingContext);
-	
-	if(!HasAuthority())
+
+	// Check if controlled by player controller
+	PlayerController = Cast<ADeltaPlayerController>(GetController());
+	bIsPlayerControlled = PlayerController.IsValid();
+
+	// Only set up input if controlled by player and not in authority (client-side setup)
+	if (bIsPlayerControlled && PlayerInputDataAsset && PlayerInputDataAsset->InputMappingContext && !HasAuthority())
 	{
-		PlayerController = Cast<ADeltaPlayerController>(GetController());
-		if(PlayerController.IsValid())
+		if(UEnhancedInputLocalPlayerSubsystem* EnhancedInputSubsystem =
+			ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
-			if(UEnhancedInputLocalPlayerSubsystem* EnhancedInputSubsystem =
-				ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-			{
-				EnhancedInputSubsystem->AddMappingContext(PlayerInputDataAsset->InputMappingContext, static_cast<int32>(EInputPriority::Character));
-			}
+			EnhancedInputSubsystem->AddMappingContext(PlayerInputDataAsset->InputMappingContext, static_cast<int32>(EInputPriority::Character));
 		}
 	}
-
 }
 
 void ADeltaPlayableCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
+	// Only execute player-specific tick logic if controlled by player
+	if (!bIsPlayerControlled) return;
+
 	PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
 	if (!PlayerController.IsValid()) return;
 	
@@ -652,3 +661,60 @@ void ADeltaPlayableCharacter::SkillNext(const FInputActionValue& Value)
 }
 
 #pragma endregion Input
+
+#pragma region AI Support
+
+void ADeltaPlayableCharacter::OnPlayerControlStart()
+{
+	bIsPlayerControlled = true;
+
+	// Store the previous controller (AI controller)
+	PreviousController = GetController();
+
+	// Camera will automatically follow when possessed by player controller
+}
+
+void ADeltaPlayableCharacter::OnPlayerControlEnd()
+{
+	bIsPlayerControlled = false;
+
+	// Return control to AI controller if it exists
+	if (PreviousController && PreviousController->IsValidLowLevel())
+	{
+		PreviousController->Possess(this);
+	}
+
+	PreviousController = nullptr;
+	PlayerController = nullptr;
+}
+
+void ADeltaPlayableCharacter::SetRandomSkill()
+{
+	// Select random skill from current skill set for AI to use
+	if (SkillSetArray.Num() == 0) return;
+
+	// Use current skill set
+	const FSkillTypeWrapper& CurrentSkillSet = SkillSetArray[CurrentSkillSetIndex];
+
+	// Filter out invalid skills
+	TArray<EDeltaSkillType> ValidSkills;
+	for (const EDeltaSkillType& SkillType : CurrentSkillSet.SkillTypes)
+	{
+		if (SkillType != EDeltaSkillType::Max)
+		{
+			ValidSkills.Add(SkillType);
+		}
+	}
+
+	if (ValidSkills.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, ValidSkills.Num() - 1);
+		CurrentAISkill = ValidSkills[RandomIndex];
+	}
+	else
+	{
+		CurrentAISkill = EDeltaSkillType::Max;
+	}
+}
+
+#pragma endregion AI Support

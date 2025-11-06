@@ -8,7 +8,6 @@
 
 class ADeltaPlayableCharacter;
 class ADeltaEnemyCharacter;
-class ADeltaAllyCharacter;
 
 enum class EGameModeState
 {
@@ -19,7 +18,8 @@ enum class EGameModeState
 
 class ADeltaBaseCharacter;
 /**
- * 
+ * Game mode that manages all playable characters (player + AI-controlled allies)
+ * and enemy characters
  */
 UCLASS()
 class DELTA_API ADeltaBaseGameMode : public AGameModeBase
@@ -36,8 +36,8 @@ public:
 
 	bool IsPlayerWin();
 
-	// Register ally character for tracking
-	void RegisterAlly(ADeltaAllyCharacter* Ally);
+	// Register team member (playable character) for tracking
+	void RegisterTeamMember(ADeltaPlayableCharacter* TeamMember);
 		
 protected:
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
@@ -50,15 +50,14 @@ private:
 	void HandleEnemyCharacterDeath(AActor* DeathEnemy);
 	UFUNCTION()
 	void HandlePlayableCharacterDeath(AActor* DeathPlayable);
-	UFUNCTION()
-	void HandleAllyCharacterDeath(AActor* DeathAlly);
 
 	EGameModeState CurrentState;
 	float GameStartTime;
 	bool bIsStarted = false;
 	bool bIsWin = false;
 
-	TArray<TWeakObjectPtr<ADeltaBaseCharacter>> PlayableCharacters;
-	TArray<TWeakObjectPtr<ADeltaBaseCharacter>> EnemyCharacters;
-	TArray<TWeakObjectPtr<ADeltaBaseCharacter>> AllyCharacters;
+	// All playable characters (player + AI-controlled team members)
+	TArray<TWeakObjectPtr<ADeltaPlayableCharacter>> PlayableCharacters;
+	// All enemy characters
+	TArray<TWeakObjectPtr<ADeltaEnemyCharacter>> EnemyCharacters;
 };
