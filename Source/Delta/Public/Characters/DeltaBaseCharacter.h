@@ -80,6 +80,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Values")
 	FString DisplayName;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
+	ETeamAffiliation TeamAffiliation = ETeamAffiliation::Neutral;
+
 	UPROPERTY()
 	UDeltaCharacterAnimInstance* AnimInstance;
 
@@ -134,6 +137,9 @@ public:
 	const TArray<TEnumAsByte<EObjectTypeQuery>>& GetTargetTraceChannel() const {return TargetTraceChannel;}
 
 	float GetTotalDealing() const {return TotalDealing;}
+
+	ETeamAffiliation GetTeamAffiliation() const {return TeamAffiliation;}
+	void SetTeamAffiliation(ETeamAffiliation InTeamAffiliation) {TeamAffiliation = InTeamAffiliation;}
 
 #pragma endregion GetSet
 

@@ -37,16 +37,24 @@ void ADeltaBaseGameMode::BeginPlay()
 
 	if (!GetWorld()) return;
 
-	TArray<AActor*> TempActors;
-	UGameplayStatics::GetAllActorsOfClass(this, ADeltaBaseCharacter::StaticClass(), TempActors);
-	for (AActor* TempActor : TempActors)
+	// Find all playable characters (player + AI-controlled teammates)
+	TArray<AActor*> PlayableActors;
+	UGameplayStatics::GetAllActorsOfClass(this, ADeltaPlayableCharacter::StaticClass(), PlayableActors);
+	for (AActor* Actor : PlayableActors)
 	{
-		if (ADeltaPlayableCharacter* PlayableCharacter = Cast<ADeltaPlayableCharacter>(TempActor))
+		if (ADeltaPlayableCharacter* PlayableCharacter = Cast<ADeltaPlayableCharacter>(Actor))
 		{
 			PlayableCharacters.Add(PlayableCharacter);
 			PlayableCharacter->OnCharacterDeath.AddDynamic(this, &ThisClass::HandlePlayableCharacterDeath);
 		}
-		else if (ADeltaEnemyCharacter* EnemyCharacter = Cast<ADeltaEnemyCharacter>(TempActor))
+	}
+
+	// Find all enemy characters
+	TArray<AActor*> EnemyActors;
+	UGameplayStatics::GetAllActorsOfClass(this, ADeltaEnemyCharacter::StaticClass(), EnemyActors);
+	for (AActor* Actor : EnemyActors)
+	{
+		if (ADeltaEnemyCharacter* EnemyCharacter = Cast<ADeltaEnemyCharacter>(Actor))
 		{
 			EnemyCharacters.Add(EnemyCharacter);
 			EnemyCharacter->OnCharacterDeath.AddDynamic(this, &ThisClass::HandleEnemyCharacterDeath);
@@ -103,7 +111,7 @@ void ADeltaBaseGameMode::HandleEnemyCharacterDeath(AActor* DeathEnemy)
 void ADeltaBaseGameMode::HandlePlayableCharacterDeath(AActor* DeathPlayable)
 {
 	check(DeathPlayable);
-	
+
 	ADeltaPlayableCharacter* CachedDeathPlayable = Cast<ADeltaPlayableCharacter>(DeathPlayable);
 	if (!PlayableCharacters.Contains(CachedDeathPlayable))
 	{
@@ -113,10 +121,13 @@ void ADeltaBaseGameMode::HandlePlayableCharacterDeath(AActor* DeathPlayable)
 
 	PlayableCharacters.Remove(CachedDeathPlayable);
 
-	bIsWin = false;
-	CurrentState = EGameModeState::Result;
-	GameEnd();
-	
+	// Game is lost when all playable characters (all team members) are dead
+	if (PlayableCharacters.Num() == 0)
+	{
+		bIsWin = false;
+		CurrentState = EGameModeState::Result;
+		GameEnd();
+	}
 }
 
 float ADeltaBaseGameMode::GetPlayingTime()
@@ -132,4 +143,21 @@ void ADeltaBaseGameMode::SetPlayingTime(float NewPlayingTime)
 bool ADeltaBaseGameMode::IsPlayerWin()
 {
 	return bIsWin;
+}
+
+void ADeltaBaseGameMode::RegisterTeamMember(ADeltaPlayableCharacter* TeamMember)
+{
+	if (!TeamMember) return;
+
+	// Don't add duplicates
+	if (PlayableCharacters.Contains(TeamMember)) return;
+
+	PlayableCharacters.Add(TeamMember);
+	TeamMember->OnCharacterDeath.AddDynamic(this, &ThisClass::HandlePlayableCharacterDeath);
+
+	// Register with player controller for team management
+	if (ADeltaPlayerController* PlayerController = Cast<ADeltaPlayerController>(GetWorld()->GetFirstPlayerController()))
+	{
+		PlayerController->RegisterTeamMember(TeamMember);
+	}
 }
