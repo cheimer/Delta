@@ -384,12 +384,15 @@ void ADeltaPlayerController::SwitchCharacter(int32 NewIndex)
 	if (!PlayerCameraManager) return;
 	PlayerCameraManager->StartCameraFade(0.0f, 1.0f, FadeDuration, FLinearColor::Black, false, true);
 
-	UnPossess();
+	SetInputEnable(false);
 	
 	FTimerHandle SwitchTimer;
 	GetWorld()->GetTimerManager().SetTimer(SwitchTimer,
 		[this, CurrentCharacter, NewCharacter, NewIndex]()
 		{
+			SetInputEnable(true);
+			UnPossess();
+	
 			DeltaHUD->ChangeCharacter(CurrentCharacter, NewCharacter);
 			CurrentCharacter->OnPlayerControlEnd();
 			

@@ -9,7 +9,9 @@
   <component name="ChangeListManager">
     <list default="true" id="c074b4c0-ef47-49ba-acd2-e6c7d4e99a18" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Delta.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Delta.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Controllers/DeltaPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Controllers/DeltaPlayerController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/UI/Plays/PlayWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/UI/Plays/PlayWidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/UI/Plays/PlayWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/UI/Plays/PlayWidget.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +42,7 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="cidr-memory-view://1" root0="FORCE_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://2" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/Animations/Notify/AnimNotifyState_UpdateWarpTarget.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/AsyncAction/AsyncActionPushConfirmScreen.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/AsyncAction/AsyncActionPushSoftWidget.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -169,6 +171,7 @@
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Public/HAL/FMemory.inl" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Public/Internationalization/StringTableRegistry.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Public/Math/Range.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Public/Math/UnrealMathUtility.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Public/Microsoft/MinimalWindowsApi.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Public/Misc/App.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Public/Misc/DateTime.h" root0="FORCE_HIGHLIGHTING" />
@@ -459,7 +462,7 @@
       <workItem from="1762917734711" duration="9271000" />
       <workItem from="1762928842131" duration="5148000" />
       <workItem from="1762945791327" duration="10878000" />
-      <workItem from="1763008231886" duration="9354000" />
+      <workItem from="1763008231886" duration="14277000" />
     </task>
     <task id="LOCAL-00001" summary="Add Mana, Edit TargetInfo">
       <option name="closed" value="true" />
@@ -549,7 +552,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763015743974</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Update README">
+      <option name="closed" value="true" />
+      <created>1763019574134</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1763019574134</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -583,7 +594,9 @@
     <MESSAGE value="Add HitReact&#10;&#10;Edit Attack Team, Miss use TOptional" />
     <MESSAGE value="Edit Controller Mapping" />
     <MESSAGE value="Add AllyCharacter, Damaged Effect Post process&#10;Edit TimeDilation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add AllyCharacter, Damaged Effect Post process&#10;Edit TimeDilation" />
+    <MESSAGE value="Merge pull request #4 from cheimer/claude/rewrite-readme-011CV5RdrN7FchAuKj3accyw&#10;&#10;Update README with comprehensive documentation" />
+    <MESSAGE value="Update README" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update README" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

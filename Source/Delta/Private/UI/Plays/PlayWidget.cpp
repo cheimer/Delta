@@ -29,6 +29,82 @@ void UPlayWidget::NativeConstruct()
 	PlayerController = PlayerController ? PlayerController : Cast<ADeltaPlayerController>(GetOwningPlayer());
 	if (!PlayerController) return;
 
+	RegisterPlayableInfos();
+
+	if (TargetInfoWidget)
+	{
+		TargetInfoWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	SkillInfoArray.Add(SkillInfoWidget0);
+	SkillInfoArray.Add(SkillInfoWidget1);
+	SkillInfoArray.Add(SkillInfoWidget2);
+
+	if (!SkillInfoArray.IsEmpty())
+	{
+		for (int i = 0; i < SkillInfoArray.Num(); i++)
+		{
+			SkillInfoArray[i]->SetImages(PlayerController->GetSkillTextures(i));
+			SkillInfoArray[i]->SetCostTexts(PlayerController->GetSkillCosts(i));
+		}
+	}
+	
+	FChangeSkillSet CachedChangeSkillSet0;
+	CachedChangeSkillSet0.CurrentIndex = 0;
+	CachedChangeSkillSet0.RightAnim = SkillChange0To1Anim;
+	SkillChangeAnims.Add(0, CachedChangeSkillSet0);
+	
+	FChangeSkillSet CachedChangeSkillSet1;
+	CachedChangeSkillSet1.CurrentIndex = 1;
+	CachedChangeSkillSet1.LeftAnim = SkillChange1To0Anim;
+	CachedChangeSkillSet1.RightAnim = SkillChange1To2Anim;
+	SkillChangeAnims.Add(1, CachedChangeSkillSet1);
+
+	FChangeSkillSet CachedChangeSkillSet2;
+	CachedChangeSkillSet2.CurrentIndex = 2;
+	CachedChangeSkillSet2.LeftAnim = SkillChange2To1Anim;
+	SkillChangeAnims.Add(2, CachedChangeSkillSet2);
+	
+}
+
+void UPlayWidget::NativeDestruct()
+{
+	for (int i = 0; i < PlayableInfos.Num(); i++)
+	{
+		if (UHealthComponent* HealthComp = Cast<UHealthComponent>(PlayableInfos[i].PlayableCharacter->FindComponentByClass<UHealthComponent>()))
+		{
+			if (HealthComp->OnHealthChanged.IsAlreadyBound(this, &ThisClass::HandleHealthChanged))
+			{
+				HealthComp->OnHealthChanged.RemoveDynamic(this, &ThisClass::HandleHealthChanged);
+			}
+		}
+		
+		if (UManaComponent* ManaComp = Cast<UManaComponent>(PlayableInfos[i].PlayableCharacter->FindComponentByClass<UManaComponent>()))
+		{
+			if (ManaComp->OnManaChanged.IsAlreadyBound(this, &ThisClass::HandleManaChanged))
+			{
+				ManaComp->OnManaChanged.RemoveDynamic(this, &ThisClass::HandleManaChanged);
+			}
+		}
+	}
+	
+	Super::NativeDestruct();
+}
+
+void UPlayWidget::RegisterPlayableInfos()
+{
+	PlayerController = PlayerController ? PlayerController : Cast<ADeltaPlayerController>(GetOwningPlayer());
+	if (!PlayerController || PlayerController->GetTeamMembers().IsEmpty())
+	{
+		if (CurrentLoop < MaxLoop)
+		{
+			FTimerHandle RegisterLoopTimerHandle;
+			GetWorld()->GetTimerManager().SetTimer(RegisterLoopTimerHandle, this, &ThisClass::RegisterPlayableInfos, 0.2f, false);
+		}
+		CurrentLoop++;
+		return;
+	}
+
 	if (PlayerController->GetTeamMembers().IsValidIndex(0))
 	{
 		FPlayableInfo PlayableInfo0;
@@ -38,7 +114,6 @@ void UPlayWidget::NativeConstruct()
 		PlayableInfo0.ManaBar = ManaBar;
 		PlayableInfos.Add(PlayableInfo0);
 	}
-
 	if (PlayerController->GetTeamMembers().IsValidIndex(1))
 	{
 		FPlayableInfo PlayableInfo1;
@@ -79,63 +154,6 @@ void UPlayWidget::NativeConstruct()
 		}
 	}
 	
-	if (TargetInfoWidget)
-	{
-		TargetInfoWidget->SetVisibility(ESlateVisibility::Hidden);
-	}
-
-	SkillInfoArray.Add(SkillInfoWidget0);
-	SkillInfoArray.Add(SkillInfoWidget1);
-	SkillInfoArray.Add(SkillInfoWidget2);
-
-	if (!SkillInfoArray.IsEmpty())
-	{
-		for (int i = 0; i < SkillInfoArray.Num(); i++)
-		{
-			SkillInfoArray[i]->SetImages(PlayerController->GetSkillTextures(i));
-			SkillInfoArray[i]->SetCostTexts(PlayerController->GetSkillCosts(i));
-		}
-	}
-	
-	FChangeSkillSet CachedChangeSkillSet0;
-	CachedChangeSkillSet0.CurrentIndex = 0;
-	CachedChangeSkillSet0.RightAnim = SkillChange0To1Anim;
-	SkillChangeAnims.Add(0, CachedChangeSkillSet0);
-	
-	FChangeSkillSet CachedChangeSkillSet1;
-	CachedChangeSkillSet1.CurrentIndex = 1;
-	CachedChangeSkillSet1.LeftAnim = SkillChange1To0Anim;
-	CachedChangeSkillSet1.RightAnim = SkillChange1To2Anim;
-	SkillChangeAnims.Add(1, CachedChangeSkillSet1);
-
-	FChangeSkillSet CachedChangeSkillSet2;
-	CachedChangeSkillSet2.CurrentIndex = 2;
-	CachedChangeSkillSet2.LeftAnim = SkillChange2To1Anim;
-	SkillChangeAnims.Add(2, CachedChangeSkillSet2);
-	
-}
-
-void UPlayWidget::NativeDestruct()
-{
-	if (const APawn* OwnerPawn = GetOwningPlayer() ? Cast<APawn>(GetOwningPlayer()->GetPawn()) : nullptr)
-	{
-		if (UHealthComponent* HealthComp = Cast<UHealthComponent>(OwnerPawn->FindComponentByClass<UHealthComponent>()))
-		{
-			if (HealthComp->OnHealthChanged.IsAlreadyBound(this, &ThisClass::HandleHealthChanged))
-			{
-				HealthComp->OnHealthChanged.RemoveDynamic(this, &ThisClass::HandleHealthChanged);
-			}
-		}
-		if (UManaComponent* ManaComp = Cast<UManaComponent>(OwnerPawn->FindComponentByClass<UManaComponent>()))
-		{
-			if (ManaComp->OnManaChanged.IsAlreadyBound(this, &ThisClass::HandleManaChanged))
-			{
-				ManaComp->OnManaChanged.RemoveDynamic(this, &ThisClass::HandleManaChanged);
-			}
-		}
-	}
-
-	Super::NativeDestruct();
 }
 
 void UPlayWidget::HandleHealthChanged(AActor* ChangedActor, float CurrentHealth, float MaxHealth, bool bIsDamaged)

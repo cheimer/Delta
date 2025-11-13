@@ -130,6 +130,8 @@ protected:
 
 private:
 	void ChangeInfo(FPlayableInfo& BeforeInfo, FPlayableInfo& AfterInfo);
+
+	void RegisterPlayableInfos();
 	
 	UPROPERTY()
 	TArray<USkillInfoWidget*> SkillInfoArray;
@@ -139,5 +141,8 @@ private:
 
 	UPROPERTY()
 	TArray<FPlayableInfo> PlayableInfos;
+
+	int32 MaxLoop = 10;
+	int32 CurrentLoop = 0;
 
 };
