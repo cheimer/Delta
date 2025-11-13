@@ -30,7 +30,7 @@ void UPhaseComponent::BeginPlay()
 
 }
 
-void UPhaseComponent::HandleHealthChanged(float CurrentHealth, float MaxHealth, bool bIsDamaged)
+void UPhaseComponent::HandleHealthChanged(AActor* ChangedActor, float CurrentHealth, float MaxHealth, bool bIsDamaged)
 {
 	bool bDoNextPhase =
 		bIsDamaged &&

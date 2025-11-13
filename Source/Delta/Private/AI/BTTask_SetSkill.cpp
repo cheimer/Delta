@@ -3,6 +3,7 @@
 
 #include "AI/BTTask_SetSkill.h"
 
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Controllers/DeltaAIController.h"
 
 UBTTask_SetSkill::UBTTask_SetSkill()

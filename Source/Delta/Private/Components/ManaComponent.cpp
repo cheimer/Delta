@@ -36,9 +36,11 @@ void UManaComponent::BeginDestroy()
 
 void UManaComponent::SetCurrentMana(const float NewMana)
 {
+	if (!GetOwner()) return;
+	
 	CurrentMana = FMath::Clamp(NewMana, 0.0f, MaxMana);
 	
-	OnManaChanged.Broadcast(CurrentMana, MaxMana);
+	OnManaChanged.Broadcast(GetOwner(), CurrentMana, MaxMana);
 }
 
 bool UManaComponent::CanUseSkill(const float Amount) const

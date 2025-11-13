@@ -8,7 +8,7 @@
 
 UBTTask_TargetUpdate::UBTTask_TargetUpdate()
 {
-	NodeName = "Choose 1 Target from playables";
+	NodeName = "Choose 1 Rand Target in distance";
 }
 
 EBTNodeResult::Type UBTTask_TargetUpdate::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -18,7 +18,7 @@ EBTNodeResult::Type UBTTask_TargetUpdate::ExecuteTask(UBehaviorTreeComponent& Ow
 	ADeltaAIController* OwnerAIController = Cast<ADeltaAIController>(OwnerComp.GetAIOwner());
 	if (!OwnerAIController) return EBTNodeResult::Failed;
 
-	AActor* TargetActor = OwnerAIController->GetRandPlayableTarget(MaxDistance);
+	AActor* TargetActor = OwnerAIController->SetRandTarget(MaxDistance);
 	if (!TargetActor) return EBTNodeResult::Failed;
 
 	if (!OwnerComp.GetBlackboardComponent()) return EBTNodeResult::Failed;

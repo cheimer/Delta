@@ -139,21 +139,17 @@ TOptional<bool> UCombatComponent::GetIsOpponent(const AActor* CheckActor)
 	if (!OwnerDeltaCharacter) return TOptional<bool>();
 	if (!IsValid(CheckActor)) return TOptional<bool>();
 
-	// Cast CheckActor to DeltaBaseCharacter to access team affiliation
 	const ADeltaBaseCharacter* CheckCharacter = Cast<ADeltaBaseCharacter>(CheckActor);
 	if (!CheckCharacter) return TOptional<bool>();
 
-	// Get team affiliations
 	ETeamAffiliation OwnerTeam = OwnerDeltaCharacter->GetTeamAffiliation();
 	ETeamAffiliation CheckTeam = CheckCharacter->GetTeamAffiliation();
 
-	// Neutral characters are opponents to everyone
 	if (OwnerTeam == ETeamAffiliation::Neutral || CheckTeam == ETeamAffiliation::Neutral)
 	{
 		return true;
 	}
 
-	// Characters are opponents if they are on different teams
 	return OwnerTeam != CheckTeam;
 }
 

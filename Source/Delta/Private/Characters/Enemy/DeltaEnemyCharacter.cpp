@@ -9,6 +9,7 @@
 #include "Components/CombatComponent.h"
 #include "Components/HealthComponent.h"
 #include "Controllers/DeltaAIController.h"
+#include "Controllers/DeltaEnemyController.h"
 #include "DataAssets/Skill/SkillDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameUserSettings/FrontGameUserSettings.h"
@@ -35,7 +36,7 @@ void ADeltaEnemyCharacter::PossessedBy(AController* NewController)
 
 	if (NewController)
 	{
-		DeltaAIController = Cast<ADeltaAIController>(NewController);
+		DeltaAIController = Cast<ADeltaEnemyController>(NewController);
 	}
 	
 }
@@ -44,7 +45,7 @@ void ADeltaEnemyCharacter::HandleCharacterDeath(AActor* DeathCharacter)
 {
 	Super::HandleCharacterDeath(DeathCharacter);
 	
-	DeltaAIController = DeltaAIController ? DeltaAIController : Cast<ADeltaAIController>(GetController());
+	DeltaAIController = DeltaAIController ? DeltaAIController : Cast<ADeltaEnemyController>(GetController());
 	
 	if (!DeltaAIController || !DeltaAIController->GetBrainComponent()) return;
 	DeltaAIController->GetBrainComponent()->Cleanup();
@@ -69,25 +70,11 @@ void ADeltaEnemyCharacter::UpdateSkillTarget()
 {
 	Super::UpdateSkillTarget();
 	
-	DeltaAIController = DeltaAIController ? DeltaAIController : Cast<ADeltaAIController>(GetController());
+	DeltaAIController = DeltaAIController ? DeltaAIController : Cast<ADeltaEnemyController>(GetController());
 	if (!DeltaAIController || !DeltaAIController->GetCurrentTarget()) return;
 
 	SetCurrentSkillTarget(DeltaAIController->GetCurrentTarget());
 	SetSkillTargetLocation(DeltaAIController->GetCurrentTarget()->GetActorLocation());
-}
-
-void ADeltaEnemyCharacter::SetCurrentSkill()
-{
-	int RandIndex = FMath::RandRange(0, SkillDataAssets.Num() - 1);
-
-	CachedSkillData = SkillDataAssets[RandIndex];
-}
-
-EDeltaSkillType ADeltaEnemyCharacter::GetCurrentSkill() const
-{
-	if (!CachedSkillData.IsValid()) return EDeltaSkillType::Max;
-
-	return CachedSkillData->Type;
 }
 
 void ADeltaEnemyCharacter::ApplyDifficultySettings()

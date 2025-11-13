@@ -37,9 +37,8 @@ void ADeltaBaseGameMode::BeginPlay()
 
 	if (!GetWorld()) return;
 
-	// Find all playable characters (player + AI-controlled teammates)
 	TArray<AActor*> PlayableActors;
-	UGameplayStatics::GetAllActorsOfClass(this, ADeltaPlayableCharacter::StaticClass(), PlayableActors);
+	UGameplayStatics::GetAllActorsOfClass(this, ADeltaBaseCharacter::StaticClass(), PlayableActors);
 	for (AActor* Actor : PlayableActors)
 	{
 		if (ADeltaPlayableCharacter* PlayableCharacter = Cast<ADeltaPlayableCharacter>(Actor))
@@ -47,19 +46,15 @@ void ADeltaBaseGameMode::BeginPlay()
 			PlayableCharacters.Add(PlayableCharacter);
 			PlayableCharacter->OnCharacterDeath.AddDynamic(this, &ThisClass::HandlePlayableCharacterDeath);
 		}
-	}
-
-	// Find all enemy characters
-	TArray<AActor*> EnemyActors;
-	UGameplayStatics::GetAllActorsOfClass(this, ADeltaEnemyCharacter::StaticClass(), EnemyActors);
-	for (AActor* Actor : EnemyActors)
-	{
-		if (ADeltaEnemyCharacter* EnemyCharacter = Cast<ADeltaEnemyCharacter>(Actor))
+		else if (ADeltaEnemyCharacter* EnemyCharacter = Cast<ADeltaEnemyCharacter>(Actor))
 		{
 			EnemyCharacters.Add(EnemyCharacter);
 			EnemyCharacter->OnCharacterDeath.AddDynamic(this, &ThisClass::HandleEnemyCharacterDeath);
 		}
 	}
+
+	RegisterTeamMember();
+
 }
 
 void ADeltaBaseGameMode::GameStart()
@@ -121,7 +116,6 @@ void ADeltaBaseGameMode::HandlePlayableCharacterDeath(AActor* DeathPlayable)
 
 	PlayableCharacters.Remove(CachedDeathPlayable);
 
-	// Game is lost when all playable characters (all team members) are dead
 	if (PlayableCharacters.Num() == 0)
 	{
 		bIsWin = false;
@@ -145,19 +139,15 @@ bool ADeltaBaseGameMode::IsPlayerWin()
 	return bIsWin;
 }
 
-void ADeltaBaseGameMode::RegisterTeamMember(ADeltaPlayableCharacter* TeamMember)
+void ADeltaBaseGameMode::RegisterTeamMember()
 {
-	if (!TeamMember) return;
+	if (PlayableCharacters.IsEmpty()) return;
 
-	// Don't add duplicates
-	if (PlayableCharacters.Contains(TeamMember)) return;
-
-	PlayableCharacters.Add(TeamMember);
-	TeamMember->OnCharacterDeath.AddDynamic(this, &ThisClass::HandlePlayableCharacterDeath);
-
-	// Register with player controller for team management
-	if (ADeltaPlayerController* PlayerController = Cast<ADeltaPlayerController>(GetWorld()->GetFirstPlayerController()))
+	ADeltaPlayerController* PlayerController = Cast<ADeltaPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (!PlayerController) return;
+	
+	for (auto TeamMember : PlayableCharacters)
 	{
-		PlayerController->RegisterTeamMember(TeamMember);
+		PlayerController->RegisterTeamMember(TeamMember.Get());
 	}
 }

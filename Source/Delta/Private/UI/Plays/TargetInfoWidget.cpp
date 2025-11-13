@@ -56,7 +56,7 @@ void UTargetInfoWidget::RemoveInfo()
 	HealthBar->SetVisibility(ESlateVisibility::Hidden);
 }
 
-void UTargetInfoWidget::HandleHealthChanged(float CurrentHealth, float MaxHealth, bool bIsDamaged)
+void UTargetInfoWidget::HandleHealthChanged(AActor* ChangedActor, float CurrentHealth, float MaxHealth, bool bIsDamaged)
 {
 	HealthBar->SetPercent(CurrentHealth / MaxHealth);
 }

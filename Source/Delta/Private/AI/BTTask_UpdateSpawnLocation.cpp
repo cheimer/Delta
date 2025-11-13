@@ -4,7 +4,7 @@
 #include "AI/BTTask_UpdateSpawnLocation.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Controllers/DeltaAIController.h"
+#include "Controllers/DeltaEnemyController.h"
 
 UBTTask_UpdateSpawnLocation::UBTTask_UpdateSpawnLocation()
 {
@@ -15,7 +15,7 @@ EBTNodeResult::Type UBTTask_UpdateSpawnLocation::ExecuteTask(UBehaviorTreeCompon
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	ADeltaAIController* OwnerController = Cast<ADeltaAIController>(OwnerComp.GetAIOwner());
+	ADeltaEnemyController* OwnerController = Cast<ADeltaEnemyController>(OwnerComp.GetAIOwner());
 	if (!OwnerController) return EBTNodeResult::Failed;
 
 	UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();

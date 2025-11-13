@@ -4,6 +4,8 @@
 #include "UI/Plays/PlayWidget.h"
 
 #include "Characters/DeltaBaseCharacter.h"
+#include "Characters/DeltaPlayableCharacter.h"
+#include "Components/Image.h"
 #include "Components/ManaComponent.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
@@ -27,38 +29,56 @@ void UPlayWidget::NativeConstruct()
 	PlayerController = PlayerController ? PlayerController : Cast<ADeltaPlayerController>(GetOwningPlayer());
 	if (!PlayerController) return;
 
-	if (HealthBar && CurrentHealthText && MaxHealthText)
+	if (PlayerController->GetTeamMembers().IsValidIndex(0))
 	{
-		if (UHealthComponent* HealthComp = Cast<UHealthComponent>(OwnerPawn->FindComponentByClass<UHealthComponent>()))
+		FPlayableInfo PlayableInfo0;
+		PlayableInfo0.PlayableCharacter = PlayerController->GetTeamMembers()[0];
+		PlayableInfo0.Icon = PlayerImage;
+		PlayableInfo0.HealthBar = HealthBar;
+		PlayableInfo0.ManaBar = ManaBar;
+		PlayableInfos.Add(PlayableInfo0);
+	}
+
+	if (PlayerController->GetTeamMembers().IsValidIndex(1))
+	{
+		FPlayableInfo PlayableInfo1;
+		PlayableInfo1.PlayableCharacter = PlayerController->GetTeamMembers()[1];
+		PlayableInfo1.Icon = AllyImage0;
+		PlayableInfo1.HealthBar = AllyHealthBar0;
+		PlayableInfo1.ManaBar = AllyManaBar0;
+		PlayableInfos.Add(PlayableInfo1);
+	}
+	if (PlayerController->GetTeamMembers().IsValidIndex(2))
+	{
+		FPlayableInfo PlayableInfo2;
+		PlayableInfo2.PlayableCharacter = PlayerController->GetTeamMembers()[2];
+		PlayableInfo2.Icon = AllyImage1;
+		PlayableInfo2.HealthBar = AllyHealthBar1;
+		PlayableInfo2.ManaBar = AllyManaBar1;
+		PlayableInfos.Add(PlayableInfo2);
+	}
+
+	for (int i = 0; i < PlayableInfos.Num(); i++)
+	{
+		if (UHealthComponent* HealthComp = Cast<UHealthComponent>(PlayableInfos[i].PlayableCharacter->FindComponentByClass<UHealthComponent>()))
 		{
-			float CurrentHealth =  HealthComp->GetCurrentHealth();
+			float CurrentHealth = HealthComp->GetCurrentHealth();
 			float MaxHealth = HealthComp->GetMaxHealth();
-			HandleHealthChanged(CurrentHealth, MaxHealth, false);
+			HandleHealthChanged(PlayableInfos[i].PlayableCharacter.Get(), CurrentHealth, MaxHealth, false);
 			
 			HealthComp->OnHealthChanged.AddUniqueDynamic(this, &ThisClass::HandleHealthChanged);
 		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Health related widget not construct"));
-	}
-	
-	if (ManaBar && CurrentManaText && MaxManaText)
-	{
-		if (UManaComponent* ManaComp = Cast<UManaComponent>(OwnerPawn->FindComponentByClass<UManaComponent>()))
+		
+		if (UManaComponent* ManaComp = Cast<UManaComponent>(PlayableInfos[i].PlayableCharacter->FindComponentByClass<UManaComponent>()))
 		{
 			float CurrentMana = ManaComp->GetCurrentMana();
 			float MaxMana = ManaComp->GetMaxMana();
-			HandleManaChanged(CurrentMana, MaxMana);
+			HandleManaChanged(PlayableInfos[i].PlayableCharacter.Get(), CurrentMana, MaxMana);
 			
 			ManaComp->OnManaChanged.AddUniqueDynamic(this, &ThisClass::HandleManaChanged);
 		}
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Health related widget not construct"));
-	}
-
+	
 	if (TargetInfoWidget)
 	{
 		TargetInfoWidget->SetVisibility(ESlateVisibility::Hidden);
@@ -118,20 +138,46 @@ void UPlayWidget::NativeDestruct()
 	Super::NativeDestruct();
 }
 
-void UPlayWidget::HandleHealthChanged(float CurrentHealth, float MaxHealth, bool bIsDamaged)
+void UPlayWidget::HandleHealthChanged(AActor* ChangedActor, float CurrentHealth, float MaxHealth, bool bIsDamaged)
 {
-	HealthBar->SetPercent(CurrentHealth / MaxHealth);
+	for (auto ActorInfo : PlayableInfos)
+	{
+		if (ActorInfo.PlayableCharacter == ChangedActor)
+		{
+			ActorInfo.HealthBar->SetPercent(CurrentHealth / MaxHealth);
+			break;
+		}
+	}
 
-	CurrentHealthText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), CurrentHealth)));
-	MaxHealthText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), MaxHealth)));
+	if (ADeltaPlayableCharacter* PlayingActor = Cast<ADeltaPlayableCharacter>(ChangedActor))
+	{
+		if (PlayingActor->GetIsPlayerControlled())
+		{
+			CurrentHealthText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), CurrentHealth)));
+			MaxHealthText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), MaxHealth)));
+		}
+	}
 }
 
-void UPlayWidget::HandleManaChanged(float CurrentMana, float MaxMana)
+void UPlayWidget::HandleManaChanged(AActor* ChangedActor, float CurrentMana, float MaxMana)
 {
-	ManaBar->SetPercent(CurrentMana / MaxMana);
-	
-	CurrentManaText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), CurrentMana)));
-	MaxManaText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), MaxMana)));
+	for (auto ActorInfo : PlayableInfos)
+	{
+		if (ActorInfo.PlayableCharacter == ChangedActor)
+		{
+			ActorInfo.ManaBar->SetPercent(CurrentMana / MaxMana);
+			break;
+		}
+	}
+
+	if (ADeltaPlayableCharacter* PlayingActor = Cast<ADeltaPlayableCharacter>(ChangedActor))
+	{
+		if (PlayingActor->GetIsPlayerControlled())
+		{
+			CurrentManaText->SetText(FText::FromString(FString::Printf(TEXT("%d"), static_cast<int>(CurrentMana))));
+			MaxManaText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), MaxMana)));
+		}
+	}
 }
 
 void UPlayWidget::ShowTargetInfo(const AActor* Target) const
@@ -177,4 +223,37 @@ void UPlayWidget::SelectSkill(const int SelectSet, const int SelectIndex, const 
 	if (!SkillInfoArray.IsValidIndex(SelectSet)) return;
 
 	SkillInfoArray[SelectSet]->SetSelectImage(SelectIndex, bIsSelect);
+}
+
+void UPlayWidget::ChangeCharacter(const AActor* CurrentCharacter, const AActor* NewCharacter)
+{
+	int BeforeIndex = -1, NextIndex = -1;
+	for (int i = 0; i < PlayableInfos.Num(); i++)
+	{
+		if (!PlayableInfos[i].PlayableCharacter.IsValid()) continue;
+
+		if (PlayableInfos[i].PlayableCharacter.Get() == CurrentCharacter)
+		{
+			BeforeIndex = i;
+		}
+		else if (PlayableInfos[i].PlayableCharacter.Get() == NewCharacter)
+		{
+			NextIndex = i;
+		}
+	}
+
+	if (BeforeIndex == -1 || NextIndex == -1) return;
+
+	ChangeInfo(PlayableInfos[BeforeIndex], PlayableInfos[NextIndex]);
+}
+
+void UPlayWidget::ChangeInfo(FPlayableInfo& BeforeInfo, FPlayableInfo& AfterInfo)
+{
+	AActor* BeforeCharacter = BeforeInfo.PlayableCharacter.Get();
+	BeforeInfo.PlayableCharacter = AfterInfo.PlayableCharacter;
+	AfterInfo.PlayableCharacter = BeforeCharacter;
+
+	FSlateBrush BeforeIcon = BeforeInfo.Icon->GetBrush();
+	BeforeInfo.Icon->SetBrush(AfterInfo.Icon->GetBrush());
+	AfterInfo.Icon->SetBrush(BeforeIcon);
 }

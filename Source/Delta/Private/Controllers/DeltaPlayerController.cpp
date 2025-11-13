@@ -6,15 +6,21 @@
 #include "EnhancedInputSubsystems.h"
 #include "Characters/DeltaPlayableCharacter.h"
 #include "Characters/DeltaBaseCharacter.h"
-#include "Controllers/DeltaAllyController.h"
+#include "Components/DamageVignetteComponent.h"
+#include "Components/PostProcessComponent.h"
 #include "Components/SlateWrapperTypes.h"
 #include "DataAssets/Input/InputDataAsset.h"
 #include "GameModes/DeltaBaseGameMode.h"
-#include "Helper/DeltaDebugHelper.h"
 #include "Kismet/GameplayStatics.h"
+#include "PostProcess/PostProcessHolder.h"
 #include "SaveGame/DeltaSaveGame.h"
 #include "Subsystem/SaveGameSubsystem.h"
 #include "UI/DeltaHUD.h"
+
+ADeltaPlayerController::ADeltaPlayerController()
+{
+	
+}
 
 void ADeltaPlayerController::BeginPlay()
 {
@@ -28,17 +34,16 @@ void ADeltaPlayerController::BeginPlay()
 		EnhancedInputSubsystem->AddMappingContext(ControllerInputDataAsset->InputMappingContext, static_cast<int32>(EInputPriority::Controller));
 	}
 
-	OwningPlayerCharacter = OwningPlayerCharacter.IsValid()? OwningPlayerCharacter : Cast<ADeltaPlayableCharacter>(GetPawn());
-	if (OwningPlayerCharacter.IsValid())
-	{
-		OwningPlayerCharacter->OnChangeSkillSet.AddDynamic(this, &ThisClass::HandleChangeSkillSet);
-		OwningPlayerCharacter->OnSelectSkill.AddDynamic(this, &ThisClass::HandleSelectSkill);
-
-		// Register the player character as the first team member
-		RegisterTeamMember(OwningPlayerCharacter.Get());
-	}
-
 	DeltaHUD = Cast<ADeltaHUD>(GetHUD());
+
+	if (PostProcessHolderClass)
+	{
+		PostProcessHolder = GetWorld()->SpawnActor<APostProcessHolder>(PostProcessHolderClass);
+		if (PostProcessHolder)
+		{
+			PostProcessHolder->SetOwner(this);
+		}
+	}
 }
 
 void ADeltaPlayerController::SetupInputComponent()
@@ -58,6 +63,57 @@ void ADeltaPlayerController::SetupInputComponent()
 		
 		EnhancedInputComponent->BindAction(InputActionPtr, TriggerEvent, this, FunctionName);
 	}
+
+}
+
+void ADeltaPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+	
+	OwningPlayerCharacter = Cast<ADeltaPlayableCharacter>(GetPawn());
+	if (OwningPlayerCharacter.IsValid())
+	{
+		OwningPlayerCharacter->OnChangeSkillSet.AddDynamic(this, &ThisClass::HandleChangeSkillSet);
+		OwningPlayerCharacter->OnSelectSkill.AddDynamic(this, &ThisClass::HandleSelectSkill);
+
+		OwningPlayerCharacter->SetCurrentSkillSetIndex(BeforeCharacterData.SkillSetIndex);
+		OwningPlayerCharacter->SetCurrentSkillKeyIndex(BeforeCharacterData.SkillKeyIndex);
+		OwningPlayerCharacter->SetTargetArmLength(BeforeCharacterData.TargetArmLength);
+	}
+}
+
+void ADeltaPlayerController::OnUnPossess()
+{
+	Super::OnUnPossess();
+
+	if (OwningPlayerCharacter.IsValid())
+	{
+		if (OwningPlayerCharacter->OnChangeSkillSet.IsAlreadyBound(this, &ThisClass::HandleChangeSkillSet))
+		{
+			OwningPlayerCharacter->OnChangeSkillSet.RemoveDynamic(this, &ThisClass::HandleChangeSkillSet);
+		}
+
+		if (OwningPlayerCharacter->OnSelectSkill.IsAlreadyBound(this, &ThisClass::HandleSelectSkill))
+		{
+			OwningPlayerCharacter->OnSelectSkill.RemoveDynamic(this, &ThisClass::HandleSelectSkill);
+		}
+
+		BeforeCharacterData.SkillSetIndex = OwningPlayerCharacter->GetCurrentSkillSetIndex();
+		BeforeCharacterData.SkillKeyIndex = OwningPlayerCharacter->GetCurrentSkillKeyIndex();
+		BeforeCharacterData.TargetArmLength = OwningPlayerCharacter->GetTargetArmLengthGoTo();
+	}
+}
+
+void ADeltaPlayerController::PlayerDamaged()
+{
+	OwningPlayerCharacter = OwningPlayerCharacter.IsValid()? OwningPlayerCharacter : Cast<ADeltaPlayableCharacter>(GetPawn());
+	if (!OwningPlayerCharacter.IsValid()) return;
+
+	if (PostProcessHolder)
+	{
+		PostProcessHolder->UpdateDamageVignette(OwningPlayerCharacter->GetHealthPercentage());
+	}
+	
 }
 
 void ADeltaPlayerController::HandleChangeSkillSet(int BeforeIndex, int AfterIndex)
@@ -266,17 +322,10 @@ void ADeltaPlayerController::RegisterTeamMember(ADeltaBaseCharacter* TeamMember)
 {
 	if (!TeamMember) return;
 
-	// Don't add duplicates
 	if (TeamMembers.Contains(TeamMember)) return;
 
 	TeamMembers.Add(TeamMember);
 
-	// If this is the first team member, possess it
-	if (TeamMembers.Num() == 1)
-	{
-		Possess(TeamMember);
-		CurrentCharacterIndex = 0;
-	}
 }
 
 void ADeltaPlayerController::UnregisterTeamMember(ADeltaBaseCharacter* TeamMember)
@@ -312,7 +361,7 @@ void ADeltaPlayerController::SwitchToNextCharacter()
 	SwitchCharacter(NextIndex);
 }
 
-void ADeltaPlayerController::SwitchToPreviousCharacter()
+void ADeltaPlayerController::SwitchToBeforeCharacter()
 {
 	if (TeamMembers.Num() <= 1) return;
 
@@ -320,57 +369,49 @@ void ADeltaPlayerController::SwitchToPreviousCharacter()
 	SwitchCharacter(PrevIndex);
 }
 
-void ADeltaPlayerController::SwitchToCharacterByIndex(int32 Index)
-{
-	if (Index < 0 || Index >= TeamMembers.Num()) return;
-
-	SwitchCharacter(Index);
-}
-
 void ADeltaPlayerController::SwitchCharacter(int32 NewIndex)
 {
+	DeltaHUD = DeltaHUD.IsValid() ? DeltaHUD.Get() : Cast<ADeltaHUD>(GetHUD());
+	if (!DeltaHUD.IsValid()) return;
+
 	if (NewIndex < 0 || NewIndex >= TeamMembers.Num()) return;
 	if (NewIndex == CurrentCharacterIndex && GetPawn() == TeamMembers[NewIndex]) return;
 
-	ADeltaBaseCharacter* CurrentCharacter = GetPawn() ? Cast<ADeltaBaseCharacter>(GetPawn()) : nullptr;
-	ADeltaBaseCharacter* NewCharacter = TeamMembers[NewIndex];
+	ADeltaPlayableCharacter* CurrentCharacter = GetPawn() ? Cast<ADeltaPlayableCharacter>(GetPawn()) : nullptr;
+	ADeltaPlayableCharacter* NewCharacter = Cast<ADeltaPlayableCharacter>(TeamMembers[NewIndex]);
 
-	if (!NewCharacter || NewCharacter->GetIsDead()) return;
+	if (!CurrentCharacter || !NewCharacter || NewCharacter->GetIsDead()) return;
+	if (!PlayerCameraManager) return;
+	PlayerCameraManager->StartCameraFade(0.0f, 1.0f, FadeDuration, FLinearColor::Black, false, true);
 
-	// Handle playable character transition - notify when losing player control
-	if (ADeltaPlayableCharacter* CurrentPlayable = Cast<ADeltaPlayableCharacter>(CurrentCharacter))
-	{
-		CurrentPlayable->OnPlayerControlEnd();
-	}
+	UnPossess();
+	
+	FTimerHandle SwitchTimer;
+	GetWorld()->GetTimerManager().SetTimer(SwitchTimer,
+		[this, CurrentCharacter, NewCharacter, NewIndex]()
+		{
+			DeltaHUD->ChangeCharacter(CurrentCharacter, NewCharacter);
+			CurrentCharacter->OnPlayerControlEnd();
+			
+			Possess(NewCharacter);
+			OwningPlayerCharacter = NewCharacter;
+			CurrentCharacterIndex = NewIndex;
+			
+			PlayerCameraManager->StartCameraFade(1.0f, 0.0f, FadeDuration, FLinearColor::Black, false, true);
+		}, 
+		FadeDuration, false
+	);
+	
 
-	// Unpossess current character
-	if (CurrentCharacter)
-	{
-		UnPossess();
-	}
-
-	// Possess new character
-	Possess(NewCharacter);
-	CurrentCharacterIndex = NewIndex;
-
-	// Update OwningPlayerCharacter when switching
-	OwningPlayerCharacter = Cast<ADeltaPlayableCharacter>(NewCharacter);
-
-	// Handle playable character transition - notify when gaining player control
-	if (ADeltaPlayableCharacter* NewPlayable = Cast<ADeltaPlayableCharacter>(NewCharacter))
-	{
-		NewPlayable->OnPlayerControlStart();
-	}
-
-	UE_LOG(LogTemp, Log, TEXT("Switched to character %d: %s"), NewIndex, *NewCharacter->GetDisplayName());
 }
 
 ADeltaBaseCharacter* ADeltaPlayerController::GetCurrentCharacter() const
 {
-	if (CurrentCharacterIndex >= 0 && CurrentCharacterIndex < TeamMembers.Num())
+	if (TeamMembers.IsValidIndex(CurrentCharacterIndex))
 	{
 		return TeamMembers[CurrentCharacterIndex];
 	}
+	
 	return nullptr;
 }
 

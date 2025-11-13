@@ -6,6 +6,7 @@
 #include "Characters/DeltaBaseCharacter.h"
 #include "Components/BoxComponent.h"
 #include "Components/CombatComponent.h"
+#include "Controllers/DeltaAIController.h"
 
 USkillLightning::USkillLightning()
 {
@@ -28,6 +29,11 @@ void USkillLightning::BeginSkill(UCombatComponent* InCombatComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("SkillCollisionBox is invalid"));
 		return;
+	}
+
+	if (ADeltaAIController* AIController = Cast<ADeltaAIController>(OwnerDeltaCharacter->GetController()))
+	{
+		AIController->RotateToTarget();
 	}
 
 	GetWorld()->GetTimerManager().SetTimer(HitOverlapTimer, this, &USkillLightning::HitOverlapActor, TickRate, true);

@@ -9,7 +9,7 @@
 
 class ADeltaBaseCharacter;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnManaChanged, float, CurrentMana, float, MaxMana);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnManaChanged, AActor*, ChangedActor, float, CurrentMana, float, MaxMana);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DELTA_API UManaComponent : public UActorComponent

@@ -15,8 +15,6 @@ void UAnimNotifyState_UpdateWarpTarget::NotifyBegin(USkeletalMeshComponent* Mesh
 	ADeltaBaseCharacter* DeltaCharacter = Cast<ADeltaBaseCharacter>(MeshComp->GetOwner());
 	if (!DeltaCharacter) return;
 
-	OwnerCharacter = DeltaCharacter;
-
 	DeltaCharacter->UpdateMotionWarpingTarget();
 }
 
@@ -25,7 +23,8 @@ void UAnimNotifyState_UpdateWarpTarget::NotifyTick(USkeletalMeshComponent* MeshC
 {
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 
-	if (!OwnerCharacter.IsValid()) return;
+	ADeltaBaseCharacter* DeltaCharacter = Cast<ADeltaBaseCharacter>(MeshComp->GetOwner());
+	if (!DeltaCharacter) return;
 
-	OwnerCharacter->UpdateMotionWarpingTarget();
+	DeltaCharacter->UpdateMotionWarpingTarget();
 }

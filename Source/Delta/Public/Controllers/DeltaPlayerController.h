@@ -7,6 +7,9 @@
 #include "Interfaces/SaveGameInterface.h"
 #include "DeltaPlayerController.generated.h"
 
+class APostProcessHolder;
+class UPostProcessComponent;
+class UDamageVignetteComponent;
 class ADeltaPlayableCharacter;
 class ADeltaBaseCharacter;
 class UInputDataAsset;
@@ -14,21 +17,32 @@ class ADeltaHUD;
 /**
  *
  */
+
+struct FBeforeCharacterData
+{
+	int SkillSetIndex = 0;
+	int SkillKeyIndex = 0;
+	float TargetArmLength = 350.0f;
+};
+
 UCLASS()
 class DELTA_API ADeltaPlayerController : public APlayerController, public ISaveGameInterface
 {
 	GENERATED_BODY()
 
 public:
+	ADeltaPlayerController();
+
+	void PlayerDamaged();
+	
 	void TargetDetected(const AActor* Target);
 	void TargetLost();
 
-	// Team management and character switching
 	void RegisterTeamMember(ADeltaBaseCharacter* TeamMember);
 	void UnregisterTeamMember(ADeltaBaseCharacter* TeamMember);
+	
 	void SwitchToNextCharacter();
-	void SwitchToPreviousCharacter();
-	void SwitchToCharacterByIndex(int32 Index);
+	void SwitchToBeforeCharacter();
 
 	TArray<UTexture2D*>& GetSkillTextures(int Index);
 	TArray<int32> GetSkillCosts(int Index);
@@ -58,6 +72,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
+	virtual void OnPossess(APawn* InPawn) override;
+	virtual void OnUnPossess() override;
 
 	UFUNCTION()
 	void HandleChangeSkillSet(int BeforeIndex, int AfterIndex);
@@ -66,6 +82,8 @@ protected:
 	void HandleSelectSkill(int SelectSet, int SelectIndex, bool bIsSelect);
 
 private:
+	void SwitchCharacter(int32 NewIndex);
+
 	TWeakObjectPtr<ADeltaHUD> DeltaHUD;
 	TWeakObjectPtr<ADeltaPlayableCharacter> OwningPlayerCharacter;
 
@@ -79,13 +97,19 @@ private:
 
 	FDateTime LastSavedTime;
 
-	// Team management
 	UPROPERTY()
 	TArray<ADeltaBaseCharacter*> TeamMembers;
 
 	int32 CurrentCharacterIndex = 0;
-
-	void SwitchCharacter(int32 NewIndex);
+	FBeforeCharacterData BeforeCharacterData;
+	
+	UPROPERTY(EditAnywhere, Category = "Switch Character")
+	float FadeDuration = 0.5f;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "PostProcesser")
+	TSubclassOf<APostProcessHolder> PostProcessHolderClass;
+	UPROPERTY()
+	APostProcessHolder* PostProcessHolder;
 
 public:
 #pragma region GetSet

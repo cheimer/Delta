@@ -4,6 +4,7 @@
 #include "Subsystem/HitStopSubsystem.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "LevelInstance/LevelInstanceTypes.h"
 
 UHitStopSubsystem* UHitStopSubsystem::Get(const UObject* WorldContextObject)
 {
@@ -26,7 +27,7 @@ bool UHitStopSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 	return FoundClasses.IsEmpty();
 }
 
-bool UHitStopSubsystem::StartHitStop(const float MaxDuration, const float TimeDilation, const EHitStopPriority Priority)
+bool UHitStopSubsystem::StartHitStop(const AActor* OccurActor, const float MaxDuration, const float TimeDilation, const EHitStopPriority Priority)
 {
 	if (!GetWorld()) return false;
 	
@@ -36,7 +37,9 @@ bool UHitStopSubsystem::StartHitStop(const float MaxDuration, const float TimeDi
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), TimeDilation);
 
 		GetWorld()->GetTimerManager().ClearTimer(HitStopTimerHandle);
-		GetWorld()->GetTimerManager().SetTimer(HitStopTimerHandle, this, &ThisClass::EndHitStop, MaxDuration, false);
+		GetWorld()->GetTimerManager().SetTimer(HitStopTimerHandle, this, &ThisClass::EndHitStopTimer, MaxDuration, false);
+
+		RequestActors.Add(OccurActor);
 
 		return true;
 	}
@@ -47,9 +50,39 @@ bool UHitStopSubsystem::StartHitStop(const float MaxDuration, const float TimeDi
 	
 }
 
-void UHitStopSubsystem::EndHitStop()
+void UHitStopSubsystem::EndHitStopTimer()
 {
 	if (!GetWorld()) return;
 	
-	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+	for (auto It = RequestActors.CreateIterator(); It; ++It)
+	{
+		if (!It->IsValid())
+		{
+			It.RemoveCurrent();
+		}
+	}
+
+	if (RequestActors.IsEmpty())
+	{
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+
+		CurrentPriority = EHitStopPriority::Default;
+	}
+}
+
+void UHitStopSubsystem::EndHitStop(const AActor* OccurActor)
+{
+	if (!GetWorld()) return;
+
+	if (RequestActors.Find(OccurActor))
+	{
+		RequestActors.Remove(OccurActor);
+	}
+	
+	if (RequestActors.IsEmpty())
+	{
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+
+		CurrentPriority = EHitStopPriority::Default;
+	}
 }

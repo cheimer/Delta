@@ -27,6 +27,8 @@ public:
 	void ChangeSkillSet(int BeforeIndex, int AfterIndex);
 	void SelectSkill(int SelectSet, int SelectIndex, bool bIsSelect);
 
+	void ChangeCharacter(const AActor* BeforeActor, const AActor* AfterActor);
+
 	void SetHudVisibility(const ESlateVisibility Visibility);
 
 protected:

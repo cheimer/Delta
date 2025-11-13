@@ -21,7 +21,7 @@ class DELTA_API ADeltaAIController : public AAIController
 public:
 	ADeltaAIController();
 	
-	AActor* GetRandPlayableTarget(const float MaxDistance = 1000.0f);
+	AActor* SetRandTarget(const float MaxDistance = 1000.0f);
 
 	void SetCurrentSkill();
 	TOptional<float> GetCurrentSkillRange();
@@ -29,24 +29,22 @@ public:
 	
 	void AttackTarget();
 
+	void RotateToTarget();
+
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	UBehaviorTree* BehaviorTree;
+	UBehaviorTree* BehaviorTree = nullptr;
 
-private:
-	TWeakObjectPtr<ADeltaEnemyCharacter> DeltaOwnerCharacter;
-	TWeakObjectPtr<ADeltaBaseCharacter> CurrentPlayableTarget;
+	TWeakObjectPtr<ADeltaBaseCharacter> DeltaOwnerCharacter;
+	TWeakObjectPtr<ADeltaBaseCharacter> CurrentTarget;
 	UPROPERTY()
-	TArray<ADeltaBaseCharacter*> PlayableTargets;
-
-	FVector SpawnLocation;
+	TArray<TWeakObjectPtr<ADeltaBaseCharacter>> Targets;
 
 public:
 #pragma region GetSet
-	ADeltaBaseCharacter* GetCurrentTarget() const {return CurrentPlayableTarget.IsValid() ? CurrentPlayableTarget.Get() : nullptr;}
-	FVector GetSpawnLocation() const { return SpawnLocation; }
+	ADeltaBaseCharacter* GetCurrentTarget() const {return CurrentTarget.IsValid() ? CurrentTarget.Get() : nullptr;}
 	
 #pragma endregion GetSet
 	

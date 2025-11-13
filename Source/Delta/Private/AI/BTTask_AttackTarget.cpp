@@ -34,7 +34,6 @@ EBTNodeResult::Type UBTTask_AttackTarget::ExecuteTask(UBehaviorTreeComponent& Ow
 	if (OwnerAnimIns->IsAnyMontagePlaying()) return EBTNodeResult::Failed;
 	
 	OwnerAIController->AttackTarget();
-	UE_LOG(LogTemp, Warning, TEXT("%f"), OwnerAIController->GetCurrentSkillDuration());
 	OwnerComp.GetBlackboardComponent()->SetValueAsFloat(AttackDelayTimeKey.SelectedKeyName, OwnerAIController->GetCurrentSkillDuration());
 	
 	return EBTNodeResult::Succeeded;

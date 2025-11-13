@@ -8,6 +8,7 @@
 #include "DeltaTypes/DeltaEnumTypes.h"
 #include "DeltaPlayableCharacter.generated.h"
 
+class ADeltaAllyController;
 class ADeltaPlayerController;
 class USkillDataAsset;
 class UInputDataAsset;
@@ -45,8 +46,7 @@ struct FSkillTypeWrapper
 
 
 /**
- * Playable character that can be controlled by either player or AI
- * Supports switching between player control and AI control dynamically
+ * 
  */
 UCLASS()
 class DELTA_API ADeltaPlayableCharacter : public ADeltaBaseCharacter
@@ -67,20 +67,11 @@ public:
 	void LookAtCameraCenter();
 	void LookAtForward();
 
-	// Called when player takes control of this character
-	void OnPlayerControlStart();
-
-	// Called when player switches away from this character
 	void OnPlayerControlEnd();
 
-	// Check if currently controlled by player
-	bool IsPlayerControlled() const { return bIsPlayerControlled; }
-
-	// For AI: Set random skill from skill set
-	void SetRandomSkill();
-
-	// For AI: Get current skill selected
-	EDeltaSkillType GetCurrentSkill() const { return CurrentAISkill; }
+	virtual void SetCurrentSkill() override;
+	
+	void SetTargetArmLength(const float TargetArmLength);
 
 	FOnChangeSkillSet OnChangeSkillSet;
 	FOnSelectSkill OnSelectSkill;
@@ -93,26 +84,24 @@ public:
 	
 protected:
 	virtual void PossessedBy(AController* NewController) override;
-	virtual void UnPossessed() override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
+	virtual void TakeSkillDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser) override;
+	void StartCameraShake();
+
 	virtual void HandleCharacterDeath(AActor* DeathActor) override;
+
+	virtual void BeginSkill(const EDeltaSkillType SkillType) override;
+
+	virtual void SetCurrentAISkill();
 
 	TWeakObjectPtr<ADeltaBaseCharacter> CurrentLockTarget = nullptr;
 
-	// Whether this character is currently controlled by player
 	bool bIsPlayerControlled = false;
 
-	// Previous controller before player took control
-	UPROPERTY()
-	AController* PreviousController = nullptr;
-
-	// Current skill type for AI
-	EDeltaSkillType CurrentAISkill = EDeltaSkillType::Max;
-	
 #pragma region Inputs
 	UFUNCTION()
 	void Move(const FInputActionValue& Value);
@@ -147,6 +136,12 @@ protected:
 	UFUNCTION()
 	void SkillNext(const FInputActionValue& Value);
 	
+	UFUNCTION()
+	void CharacterBefore(const FInputActionValue& Value);
+	
+	UFUNCTION()
+	void CharacterNext(const FInputActionValue& Value);
+	
 #pragma endregion Inputs
 
 private:
@@ -167,6 +162,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputDataAsset* PlayerInputDataAsset;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "Camera")
+	TSubclassOf<UCameraShakeBase> DamagedCameraShakeClass;
+    
 	EPlayerStatus CurrentStatus = EPlayerStatus::Default;
 	EPlayerStatus CachedStatus = EPlayerStatus::Default;
 	
@@ -180,6 +178,7 @@ private:
 	bool bIsTargetUpdate = false;
 
 	TWeakObjectPtr<ADeltaPlayerController> PlayerController;
+	TWeakObjectPtr<ADeltaAllyController> AllyController;
 	
 #pragma region Components
 	UPROPERTY(VisibleAnywhere, Category = "Components")
@@ -200,7 +199,16 @@ private:
 	
 public:
 #pragma region GetSet
-	int GetCurrentSkillSetIndex() const { return CurrentSkillSetIndex; };
+	int GetCurrentSkillSetIndex() const { return CurrentSkillSetIndex; }
+	void SetCurrentSkillSetIndex(const int InCurrentSkillSetIndex) { CurrentSkillSetIndex = InCurrentSkillSetIndex; }
+	
+	int GetCurrentSkillKeyIndex() const { return CurrentSkillKeyIndex; }
+	void SetCurrentSkillKeyIndex(const int InCurrentSkillKeyIndex) { CurrentSkillKeyIndex = InCurrentSkillKeyIndex; }
+	
+	bool GetIsPlayerControlled() const { return bIsPlayerControlled; }
+
+	float GetTargetArmLengthGoTo() const { return TargetArmLengthGoTo; }
+	void SetTargetArmLengthGoTo(const float InTargetArmLengthGoTo) { TargetArmLengthGoTo = InTargetArmLengthGoTo; }
 	
 #pragma endregion GetSet
 

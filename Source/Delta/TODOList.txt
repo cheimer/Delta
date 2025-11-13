@@ -1,13 +1,11 @@
 // 한 거
 
 // 할 거
-동료 NPC 추가
 성능 최적화 프로파일링
 
 // 고민
 Automation Testing을 사용한 단위 테스트나 통합 테스트
 Procedural Content Generation 플러그인
-일반 적
 네트워크 플레이 추가
 
 //TODO: 해야할 일들

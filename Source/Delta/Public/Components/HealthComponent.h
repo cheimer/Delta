@@ -8,7 +8,7 @@
 
 class ADeltaBaseCharacter;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnHealthChanged, float, CurrentHealth, float, MaxHealth, bool, bIsDamaged);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChanged, AActor*, ChangedActor, float, CurrentHealth, float, MaxHealth, bool, bIsDamaged);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DELTA_API UHealthComponent : public UActorComponent
@@ -21,7 +21,9 @@ public:
 	void TakeDamage(float Damage, AActor* DamageCauser);
 
 	float GetHealthPercentage() const;
-	void SetHealthPercentage(const float HealthPercentage);
+	void SetHealthPercentage(float HealthPercentage);
+
+	bool CauseDamage(const float Damage);
 
 	FOnHealthChanged OnHealthChanged;
 	

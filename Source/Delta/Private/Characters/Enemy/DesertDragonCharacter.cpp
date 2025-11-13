@@ -15,7 +15,6 @@
 ADesertDragonCharacter::ADesertDragonCharacter()
 {
 	GetCharacterMovement()->MaxAcceleration = 20480.0f;
-	GetCharacterMovement()->GravityScale = 0.0f;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->RotationRate = FRotator(0, 360.0f, 0);

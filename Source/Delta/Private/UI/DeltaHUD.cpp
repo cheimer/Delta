@@ -119,6 +119,16 @@ void ADeltaHUD::SelectSkill(int SelectSet, int SelectIndex, bool bIsSelect)
 
 }
 
+void ADeltaHUD::ChangeCharacter(const AActor* BeforeActor, const AActor* AfterActor)
+{
+	if (!DeltaWidgets.Contains(EDeltaWidgetType::Play)) return;
+
+	if (UPlayWidget* PlayWidget = Cast<UPlayWidget>(DeltaWidgets[EDeltaWidgetType::Play]))
+	{
+		PlayWidget->ChangeCharacter(BeforeActor, AfterActor);
+	}
+}
+
 void ADeltaHUD::SetHudVisibility(const ESlateVisibility Visibility)
 {
 	CurrentWidget->SetVisibility(Visibility);

@@ -6,7 +6,7 @@
 #include "Characters/DeltaBaseCharacter.h"
 #include "DeltaEnemyCharacter.generated.h"
 
-class ADeltaAIController;
+class ADeltaEnemyController;
 /**
  * 
  */
@@ -22,9 +22,6 @@ public:
 	virtual void EndSkillAnimation() override;
 
 	virtual void UpdateSkillTarget() override;
-
-	virtual void SetCurrentSkill();
-	EDeltaSkillType GetCurrentSkill() const;
 
 	void ApplyDifficultySettings();
 	
@@ -43,6 +40,6 @@ protected:
 
 private:
 	UPROPERTY()
-	ADeltaAIController* DeltaAIController;
+	ADeltaEnemyController* DeltaAIController;
 
 };

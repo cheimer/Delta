@@ -103,7 +103,6 @@ void UDeltaCharacterAnimInstance::HandleMontageEnd(UAnimMontage* Montage, bool b
 
 void UDeltaCharacterAnimInstance::PlayHitReactAnim(const EDeltaHitDirection HitDirection)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Hit : %s"), *(StaticEnum<EDeltaHitDirection>()->GetNameStringByIndex(static_cast<int32>(HitDirection))));
 	if (bDoPlayHitReactAnim && CurrentHitReactTime < MinHitReactTime) return;
 	
 	bDoPlayHitReactAnim = true;

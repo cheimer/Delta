@@ -4,7 +4,7 @@
 #include "AI/BTDecorator_IsAtSpawnLocation.h"
 
 #include "AIController.h"
-#include "Controllers/DeltaAIController.h"
+#include "Controllers/DeltaEnemyController.h"
 
 UBTDecorator_IsAtSpawnLocation::UBTDecorator_IsAtSpawnLocation()
 {
@@ -18,7 +18,7 @@ bool UBTDecorator_IsAtSpawnLocation::CalculateRawConditionValue(UBehaviorTreeCom
 {
 	Super::CalculateRawConditionValue(OwnerComp, NodeMemory);
 
-	const ADeltaAIController* OwnerController = Cast<ADeltaAIController>(OwnerComp.GetAIOwner());
+	const ADeltaEnemyController* OwnerController = Cast<ADeltaEnemyController>(OwnerComp.GetAIOwner());
 	if(!OwnerController) return false;
 
 	const APawn* OwnerCharacter = OwnerComp.GetAIOwner()->GetPawn();

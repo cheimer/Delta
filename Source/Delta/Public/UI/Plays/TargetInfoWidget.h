@@ -26,7 +26,7 @@ protected:
 	virtual void NativeDestruct() override;
 
 	UFUNCTION()
-	void HandleHealthChanged(float CurrentHealth, float MaxHealth, bool bIsDamaged);
+	void HandleHealthChanged(AActor* ChangedActor, float CurrentHealth, float MaxHealth, bool bIsDamaged);
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* NameText;

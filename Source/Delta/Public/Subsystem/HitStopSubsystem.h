@@ -27,10 +27,12 @@ public:
 	static UHitStopSubsystem* Get(const UObject* WorldContextObject);
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 	
-	bool StartHitStop(const float MaxDuration, const float TimeDilation, const EHitStopPriority Priority = EHitStopPriority::Default);
-	void EndHitStop();
+	bool StartHitStop(const AActor* OccurActor, const float MaxDuration, const float TimeDilation, const EHitStopPriority Priority = EHitStopPriority::Default);
+	void EndHitStop(const AActor* OccurActor);
+	void EndHitStopTimer();
 
 private:
+	TSet<TWeakObjectPtr<const AActor>> RequestActors;
 	EHitStopPriority CurrentPriority = EHitStopPriority::Default;
 
 	FTimerHandle HitStopTimerHandle;

@@ -12,10 +12,6 @@
 #include "Components/ManaComponent.h"
 #include "DataAssets/Skill/SkillDataAsset.h"
 #include "DeltaTypes/DeltaNamespaceTypes.h"
-#include "GameUserSettings/FrontGameUserSettings.h"
-#include "Helper/DeltaDebugHelper.h"
-#include "Kismet/KismetSystemLibrary.h"
-#include "SaveGame/DeltaSaveGame.h"
 #include "Subsystem/HitStopSubsystem.h"
 
 ADeltaBaseCharacter::ADeltaBaseCharacter()
@@ -59,16 +55,21 @@ void ADeltaBaseCharacter::BeginPlay()
 
 void ADeltaBaseCharacter::TakeSkillDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
+	if(!HealthComponent) return;
+	
 	HealthComponent->TakeDamage(Damage, DamageCauser);
 
 	check(IsValid(GetMesh()));
-	
-	AnimInstance = AnimInstance ? AnimInstance : Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance());
-	if (!AnimInstance) return;
 
-	EDeltaHitDirection HitDirection = CalcDirection(DamagedActor->GetActorForwardVector(),
-		DamageCauser->GetActorLocation() - DamagedActor->GetActorLocation());
-	AnimInstance->PlayHitReactAnim(HitDirection);
+	if (HealthComponent->CauseDamage(Damage))
+	{
+		AnimInstance = AnimInstance ? AnimInstance : Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+		if (!AnimInstance) return;
+
+		EDeltaHitDirection HitDirection = CalcDirection(DamagedActor->GetActorForwardVector(),
+			DamageCauser->GetActorLocation() - DamagedActor->GetActorLocation());
+		AnimInstance->PlayHitReactAnim(HitDirection);
+	}
 }
 
 void ADeltaBaseCharacter::HandleCharacterDeath(AActor* DeathActor)
@@ -97,6 +98,9 @@ USkillDataAsset* ADeltaBaseCharacter::FindSkillDataAsset(const EDeltaSkillType C
 	return nullptr;
 }
 
+/**
+ * Call by AnimNotify.
+ */
 void ADeltaBaseCharacter::ActiveSkill(const EDeltaSkillType SkillType)
 {
 	if (!CombatComponent) return;
@@ -107,11 +111,24 @@ void ADeltaBaseCharacter::ActiveSkill(const EDeltaSkillType SkillType)
 	CombatComponent->BeginSkill(SkillData->Skill);
 }
 
+/**
+ * Call by AnimNotify.
+ */
 void ADeltaBaseCharacter::DeActiveSkill()
 {
 	if (!CombatComponent) return;
 	
 	CombatComponent->EndSkill();
+}
+
+void ADeltaBaseCharacter::BeginSkill(const EDeltaSkillType SkillType)
+{
+	USkillDataAsset* SkillData = FindSkillDataAsset(SkillType);
+	if (!SkillData) return;
+	if (!ManaComponent || !ManaComponent->CanUseSkill(SkillData->Cost)) return;
+
+	ManaComponent->UseSkill(SkillData->Cost);
+	PlaySkillAnimation(SkillType);
 }
 
 void ADeltaBaseCharacter::PlaySkillAnimation(const EDeltaSkillType SkillType)
@@ -122,11 +139,8 @@ void ADeltaBaseCharacter::PlaySkillAnimation(const EDeltaSkillType SkillType)
 	if (!GetMesh()) return;
 	AnimInstance = AnimInstance ? AnimInstance : Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 	if (!AnimInstance) return;
-	
-	if (!ManaComponent) return;
 
 	AnimInstance->SetAnimMontage(SkillData->AnimMontage);
-	ManaComponent->UseSkill(SkillData->Cost);
 }
 
 void ADeltaBaseCharacter::EndSkillAnimation()
@@ -175,11 +189,25 @@ UBoxComponent* ADeltaBaseCharacter::FindSkillCollision(const FName& SkillCollisi
 	return Cast<UBoxComponent>(GetDefaultSubobjectByName(SkillCollision));
 }
 
+void ADeltaBaseCharacter::SetCurrentSkill()
+{
+	int RandIndex = FMath::RandRange(0, SkillDataAssets.Num() - 1);
+
+	CachedSkillData = SkillDataAssets[RandIndex];
+}
+
 TOptional<float> ADeltaBaseCharacter::GetCurrentSkillRange() const
 {
 	if (!CachedSkillData.IsValid()) return TOptional<float>();
 
 	return CachedSkillData->Distance;
+}
+
+bool ADeltaBaseCharacter::CanUseCurrentSkill()
+{
+	if (!ManaComponent || !CachedSkillData.IsValid()) return false;
+	
+	return ManaComponent->CanUseSkill(CachedSkillData->Cost);
 }
 
 TOptional<bool> ADeltaBaseCharacter::IsFirstSection()
@@ -236,14 +264,14 @@ void ADeltaBaseCharacter::SetVisibleMesh(const FName MeshName, const bool bIsVis
 	SMMesh->SetVisibility(bIsVisible);
 }
 
-bool ADeltaBaseCharacter::BeginAttackDilation(const float MaxDuration, const float TimeDilation)
+void ADeltaBaseCharacter::BeginAttackDilation(const float MaxDuration, const float TimeDilation)
 {
-	if (!GetWorld()) return false;
+	if (!GetWorld()) return;
 
 	UHitStopSubsystem* HitStopSubsystem = UHitStopSubsystem::Get(GetWorld());
-	if (!HitStopSubsystem) return false;
+	if (!HitStopSubsystem) return;
 
-	return HitStopSubsystem->StartHitStop(MaxDuration, TimeDilation, EHitStopPriority::Player);
+	HitStopSubsystem->StartHitStop(this, MaxDuration, TimeDilation, EHitStopPriority::Player);
 }
 
 void ADeltaBaseCharacter::EndAttackDilation()
@@ -253,7 +281,7 @@ void ADeltaBaseCharacter::EndAttackDilation()
 	UHitStopSubsystem* HitStopSubsystem = UHitStopSubsystem::Get(GetWorld());
 	if (!HitStopSubsystem) return;
 	
-	HitStopSubsystem->EndHitStop();
+	HitStopSubsystem->EndHitStop(this);
 	
 }
 

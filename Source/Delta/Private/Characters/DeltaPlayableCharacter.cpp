@@ -9,15 +9,17 @@
 #include "Camera/CameraComponent.h"
 #include "Characters/Enemy/DeltaEnemyCharacter.h"
 #include "Components/CombatComponent.h"
+#include "Components/DamageVignetteComponent.h"
 #include "Components/HealthComponent.h"
 #include "Components/ManaComponent.h"
+#include "Controllers/DeltaAllyController.h"
 #include "Controllers/DeltaPlayerController.h"
 #include "DataAssets/Input/InputDataAsset.h"
 #include "DataAssets/Skill/SkillDataAsset.h"
 #include "DeltaTypes/DeltaNamespaceTypes.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Helper/DeltaDebugHelper.h"
+#include "Interfaces/Flying.h"
 #include "Kismet/GameplayStatics.h"
 #include "SaveGame/DeltaSaveGame.h"
 
@@ -57,14 +59,12 @@ void ADeltaPlayableCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	// Check if possessed by player controller
 	PlayerController = Cast<ADeltaPlayerController>(NewController);
 	bIsPlayerControlled = PlayerController.IsValid();
 
-	// Only set up input if controlled by player
-	if (bIsPlayerControlled && PlayerInputDataAsset && PlayerInputDataAsset->InputMappingContext)
+	if (bIsPlayerControlled)
 	{
-		if(HasAuthority())
+		if (PlayerInputDataAsset && PlayerInputDataAsset->InputMappingContext && HasAuthority())
 		{
 			if(UEnhancedInputLocalPlayerSubsystem* EnhancedInputSubsystem =
 				ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -73,13 +73,25 @@ void ADeltaPlayableCharacter::PossessedBy(AController* NewController)
 			}
 		}
 	}
+	else
+	{
+		AllyController = AllyController.IsValid() ? AllyController.Get() : Cast<ADeltaAllyController>(NewController);
+	}
 }
 
-void ADeltaPlayableCharacter::UnPossessed()
+/*
+ * when player switch to other character
+ * after UnPossess
+ */
+void ADeltaPlayableCharacter::OnPlayerControlEnd()
 {
-	Super::UnPossessed();
-
 	bIsPlayerControlled = false;
+
+	if (AllyController.IsValid())
+	{
+		AllyController->Possess(this);
+	}
+
 	PlayerController = nullptr;
 }
 
@@ -87,11 +99,9 @@ void ADeltaPlayableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Check if controlled by player controller
 	PlayerController = Cast<ADeltaPlayerController>(GetController());
 	bIsPlayerControlled = PlayerController.IsValid();
 
-	// Only set up input if controlled by player and not in authority (client-side setup)
 	if (bIsPlayerControlled && PlayerInputDataAsset && PlayerInputDataAsset->InputMappingContext && !HasAuthority())
 	{
 		if(UEnhancedInputLocalPlayerSubsystem* EnhancedInputSubsystem =
@@ -106,11 +116,10 @@ void ADeltaPlayableCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Only execute player-specific tick logic if controlled by player
 	if (!bIsPlayerControlled) return;
 
 	PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
-	if (!PlayerController.IsValid()) return;
+	if (!PlayerController.IsValid() || !SpringArmComponent) return;
 	
 	if (!FMath::IsNearlyEqual(SpringArmComponent->TargetArmLength, TargetArmLengthGoTo))
 	{
@@ -176,6 +185,95 @@ void ADeltaPlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 	
 }
 
+void ADeltaPlayableCharacter::TakeSkillDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+{
+	Super::TakeSkillDamage(DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);
+
+	if (!HealthComponent) return;
+	if (bIsPlayerControlled)
+	{
+		PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
+		if (!PlayerController.IsValid() || !PlayerController->PlayerCameraManager) return;
+	
+		if (HealthComponent->CauseDamage(Damage))
+		{
+			StartCameraShake();
+		}
+		
+		PlayerController->PlayerDamaged();
+	}
+}
+
+void ADeltaPlayableCharacter::StartCameraShake()
+{
+	if (!DamagedCameraShakeClass ) return;
+
+	PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
+	if (!PlayerController.IsValid() || !PlayerController->PlayerCameraManager) return;
+	
+	PlayerController->PlayerCameraManager->StartCameraShake(DamagedCameraShakeClass);
+}
+
+void ADeltaPlayableCharacter::SetCurrentSkill()
+{
+	if (!GetController()) return;
+
+	if (bIsPlayerControlled)
+	{
+		Super::SetCurrentSkill();
+	}
+	else
+	{
+		SetCurrentAISkill();
+	}
+	
+}
+
+void ADeltaPlayableCharacter::SetCurrentAISkill()
+{
+	if (!CurrentSkillTarget.IsValid()) return;
+
+	bool bIsFlying = false;
+	if (CurrentSkillTarget->Implements<UFlying>())
+	{
+		IFlying* FlyingInterface = Cast<IFlying>(CurrentSkillTarget);
+		if (FlyingInterface)
+		{
+			bIsFlying = FlyingInterface->IsFlying();
+		}
+	}
+	
+	TArray<int> ValidIndex;
+	for (int i = 0; i < SkillDataAssets.Num(); i++)
+	{
+		if (!SkillDataAssets[i]) continue;
+		
+		if (SkillDataAssets[i]->Type == EDeltaSkillType::Parrying) continue;
+		if (SkillDataAssets[i]->Type == EDeltaSkillType::Shield) continue;
+
+		if (bIsFlying)
+		{
+			if (SkillDataAssets[i]->Type == EDeltaSkillType::Flashes) continue;
+			if (SkillDataAssets[i]->Type == EDeltaSkillType::GroundCrack) continue;
+			if (SkillDataAssets[i]->Type == EDeltaSkillType::Slash) continue;
+			if (SkillDataAssets[i]->Type == EDeltaSkillType::ArrowShot) continue;
+			if (SkillDataAssets[i]->Type == EDeltaSkillType::Lightning) continue;
+		}
+
+		ValidIndex.Add(i);
+	}
+
+	if (ValidIndex.IsEmpty()) return;
+	
+	int RandIndex = FMath::RandRange(0, ValidIndex.Num() - 1);
+
+	CachedSkillData = SkillDataAssets[ValidIndex[RandIndex]];;
+}
+
+/**
+ * selected skill and show UI
+ * @param KeyIndex : Player input to selected skill
+ */
 void ADeltaPlayableCharacter::StartWaitingSkill(int KeyIndex)
 {
 	if (CurrentStatus != EPlayerStatus::Default && CurrentStatus != EPlayerStatus::LockTarget) return;
@@ -201,13 +299,23 @@ void ADeltaPlayableCharacter::StartWaitingSkill(int KeyIndex)
 
 }
 
+/**
+ * Used when parring, BTTask_AttackTarget
+ * @param SkillType : setting into SetSkill
+ */
 void ADeltaPlayableCharacter::StartWaitingSkill(EDeltaSkillType SkillType)
 {
-	CachedSkillData = FindSkillDataAsset(SkillType);
-	if (!CachedSkillData.IsValid()) return;
+	if (HealthComponent->GetIsDead()) return;
+
+	USkillDataAsset* TempSkillData = FindSkillDataAsset(SkillType);
+	if (!TempSkillData) return;
+	if (!ManaComponent->CanUseSkill(TempSkillData->Cost)) return;
+	
+	CachedSkillData = TempSkillData;
 	
 	CachedStatus = CurrentStatus;
 	CurrentStatus = EPlayerStatus::WaitingSkill;
+	
 	WaitingSkillTime = 1.0f;
 
 	if (CachedSkillData->Type == EDeltaSkillType::Parrying)
@@ -215,6 +323,17 @@ void ADeltaPlayableCharacter::StartWaitingSkill(EDeltaSkillType SkillType)
 		PlaySkillAnimation(SkillType);
 	}
 	
+}
+
+void ADeltaPlayableCharacter::BeginSkill(const EDeltaSkillType SkillType)
+{
+	if (!GetController()) return;
+	if (Cast<ADeltaAllyController>(GetController()))
+	{
+		StartWaitingSkill(SkillType);
+	}
+	
+	Super::BeginSkill(SkillType);
 }
 
 void ADeltaPlayableCharacter::CancelWaitingSkill()
@@ -252,6 +371,7 @@ void ADeltaPlayableCharacter::PlaySkillAnimation(const EDeltaSkillType SkillType
 	CurrentStatus = EPlayerStatus::Skill;
 
 	UpdateSkillTarget();
+	
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName(WarpTarget::SkillTarget), SkillTargetLocation);
 }
 
@@ -301,6 +421,14 @@ TArray<int32> ADeltaPlayableCharacter::GetSkillCosts(const int Index)
 	}
 
 	return CostArray;
+}
+
+void ADeltaPlayableCharacter::SetTargetArmLength(const float TargetArmLength)
+{
+	if (!SpringArmComponent) return;
+
+	TargetArmLengthGoTo = TargetArmLength;
+	SpringArmComponent->TargetArmLength = TargetArmLength;
 }
 
 void ADeltaPlayableCharacter::LookAtCameraCenter()
@@ -388,21 +516,32 @@ void ADeltaPlayableCharacter::UpdateLockTarget()
 
 void ADeltaPlayableCharacter::UpdateSkillTarget()
 {
-	CurrentSkillTarget = FindEnemyFromFront();
-
-	// Case1: Hit Enemy
-	if (CurrentSkillTarget.IsValid())
+	if (ADeltaAIController* AIController = Cast<ADeltaAIController>(GetController()))
 	{
-		SkillTargetLocation = CurrentSkillTarget->GetActorLocation();
+		CurrentSkillTarget = AIController->GetCurrentTarget();
+		if (CurrentSkillTarget.IsValid())
+		{
+			SkillTargetLocation = CurrentSkillTarget->GetActorLocation();
+		}
 	}
-	// Case2: Hit Notting, TargetLocation set forward to 1000.0f
 	else
 	{
-		FVector StartLocation = CameraComponent->GetComponentLocation();
-		FVector NoTargetLocation = StartLocation + CameraComponent->GetForwardVector() * 1000.0f;
-		NoTargetLocation.Z = GetActorLocation().Z;
+		CurrentSkillTarget = FindEnemyFromFront();
+
+		// Case1: Hit Enemy
+		if (CurrentSkillTarget.IsValid())
+		{
+			SkillTargetLocation = CurrentSkillTarget->GetActorLocation();
+		}
+		// Case2: Hit Notting, TargetLocation set forward to 1000.0f
+		else
+		{
+			FVector StartLocation = CameraComponent->GetComponentLocation();
+			FVector NoTargetLocation = StartLocation + CameraComponent->GetForwardVector() * 1000.0f;
+			NoTargetLocation.Z = GetActorLocation().Z;
 	
-		SkillTargetLocation = NoTargetLocation;
+			SkillTargetLocation = NoTargetLocation;
+		}
 	}
 }
 
@@ -585,7 +724,7 @@ void ADeltaPlayableCharacter::Execute(const FInputActionValue& Value)
 	case EPlayerStatus::WaitingSkill:
 		if (CachedSkillData.IsValid())
 		{
-			PlaySkillAnimation(CachedSkillData->Type);
+			BeginSkill(CachedSkillData->Type);
 		}
 		return;
 	case EPlayerStatus::Skill:
@@ -660,61 +799,51 @@ void ADeltaPlayableCharacter::SkillNext(const FInputActionValue& Value)
 	ChangeSkillList(true);
 }
 
+void ADeltaPlayableCharacter::CharacterBefore(const FInputActionValue& Value)
+{
+	PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
+	if (!PlayerController.IsValid() || !PlayerController->GetInputEnable()) return;
+
+	switch (CurrentStatus)
+	{
+	case EPlayerStatus::Default:
+	case EPlayerStatus::LockTarget:
+		break;
+	case EPlayerStatus::WaitingSkill:
+		CancelWaitingSkill();
+		break;
+	case EPlayerStatus::Skill:
+		return;
+	default:
+		UE_LOG(LogTemp, Warning, TEXT("Undefined status. Func : CharacterBefore"));
+		break;
+	}
+	
+	SetLockTarget(false);
+	PlayerController->SwitchToBeforeCharacter();
+}
+
+void ADeltaPlayableCharacter::CharacterNext(const FInputActionValue& Value)
+{
+	PlayerController = PlayerController.IsValid() ? PlayerController.Get() : Cast<ADeltaPlayerController>(GetController());
+	if (!PlayerController.IsValid() || !PlayerController->GetInputEnable()) return;
+	
+	switch (CurrentStatus)
+	{
+	case EPlayerStatus::Default:
+	case EPlayerStatus::LockTarget:
+		break;
+	case EPlayerStatus::WaitingSkill:
+		CancelWaitingSkill();
+	case EPlayerStatus::Skill:
+		return;
+	default:
+		UE_LOG(LogTemp, Warning, TEXT("Undefined status. Func : CharacterBefore"));
+		break;
+	}
+	
+	SetLockTarget(false);
+	PlayerController->SwitchToNextCharacter();
+}
+
 #pragma endregion Input
-
-#pragma region AI Support
-
-void ADeltaPlayableCharacter::OnPlayerControlStart()
-{
-	bIsPlayerControlled = true;
-
-	// Store the previous controller (AI controller)
-	PreviousController = GetController();
-
-	// Camera will automatically follow when possessed by player controller
-}
-
-void ADeltaPlayableCharacter::OnPlayerControlEnd()
-{
-	bIsPlayerControlled = false;
-
-	// Return control to AI controller if it exists
-	if (PreviousController && PreviousController->IsValidLowLevel())
-	{
-		PreviousController->Possess(this);
-	}
-
-	PreviousController = nullptr;
-	PlayerController = nullptr;
-}
-
-void ADeltaPlayableCharacter::SetRandomSkill()
-{
-	// Select random skill from current skill set for AI to use
-	if (SkillSetArray.Num() == 0) return;
-
-	// Use current skill set
-	const FSkillTypeWrapper& CurrentSkillSet = SkillSetArray[CurrentSkillSetIndex];
-
-	// Filter out invalid skills
-	TArray<EDeltaSkillType> ValidSkills;
-	for (const EDeltaSkillType& SkillType : CurrentSkillSet.SkillTypes)
-	{
-		if (SkillType != EDeltaSkillType::Max)
-		{
-			ValidSkills.Add(SkillType);
-		}
-	}
-
-	if (ValidSkills.Num() > 0)
-	{
-		int32 RandomIndex = FMath::RandRange(0, ValidSkills.Num() - 1);
-		CurrentAISkill = ValidSkills[RandomIndex];
-	}
-	else
-	{
-		CurrentAISkill = EDeltaSkillType::Max;
-	}
-}
-
-#pragma endregion AI Support

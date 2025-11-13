@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/HealthComponent.h"
+#include "DataAssets/Skill/SkillDataAsset.h"
 #include "DeltaTypes/DeltaEnumTypes.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/SaveGameInterface.h"
@@ -32,6 +33,8 @@ public:
 	virtual void ActiveSkill(const EDeltaSkillType SkillType);
 	virtual void DeActiveSkill();
 
+	virtual void BeginSkill(const EDeltaSkillType SkillType);
+
 	virtual void PlaySkillAnimation(const EDeltaSkillType SkillType);
 	virtual void EndSkillAnimation();
 	float GetSkillDurationTime(const EDeltaSkillType SkillType);
@@ -42,7 +45,9 @@ public:
 	virtual void UpdateSkillTarget();
 	UBoxComponent* FindSkillCollision(const FName& SkillCollision);
 
+	virtual void SetCurrentSkill();
 	TOptional<float> GetCurrentSkillRange() const;
+	bool CanUseCurrentSkill();
 
 	TOptional<bool> IsFirstSection();
 	TOptional<float> GetMontageRemainTime();
@@ -51,7 +56,7 @@ public:
 
 	void SetVisibleMesh(const FName MeshName, const bool bIsVisible);
 
-	bool BeginAttackDilation(const float MaxDuration, const float TimeDilation);
+	void BeginAttackDilation(const float MaxDuration, const float TimeDilation);
 	void EndAttackDilation();
 	
 	void AddTotalDealing(const float AddDealing) {TotalDealing += AddDealing;}
@@ -68,7 +73,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	void TakeSkillDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
+	virtual void TakeSkillDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
 
 	UFUNCTION(BlueprintCallable)
 	virtual void HandleCharacterDeath(AActor* DeathActor);
@@ -124,6 +129,8 @@ public:
 	FString GetDisplayName() const {return DisplayName;}
 
 	bool GetCanInterruptSkill() const {return bCanInterruptSkill;}
+
+	EDeltaSkillType GetCurrentSkillName() const {return CachedSkillData.IsValid() ? CachedSkillData.Get()->Type : EDeltaSkillType::Max;}
 	
 	ADeltaBaseCharacter* GetCurrentSkillTarget() const {return CurrentSkillTarget.IsValid() ? CurrentSkillTarget.Get() : nullptr;}
 	void SetCurrentSkillTarget(ADeltaBaseCharacter* InSkillTarget) {CurrentSkillTarget = InSkillTarget;}
@@ -131,7 +138,8 @@ public:
 	// return Saved TargetLocation or front location
 	FVector GetSkillTargetLocation() const {return SkillTargetLocation;}
 	void SetSkillTargetLocation(const FVector& InSkillTargetLocation) {SkillTargetLocation = InSkillTargetLocation;}
-	
+
+	float GetHealthPercentage() const {return HealthComponent->GetHealthPercentage();}
 	bool GetIsDead() const {return HealthComponent->GetIsDead();}
 
 	const TArray<TEnumAsByte<EObjectTypeQuery>>& GetTargetTraceChannel() const {return TargetTraceChannel;}

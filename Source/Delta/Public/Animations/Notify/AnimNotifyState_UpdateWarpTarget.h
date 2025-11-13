@@ -22,7 +22,4 @@ public:
 	virtual void NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime,
 		const FAnimNotifyEventReference& EventReference) override;
 	
-private:
-	TWeakObjectPtr<ADeltaBaseCharacter> OwnerCharacter;
-
 };
