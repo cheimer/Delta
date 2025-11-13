@@ -17,7 +17,10 @@
 
 ## 🎬 데모 영상
 
-<img width="50%" src="https://github.com/user-attachments/assets/52b1cad1-b74c-41fa-a401-517299db503c"/>
+<img width="50%" src="https://github.com/user-attachments/assets/e35a474a-89f0-4ae1-abdd-1e4ad9be4a4e"/>
+
+Link : https://youtu.be/6eYMrQpc2p8
+
 
 
 **주요 시연 내용:**
