@@ -69,7 +69,7 @@ public:
 
 	void OnPlayerControlEnd();
 
-	virtual void SetCurrentSkill() override;
+	virtual void SetCurrentSkill(TOptional<int32> SkillIndex = TOptional<int32>()) override;
 	
 	void SetTargetArmLength(const float TargetArmLength);
 

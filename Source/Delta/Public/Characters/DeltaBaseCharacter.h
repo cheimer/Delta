@@ -10,6 +10,7 @@
 #include "Interfaces/SaveGameInterface.h"
 #include "DeltaBaseCharacter.generated.h"
 
+struct FStreamableHandle;
 class UDeltaCharacterAnimInstance;
 class UBoxComponent;
 class UManaComponent;
@@ -21,7 +22,7 @@ class UMotionWarpingComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterDeath, AActor*, DeathActor);
 
-UCLASS()
+UCLASS(Abstract)
 class DELTA_API ADeltaBaseCharacter : public ACharacter, public ISaveGameInterface
 {
 	GENERATED_BODY()
@@ -45,7 +46,7 @@ public:
 	virtual void UpdateSkillTarget();
 	UBoxComponent* FindSkillCollision(const FName& SkillCollision);
 
-	virtual void SetCurrentSkill();
+	virtual void SetCurrentSkill(TOptional<int32> SkillIndex = TOptional<int32>());
 	TOptional<float> GetCurrentSkillRange() const;
 	bool CanUseCurrentSkill();
 
@@ -91,6 +92,9 @@ protected:
 	UPROPERTY()
 	UDeltaCharacterAnimInstance* AnimInstance;
 
+	TSharedPtr<FStreamableHandle> SkillDataHandle = nullptr;
+	TSharedPtr<FStreamableHandle> SkillAnimHandle = nullptr;
+
 	bool bCanInterruptSkill = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Skill")
@@ -117,6 +121,9 @@ protected:
 #pragma endregion Components
 
 private:
+	void LoadSkillAnim();
+	void UnLoadSkillAnim();
+	
 	EDeltaHitDirection CalcDirection(const FVector& DamagedForward, const FVector& ToAttackerDirection);
 	FVector CachedMeshLocation = FVector::ZeroVector;
 

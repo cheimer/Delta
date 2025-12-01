@@ -10,7 +10,6 @@
 #include "Components/HealthComponent.h"
 #include "Controllers/DeltaAIController.h"
 #include "Controllers/DeltaEnemyController.h"
-#include "DataAssets/Skill/SkillDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameUserSettings/FrontGameUserSettings.h"
 #include "Helper/DeltaDebugHelper.h"

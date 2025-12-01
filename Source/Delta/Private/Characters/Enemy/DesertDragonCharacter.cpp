@@ -120,9 +120,9 @@ void ADesertDragonCharacter::HandleCharacterLanded(const FHitResult& Hit)
 /*
  * 0 ~ 5 : Ground Skill, 6 ~ 7 : Fly Skill
  */
-void ADesertDragonCharacter::SetCurrentSkill()
+void ADesertDragonCharacter::SetCurrentSkill(TOptional<int32> SkillIndex)
 {
-	Super::SetCurrentSkill();
+	Super::SetCurrentSkill(SkillIndex);
 	
 	if (SkillDataAssets.Num() != DRAGON_SKILL_NUM)
 	{

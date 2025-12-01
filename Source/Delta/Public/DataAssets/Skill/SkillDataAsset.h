@@ -25,11 +25,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Skill")
 	TSet<EDeltaSkillState> UsableState;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Skill")
-	TSubclassOf<USkillBase> Skill;
+	UPROPERTY(EditAnywhere, Category = "Skill")
+	TSoftClassPtr<USkillBase> Skill;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Skill")
-	UAnimMontage* AnimMontage;
+	UPROPERTY(EditAnywhere, Category = "Skill")
+	TSoftObjectPtr<UAnimMontage> AnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Skill")
 	float Cost = 0;

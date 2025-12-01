@@ -36,7 +36,7 @@ protected:
 	UFUNCTION()
 	void HandleNextPhase(const int PhaseNum);
 	
-	virtual void SetCurrentSkill() override;
+	virtual void SetCurrentSkill(TOptional<int32> SkillIndex = TOptional<int32>()) override;
 
 	UFUNCTION()
 	void OnFlyEnd(UAnimMontage* Montage, bool bInterrupted);

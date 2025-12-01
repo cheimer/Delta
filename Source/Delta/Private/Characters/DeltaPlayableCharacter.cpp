@@ -214,13 +214,13 @@ void ADeltaPlayableCharacter::StartCameraShake()
 	PlayerController->PlayerCameraManager->StartCameraShake(DamagedCameraShakeClass);
 }
 
-void ADeltaPlayableCharacter::SetCurrentSkill()
+void ADeltaPlayableCharacter::SetCurrentSkill(TOptional<int32> SkillIndex)
 {
 	if (!GetController()) return;
 
 	if (bIsPlayerControlled)
 	{
-		Super::SetCurrentSkill();
+		Super::SetCurrentSkill(SkillIndex);
 	}
 	else
 	{
@@ -236,13 +236,13 @@ void ADeltaPlayableCharacter::SetCurrentAISkill()
 	bool bIsFlying = false;
 	if (CurrentSkillTarget->Implements<UFlying>())
 	{
-		IFlying* FlyingInterface = Cast<IFlying>(CurrentSkillTarget);
-		if (FlyingInterface)
+		if (IFlying* FlyingInterface = Cast<IFlying>(CurrentSkillTarget))
 		{
 			bIsFlying = FlyingInterface->IsFlying();
 		}
 	}
-	
+
+	//Check : If playable character use other skill, Need to fix following lines
 	TArray<int> ValidIndex;
 	for (int i = 0; i < SkillDataAssets.Num(); i++)
 	{

@@ -12,6 +12,8 @@
 #include "Components/ManaComponent.h"
 #include "DataAssets/Skill/SkillDataAsset.h"
 #include "DeltaTypes/DeltaNamespaceTypes.h"
+#include "Engine/AssetManager.h"
+#include "Helper/DeltaLoadHelper.h"
 #include "Subsystem/HitStopSubsystem.h"
 
 ADeltaBaseCharacter::ADeltaBaseCharacter()
@@ -51,6 +53,19 @@ void ADeltaBaseCharacter::BeginPlay()
 	OnTakeAnyDamage.AddDynamic(this, &ThisClass::TakeSkillDamage);
 	OnCharacterDeath.AddDynamic(this, &ThisClass::HandleCharacterDeath);
 
+	if (auto temp = FindSkillDataAsset(EDeltaSkillType::FlyingDisk))
+	{
+		if (temp->AnimMontage.Get())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("AnimMontage Set"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("AnimMontage Not Set"));
+		}
+	}
+
+	LoadSkillAnim();
 }
 
 void ADeltaBaseCharacter::TakeSkillDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
@@ -83,6 +98,15 @@ void ADeltaBaseCharacter::HandleCharacterDeath(AActor* DeathActor)
 
 	AnimInstance->StopAllMontages(0.5f);
 	AnimInstance->SetBoolValue(AnimValue::IsDeath, true);
+
+	if (SkillDataHandle)
+	{
+		SkillDataHandle->ReleaseHandle();
+		SkillDataHandle.Reset();
+	}
+
+	UnLoadSkillAnim();
+
 }
 
 USkillDataAsset* ADeltaBaseCharacter::FindSkillDataAsset(const EDeltaSkillType CurrentSkillType)
@@ -108,7 +132,9 @@ void ADeltaBaseCharacter::ActiveSkill(const EDeltaSkillType SkillType)
 	USkillDataAsset* SkillData = FindSkillDataAsset(SkillType);
 	if (!SkillData) return;
 
-	CombatComponent->BeginSkill(SkillData->Skill);
+	if (!DeltaLoad::LoadComplete(SkillDataHandle, SkillData->Skill)) return;
+
+	CombatComponent->BeginSkill(SkillData->Skill.Get());
 }
 
 /**
@@ -121,14 +147,23 @@ void ADeltaBaseCharacter::DeActiveSkill()
 	CombatComponent->EndSkill();
 }
 
+/**
+ * Call by Input or AIController
+ */
 void ADeltaBaseCharacter::BeginSkill(const EDeltaSkillType SkillType)
 {
+	if (!CombatComponent) return;
+
 	USkillDataAsset* SkillData = FindSkillDataAsset(SkillType);
-	if (!SkillData) return;
+	if (!SkillData || !SkillData->Skill.IsValid()) return;
 	if (!ManaComponent || !ManaComponent->CanUseSkill(SkillData->Cost)) return;
 
+	SkillDataHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(SkillData->Skill.ToSoftObjectPath(),
+		FStreamableDelegate::CreateLambda([]()-> void { }));
+	
 	ManaComponent->UseSkill(SkillData->Cost);
 	PlaySkillAnimation(SkillType);
+
 }
 
 void ADeltaBaseCharacter::PlaySkillAnimation(const EDeltaSkillType SkillType)
@@ -140,7 +175,9 @@ void ADeltaBaseCharacter::PlaySkillAnimation(const EDeltaSkillType SkillType)
 	AnimInstance = AnimInstance ? AnimInstance : Cast<UDeltaCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 	if (!AnimInstance) return;
 
-	AnimInstance->SetAnimMontage(SkillData->AnimMontage);
+	if (!DeltaLoad::LoadComplete(SkillAnimHandle, SkillData->AnimMontage)) return;
+	
+	AnimInstance->SetAnimMontage(SkillData->AnimMontage.Get());
 }
 
 void ADeltaBaseCharacter::EndSkillAnimation()
@@ -150,14 +187,23 @@ void ADeltaBaseCharacter::EndSkillAnimation()
 	CombatComponent->ReleaseSkill();
 	
 	bCanInterruptSkill = false;
+
+	if (SkillDataHandle)
+	{
+		SkillDataHandle->ReleaseHandle();
+		SkillDataHandle.Reset();
+	}
+
 }
 
 float ADeltaBaseCharacter::GetSkillDurationTime(const EDeltaSkillType SkillType)
 {
 	USkillDataAsset* SkillData = FindSkillDataAsset(SkillType);
-	if (!SkillData || !SkillData->AnimMontage) return 0.0f;
+	if (!SkillData || !SkillData->AnimMontage.IsValid()) return 0.0f;
 
-	return SkillData->AnimMontage->GetPlayLength();
+	if (!DeltaLoad::LoadComplete(SkillAnimHandle, SkillData->AnimMontage)) return 0.0f;
+	
+	return SkillData->AnimMontage.Get()->GetPlayLength();
 }
 
 void ADeltaBaseCharacter::EnableInterrupt()
@@ -189,11 +235,19 @@ UBoxComponent* ADeltaBaseCharacter::FindSkillCollision(const FName& SkillCollisi
 	return Cast<UBoxComponent>(GetDefaultSubobjectByName(SkillCollision));
 }
 
-void ADeltaBaseCharacter::SetCurrentSkill()
+void ADeltaBaseCharacter::SetCurrentSkill(TOptional<int32> SkillIndex)
 {
-	int RandIndex = FMath::RandRange(0, SkillDataAssets.Num() - 1);
-
-	CachedSkillData = SkillDataAssets[RandIndex];
+	int CurrentSkillIndex;
+	if (!SkillIndex.IsSet() || SkillIndex.GetValue() < 0 || SkillIndex.GetValue() >= SkillDataAssets.Num())
+	{
+		CurrentSkillIndex = FMath::RandRange(0, SkillDataAssets.Num() - 1);
+	}
+	else
+	{
+		CurrentSkillIndex = SkillIndex.GetValue();
+	}
+	
+	CachedSkillData = SkillDataAssets[CurrentSkillIndex];
 }
 
 TOptional<float> ADeltaBaseCharacter::GetCurrentSkillRange() const
@@ -290,6 +344,37 @@ void ADeltaBaseCharacter::RestoreCharacterMeshLocation()
 	if (!GetMesh()) return;
 
 	GetMesh()->SetRelativeLocation(CachedMeshLocation);
+}
+
+void ADeltaBaseCharacter::LoadSkillAnim()
+{
+	if (SkillAnimHandle)
+	{
+		SkillAnimHandle->ReleaseHandle();
+		SkillAnimHandle.Reset();
+	}
+
+	TArray<FSoftObjectPath> SkillAssetPaths;
+	for (auto SkillDataAsset : SkillDataAssets)
+	{
+		if (!SkillDataAsset->AnimMontage.IsValid()) continue;
+
+		SkillAssetPaths.Add(SkillDataAsset->AnimMontage.ToSoftObjectPath());
+	}
+
+	SkillAnimHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(SkillAssetPaths,
+		FStreamableDelegate::CreateLambda([]() -> void { UE_LOG(LogTemp, Warning, TEXT("Skill Anim Load Complete")) }));
+	
+}
+
+void ADeltaBaseCharacter::UnLoadSkillAnim()
+{
+	if (SkillAnimHandle)
+	{
+		SkillAnimHandle->ReleaseHandle();
+		SkillAnimHandle.Reset();
+	}
+	
 }
 
 EDeltaHitDirection ADeltaBaseCharacter::CalcDirection(const FVector& DamagedForward, const FVector& ToAttackerDirection)
