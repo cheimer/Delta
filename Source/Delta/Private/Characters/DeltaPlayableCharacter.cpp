@@ -267,7 +267,7 @@ void ADeltaPlayableCharacter::SetCurrentAISkill()
 	
 	int RandIndex = FMath::RandRange(0, ValidIndex.Num() - 1);
 
-	CachedSkillData = SkillDataAssets[ValidIndex[RandIndex]];;
+	CachedSkillData = SkillDataAssets[ValidIndex[RandIndex]];
 }
 
 /**

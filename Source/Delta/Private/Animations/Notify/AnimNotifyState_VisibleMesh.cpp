@@ -15,7 +15,7 @@ void UAnimNotifyState_VisibleMesh::NotifyBegin(USkeletalMeshComponent* MeshComp,
 	ADeltaBaseCharacter* DeltaCharacter = Cast<ADeltaBaseCharacter>(MeshComp->GetOwner());
 	if (!DeltaCharacter) return;
 
-	DeltaCharacter->SetVisibleMesh(MeshName, true);
+	DeltaCharacter->SetVisibleMesh(SpawnClass, AttachSocketName, true);
 	
 }
 
@@ -29,6 +29,6 @@ void UAnimNotifyState_VisibleMesh::NotifyEnd(USkeletalMeshComponent* MeshComp, U
 	ADeltaBaseCharacter* DeltaCharacter = Cast<ADeltaBaseCharacter>(MeshComp->GetOwner());
 	if (!DeltaCharacter) return;
 
-	DeltaCharacter->SetVisibleMesh(MeshName, false);
+	DeltaCharacter->SetVisibleMesh(SpawnClass, AttachSocketName, false);
 	
 }

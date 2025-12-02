@@ -14,7 +14,7 @@
  * Also before use skill, need provide cost, distance...
  */
 UCLASS()
-class DELTA_API USkillDataAsset : public UPrimaryDataAsset
+class DELTA_API USkillDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
 

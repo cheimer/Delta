@@ -6,6 +6,7 @@
 #include "Components/HealthComponent.h"
 #include "DataAssets/Skill/SkillDataAsset.h"
 #include "DeltaTypes/DeltaEnumTypes.h"
+#include "DeltaTypes/DeltaStructTypes.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/SaveGameInterface.h"
 #include "DeltaBaseCharacter.generated.h"
@@ -55,7 +56,7 @@ public:
 
 	void MoveCharacterMesh(const FVector& NewLocation, const float DurationTime);
 
-	void SetVisibleMesh(const FName MeshName, const bool bIsVisible);
+	void SetVisibleMesh(const TSubclassOf<AActor>& MeshClass, const FName SocketName, const bool bIsVisible);
 
 	void BeginAttackDilation(const float MaxDuration, const float TimeDilation);
 	void EndAttackDilation();
@@ -72,6 +73,7 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
+	virtual void BeginDestroy() override;
 
 	UFUNCTION()
 	virtual void TakeSkillDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
@@ -104,6 +106,9 @@ protected:
 	TWeakObjectPtr<ADeltaBaseCharacter> CurrentSkillTarget = nullptr;
 	FVector SkillTargetLocation;
 	TArray<TEnumAsByte<EObjectTypeQuery>> TargetTraceChannel;
+
+	UPROPERTY()
+	TObjectPtr<AActor> CachedSkillMesh = nullptr;
 	
 #pragma region Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -123,7 +128,7 @@ protected:
 private:
 	void LoadSkillAnim();
 	void UnLoadSkillAnim();
-	
+
 	EDeltaHitDirection CalcDirection(const FVector& DamagedForward, const FVector& ToAttackerDirection);
 	FVector CachedMeshLocation = FVector::ZeroVector;
 

@@ -8,23 +8,38 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c074b4c0-ef47-49ba-acd2-e6c7d4e99a18" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/Delta/Public/Helper/DeltaLoadHelper.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Delta.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Delta.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/AI/BehaviorTree/BT_DesertDragon.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/AI/BehaviorTree/BT_DesertDragon.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/AI/BehaviorTree/BT_Phase.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/AI/BehaviorTree/BT_Phase.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/PlayableCharacters/Phase/Animations/Skill/AM_Skill_ArrowShot.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/PlayableCharacters/Phase/Animations/Skill/AM_Skill_ArrowShot.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Characters/PlayableCharacters/Phase/BP_Character_Back.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/PlayableCharacters/Phase/BP_Character_Back.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/Projectile/BP_Projectile_FlyingDisk.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/Projectile/BP_Projectile_FlyingDisk.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UI/FrontWidgets/WBP_CAW_StoryScreen.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UI/FrontWidgets/WBP_CAW_StoryScreen.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UI/MainWidgets/WBP_Main.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UI/MainWidgets/WBP_Option.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Fly/DA_Skill_FlySpitFire.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Fly/DA_Skill_FlySpitFire.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Fly/DA_Skill_FlySpreadFire.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Fly/DA_Skill_FlySpreadFire.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Ground/DA_Skill_Bite.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Ground/DA_Skill_Bite.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Ground/DA_Skill_DoubleClaws.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Ground/DA_Skill_DoubleClaws.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Ground/DA_Skill_LeftClaws.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Ground/DA_Skill_LeftClaws.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Ground/DA_Skill_RightClaws.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Ground/DA_Skill_RightClaws.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Ground/DA_Skill_SpitFire.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Ground/DA_Skill_SpitFire.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Ground/DA_Skill_SpreadFire.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/DesertDragon/Ground/DA_Skill_SpreadFire.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/WoodMon/DA_Skill_BlowAway.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/WoodMon/DA_Skill_BlowAway.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/WoodMon/DA_Skill_ForestBoom.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/WoodMon/DA_Skill_ForestBoom.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/WoodMon/DA_Skill_Swing.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/WoodMon/DA_Skill_Swing.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/WoodMon/DA_Skill_ThrowRock.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/WoodMon/DA_Skill_ThrowRock.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Enemy/WoodMon/DA_Skill_TreeBloom.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Enemy/WoodMon/DA_Skill_TreeBloom.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_ArrowShot.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_ArrowShot.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_Flashes.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_Flashes.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_FlyingDisk.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_FlyingDisk.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_GroundCrack.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_GroundCrack.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_Lightning.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_Lightning.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_MeteorShower.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_MeteorShower.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_Parrying.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_Parrying.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_RailGun.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_RailGun.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_Shield.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_Shield.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_Slash.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Skill/Playable/DA_Skill_Slash.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Delta.uproject.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/Delta.uproject.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Animations/Notify/AnimNotifyState_VisibleMesh.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Animations/Notify/AnimNotifyState_VisibleMesh.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Characters/DeltaBaseCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Characters/DeltaBaseCharacter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Characters/DeltaPlayableCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Characters/DeltaPlayableCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Characters/Enemy/DeltaEnemyCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Characters/Enemy/DeltaEnemyCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Private/Characters/Enemy/DesertDragonCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Private/Characters/Enemy/DesertDragonCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Animations/Notify/AnimNotifyState_VisibleMesh.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Animations/Notify/AnimNotifyState_VisibleMesh.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Characters/DeltaBaseCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Characters/DeltaBaseCharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Characters/DeltaPlayableCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Characters/DeltaPlayableCharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Delta/Public/Characters/Enemy/DesertDragonCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/Characters/Enemy/DesertDragonCharacter.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Delta/Public/DataAssets/Skill/SkillDataAsset.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Delta/Public/DataAssets/Skill/SkillDataAsset.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -56,26 +71,18 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="cidr-memory-view://4" root0="FORCE_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://2" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/AsyncAction/AsyncActionPushConfirmScreen.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/AsyncAction/AsyncActionPushSoftWidget.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/BlueprintFunctionLibrary/FrontFunctionLibrary.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/Characters/DeltaBaseCharacter.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/Characters/DeltaBaseCharacter.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/Characters/DeltaPlayableCharacter.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/Characters/DeltaPlayableCharacter.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/Characters/DeltaPlayableCharacter.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/Characters/Enemy/DesertDragonCharacter.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/Characters/Enemy/DesertDragonCharacter.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/Characters/Enemy/DesertDragonCharacter.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/Components/CutSceneComponent.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Private/Controllers/DeltaAIController.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/Interfaces/LoadingScreenInterface.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/Interfaces/SaveGameInterface.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/Skills/SkillBlowAway.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/Skills/SkillForestBoom.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/Skills/SkillTreeBloom.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/Subsystem/FrontUISubsystem.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Delta/Private/Subsystem/MeshPoolSubsystem.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/UI/ActivatableBaseWidget.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/UI/Components/FrontCommonButtonBase.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/UI/Components/FrontCommonListView.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -91,25 +98,13 @@
     <setting file="file://$PROJECT_DIR$/Source/Delta/Private/UI/PrimaryLayOutWidget.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Public/AsyncAction/AsyncActionPushSoftWidget.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Public/BlueprintFunctionLibrary/FrontFunctionLibrary.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Public/Characters/DeltaBaseCharacter.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Public/Characters/DeltaBaseCharacter.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Public/Characters/DeltaBaseCharacter.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Public/Characters/DeltaBaseCharacter.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Public/Characters/DeltaPlayableCharacter.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Public/Characters/DeltaPlayableCharacter.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Public/Characters/DeltaPlayableCharacter.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Public/Characters/Enemy/DesertDragonCharacter.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Public/Characters/Enemy/DesertDragonCharacter.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Public/Characters/Enemy/DesertDragonCharacter.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Public/DataAssets/Skill/SkillDataAsset.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Public/DataAssets/Skill/SkillDataAsset.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/UE/Projects/Delta/Source/Delta/Public/DataAssets/Skill/SkillDataAsset.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Public/Helper/DeltaDebugHelper.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Public/Interfaces/LoadingScreenInterface.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Public/Interfaces/SaveGameInterface.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Public/Skills/SkillBlowAway.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Public/Skills/SkillForestBoom.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Public/Subsystem/FrontUISubsystem.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Delta/Public/Subsystem/MeshPoolSubsystem.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Public/UI/ActivatableBaseWidget.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Public/UI/Components/FrontCommonButtonBase.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Delta/Public/UI/Components/FrontCommonListView.h" root0="FORCE_HIGHLIGHTING" />
@@ -181,6 +176,8 @@
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/ApplicationCore/Private/Windows/WindowsPlatformApplicationMisc.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/AugmentedReality/Public/ARTypes.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Private/Android/AndroidPlatformString.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Private/Apple/ApplePlatformMisc.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Private/Compression/OodleDataCompressionFormat.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Private/Internationalization/TextLocalizationManager.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Private/Logging/StructuredLog.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Private/ProfilingDebugging/CpuProfilerTrace.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -196,6 +193,7 @@
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Public/Containers/LockFreeFixedSizeAllocator.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Public/Containers/Map.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Public/Containers/SparseArray.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Public/Delegates/DelegateBase.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Public/Delegates/DelegateInstancesImpl.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Public/Delegates/DelegateSignatureImpl.inl" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Core/Public/HAL/FMemory.inl" root0="FORCE_HIGHLIGHTING" />
@@ -217,6 +215,7 @@
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/CoreUObject/Private/Blueprint/BlueprintSupport.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/CoreUObject/Private/Internationalization/PackageLocalizationCache.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/CoreUObject/Private/StructUtils/UserDefinedStruct.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/CoreUObject/Private/Templates/Casts.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/CoreUObject/Private/UObject/Class.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/CoreUObject/Private/UObject/GarbageCollection.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/CoreUObject/Private/UObject/Obj.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -244,6 +243,7 @@
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Classes/Camera/PlayerCameraManager.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Classes/Components/ActorComponent.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Classes/Components/PostProcessComponent.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Classes/Components/SceneComponent.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Classes/Components/SkeletalMeshComponent.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Classes/Engine/BlendableInterface.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Classes/Engine/EngineTypes.h" root0="FORCE_HIGHLIGHTING" />
@@ -278,6 +278,8 @@
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Private/TickTaskManager.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Private/Tickable.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Private/UnrealEngine.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Private/WorldPartition/WorldPartitionActorDesc.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Private/WorldPartition/WorldPartitionStreamingGeneration.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Public/Materials/MaterialInstance.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Public/Materials/MaterialInstanceDynamic.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/Runtime/Engine/Public/Materials/MaterialInterface.h" root0="FORCE_HIGHLIGHTING" />
@@ -326,6 +328,7 @@
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/ThirdParty/Boost/boost-1_82_0/include/boost/hana/fwd/core/default.hpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/ThirdParty/Boost/boost-1_82_0/include/boost/log/utility/setup/settings.hpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/ThirdParty/Eigen/Eigen/src/Core/arch/Default/Settings.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.5/Engine/Source/ThirdParty/Eigen/unsupported/test/cxx11_tensor_volume_patch.cpp" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
@@ -349,7 +352,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -506,7 +509,10 @@
       <workItem from="1763341964471" duration="7499000" />
       <workItem from="1764231332125" duration="1696000" />
       <workItem from="1764479026111" duration="627000" />
-      <workItem from="1764559646710" duration="22130000" />
+      <workItem from="1764559646710" duration="23766000" />
+      <workItem from="1764637095832" duration="15475000" />
+      <workItem from="1764665881313" duration="157000" />
+      <workItem from="1764666069655" duration="3938000" />
     </task>
     <task id="LOCAL-00001" summary="Add Mana, Edit TargetInfo">
       <option name="closed" value="true" />
@@ -612,7 +618,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763026314833</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Change SkillDataAsset's hard reference to soft reference">
+      <option name="closed" value="true" />
+      <created>1764589357526</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1764589357526</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -648,9 +662,10 @@
     <MESSAGE value="Add AllyCharacter, Damaged Effect Post process&#10;Edit TimeDilation" />
     <MESSAGE value="Merge pull request #4 from cheimer/claude/rewrite-readme-011CV5RdrN7FchAuKj3accyw&#10;&#10;Update README with comprehensive documentation" />
     <MESSAGE value="Update README" />
-    <MESSAGE value="Merge remote-tracking branch 'origin/master'" />
     <MESSAGE value="Fix Health, Mana Bar UI Delegate" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix Health, Mana Bar UI Delegate" />
+    <MESSAGE value="Change SkillDataAsset's hard reference to soft reference" />
+    <MESSAGE value="Merge remote-tracking branch 'origin/master'" />
+    <option name="LAST_COMMIT_MESSAGE" value="" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

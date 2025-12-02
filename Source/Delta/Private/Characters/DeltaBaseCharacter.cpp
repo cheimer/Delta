@@ -12,9 +12,11 @@
 #include "Components/ManaComponent.h"
 #include "DataAssets/Skill/SkillDataAsset.h"
 #include "DeltaTypes/DeltaNamespaceTypes.h"
+#include "DeltaTypes/DeltaStructTypes.h"
 #include "Engine/AssetManager.h"
 #include "Helper/DeltaLoadHelper.h"
 #include "Subsystem/HitStopSubsystem.h"
+#include "Subsystem/MeshPoolSubsystem.h"
 
 ADeltaBaseCharacter::ADeltaBaseCharacter()
 {
@@ -53,19 +55,20 @@ void ADeltaBaseCharacter::BeginPlay()
 	OnTakeAnyDamage.AddDynamic(this, &ThisClass::TakeSkillDamage);
 	OnCharacterDeath.AddDynamic(this, &ThisClass::HandleCharacterDeath);
 
-	if (auto temp = FindSkillDataAsset(EDeltaSkillType::FlyingDisk))
+	LoadSkillAnim();
+}
+
+void ADeltaBaseCharacter::BeginDestroy()
+{
+	if (SkillDataHandle)
 	{
-		if (temp->AnimMontage.Get())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("AnimMontage Set"));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("AnimMontage Not Set"));
-		}
+		SkillDataHandle->ReleaseHandle();
+		SkillDataHandle.Reset();
 	}
 
-	LoadSkillAnim();
+	UnLoadSkillAnim();
+
+	Super::BeginDestroy();
 }
 
 void ADeltaBaseCharacter::TakeSkillDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
@@ -98,14 +101,6 @@ void ADeltaBaseCharacter::HandleCharacterDeath(AActor* DeathActor)
 
 	AnimInstance->StopAllMontages(0.5f);
 	AnimInstance->SetBoolValue(AnimValue::IsDeath, true);
-
-	if (SkillDataHandle)
-	{
-		SkillDataHandle->ReleaseHandle();
-		SkillDataHandle.Reset();
-	}
-
-	UnLoadSkillAnim();
 
 }
 
@@ -310,12 +305,36 @@ void ADeltaBaseCharacter::MoveCharacterMesh(const FVector& NewLocation, const fl
 	GetWorld()->GetTimerManager().SetTimer(RestoreMeshTimerHandle, this, &ThisClass::RestoreCharacterMeshLocation, DurationTime, false);
 }
 
-void ADeltaBaseCharacter::SetVisibleMesh(const FName MeshName, const bool bIsVisible)
+void ADeltaBaseCharacter::SetVisibleMesh(const TSubclassOf<AActor>& MeshClass, const FName SocketName, const bool bIsVisible)
 {
-	UStaticMeshComponent* SMMesh = Cast<UStaticMeshComponent>(GetDefaultSubobjectByName(MeshName));
-	if (!SMMesh) return;
+	UMeshPoolSubsystem* MeshPool = UMeshPoolSubsystem::Get(GetWorld());
+	if (!MeshPool) return;
 
-	SMMesh->SetVisibility(bIsVisible);
+	if (bIsVisible)
+	{
+		if (CachedSkillMesh)
+		{
+			CachedSkillMesh->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+			MeshPool->ReturnSkillMesh(CachedSkillMesh);
+			CachedSkillMesh = nullptr;
+		}
+		
+		CachedSkillMesh = MeshPool->GetSkillMesh(MeshClass);
+		if (!CachedSkillMesh.Get()) return;
+
+		USkeletalMeshComponent* MeshComp = FindComponentByClass<USkeletalMeshComponent>();
+		if (!MeshComp) return;
+		
+		CachedSkillMesh->AttachToComponent(MeshComp, FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName);
+	}
+	else
+	{
+		if (!CachedSkillMesh) return;
+
+		CachedSkillMesh->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		MeshPool->ReturnSkillMesh(CachedSkillMesh);
+		CachedSkillMesh = nullptr;
+	}
 }
 
 void ADeltaBaseCharacter::BeginAttackDilation(const float MaxDuration, const float TimeDilation)
@@ -363,7 +382,7 @@ void ADeltaBaseCharacter::LoadSkillAnim()
 	}
 
 	SkillAnimHandle = UAssetManager::GetStreamableManager().RequestAsyncLoad(SkillAssetPaths,
-		FStreamableDelegate::CreateLambda([]() -> void { UE_LOG(LogTemp, Warning, TEXT("Skill Anim Load Complete")) }));
+		FStreamableDelegate::CreateLambda([]() -> void { }));
 	
 }
 

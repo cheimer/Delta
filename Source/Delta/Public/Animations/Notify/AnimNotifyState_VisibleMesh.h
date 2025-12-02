@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
+#include "DeltaTypes/DeltaEnumTypes.h"
 #include "AnimNotifyState_VisibleMesh.generated.h"
 
 /**
@@ -18,7 +19,10 @@ public:
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference) override;
 	virtual void NotifyEnd(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, const FAnimNotifyEventReference& EventReference) override;
 
-	UPROPERTY(EditAnywhere, Category = "Name")
-	FName MeshName;
+	UPROPERTY(EditAnywhere, Category = "Mesh")
+	TSubclassOf<AActor> SpawnClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Mesh")
+	FName AttachSocketName;
 	
 };
