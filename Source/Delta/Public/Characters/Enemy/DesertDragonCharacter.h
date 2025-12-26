@@ -1,0 +1,65 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Characters/Enemy/DeltaEnemyCharacter.h"
+#include "Interfaces/Flying.h"
+#include "DesertDragonCharacter.generated.h"
+
+#define DRAGON_SKILL_NUM 8
+
+class UCutSceneComponent;
+class UPhaseComponent;
+class UFloatingPawnMovement;
+/**
+ * 
+ */
+UCLASS()
+class DELTA_API ADesertDragonCharacter : public ADeltaEnemyCharacter, public IFlying
+{
+	GENERATED_BODY()
+	
+public:
+	ADesertDragonCharacter();
+
+	virtual void BeginPlay() override;
+
+#pragma region IFlying
+	virtual bool IsFlying() const override;
+
+#pragma endregion IFlying
+
+protected:
+	virtual void HandleCharacterDeath(AActor* DeathCharacter) override;
+	
+	UFUNCTION()
+	void HandleNextPhase(const int PhaseNum);
+	
+	virtual void SetCurrentSkill(TOptional<int32> SkillIndex = TOptional<int32>()) override;
+
+	UFUNCTION()
+	void OnFlyEnd(UAnimMontage* Montage, bool bInterrupted);
+
+	UFUNCTION()
+	void HandleCharacterLanded(const FHitResult& Hit);
+
+	UPROPERTY(EditDefaultsOnly, Category = "FlyStart")
+	UAnimMontage* FlyStartMontage;
+	
+#pragma region Components
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPhaseComponent* PhaseComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UCutSceneComponent* CutSceneComponent;
+
+#pragma endregion Components
+
+private:
+	void DoPhaseOne();
+	
+	UPROPERTY(EditAnywhere, Category = "FlyStart", meta = (AllowPrivateAccess = "true"))
+	FVector FlyLocation = FVector(300.0f, 0.0f, 700.0f);
+
+};

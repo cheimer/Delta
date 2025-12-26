@@ -1,0 +1,44 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "Skills/SkillParrying.h"
+
+#include "NiagaraFunctionLibrary.h"
+#include "Components/CombatComponent.h"
+
+USkillParrying::USkillParrying()
+{
+	SkillType = EDeltaSkillType::Parrying;
+}
+
+void USkillParrying::BeginSkill(UCombatComponent* InCombatComponent)
+{
+	Super::BeginSkill(InCombatComponent);
+
+	if (!CombatComponent.IsValid()) return;
+	CombatComponent->SetDamageTakenMultiplier(0.0f);
+}
+
+void USkillParrying::ReactDamaged()
+{
+	Super::ReactDamaged();
+
+	if (!CombatComponent.IsValid() || !CombatComponent->GetOwner()) return;
+	
+	if (ParryingVFX)
+	{
+		FVector SpawnLocation = CombatComponent->GetOwner()->GetActorLocation();
+		FRotator SpawnRotation = CombatComponent->GetOwner()->GetActorRotation();
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ParryingVFX, SpawnLocation, SpawnRotation, CombatComponent->GetOwner()->GetActorScale(),
+			true, true, ENCPoolMethod::AutoRelease, true);
+	}
+	
+}
+
+void USkillParrying::EndSkill()
+{
+	Super::EndSkill();
+	
+	if (!CombatComponent.IsValid()) return;
+	CombatComponent->SetDamageTakenMultiplier(1.0f);
+}

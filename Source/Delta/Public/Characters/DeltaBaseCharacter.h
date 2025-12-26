@@ -1,0 +1,170 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Components/HealthComponent.h"
+#include "DataAssets/Skill/SkillDataAsset.h"
+#include "DeltaTypes/DeltaEnumTypes.h"
+#include "DeltaTypes/DeltaStructTypes.h"
+#include "GameFramework/Character.h"
+#include "Interfaces/SaveGameInterface.h"
+#include "DeltaBaseCharacter.generated.h"
+
+class UNiagaraPoolingComponent;
+struct FStreamableHandle;
+class UDeltaCharacterAnimInstance;
+class UBoxComponent;
+class UManaComponent;
+class USkillDataAsset;
+class USkillBase;
+class UHealthComponent;
+class UCombatComponent;
+class UMotionWarpingComponent;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterDeath, AActor*, DeathActor);
+
+UCLASS(Abstract)
+class DELTA_API ADeltaBaseCharacter : public ACharacter, public ISaveGameInterface
+{
+	GENERATED_BODY()
+
+public:
+	ADeltaBaseCharacter();
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+
+	virtual void ActiveSkill(const EDeltaSkillType SkillType);
+	virtual void DeActiveSkill();
+
+	virtual void BeginSkill(const EDeltaSkillType SkillType);
+
+	virtual void PlaySkillAnimation(const EDeltaSkillType SkillType);
+	virtual void EndSkillAnimation();
+	float GetSkillDurationTime(const EDeltaSkillType SkillType);
+
+	void EnableInterrupt();
+
+	virtual void UpdateMotionWarpingTarget();
+	virtual void UpdateSkillTarget();
+	UBoxComponent* FindSkillCollision(const FName& SkillCollision);
+
+	virtual void SetCurrentSkill(TOptional<int32> SkillIndex = TOptional<int32>());
+	TOptional<float> GetCurrentSkillRange() const;
+	bool CanUseCurrentSkill();
+
+	TOptional<bool> IsFirstSection();
+	TOptional<float> GetMontageRemainTime();
+
+	void MoveCharacterMesh(const FVector& NewLocation, const float DurationTime);
+
+	void SetVisibleMesh(const TSubclassOf<AActor>& MeshClass, const FName SocketName, const bool bIsVisible);
+
+	void BeginAttackDilation(const float MaxDuration, const float TimeDilation);
+	void EndAttackDilation();
+	
+	void AddTotalDealing(const float AddDealing) {TotalDealing += AddDealing;}
+
+	FOnCharacterDeath OnCharacterDeath;
+	
+#pragma region ISaveGameInterface
+	virtual void SaveData_Implementation(UDeltaSaveGame* DeltaSaveGame) override;
+	virtual void LoadData_Implementation(UDeltaSaveGame* DeltaSaveGame) override;
+
+#pragma endregion ISaveGameInterface
+	
+protected:
+	virtual void BeginPlay() override;
+	virtual void BeginDestroy() override;
+
+	UFUNCTION()
+	virtual void TakeSkillDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
+
+	UFUNCTION(BlueprintCallable)
+	virtual void HandleCharacterDeath(AActor* DeathActor);
+
+	USkillDataAsset* FindSkillDataAsset(const EDeltaSkillType CurrentSkillType);
+	
+	void RestoreCharacterMeshLocation();
+
+	UPROPERTY(EditAnywhere, Category = "Values")
+	FString DisplayName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
+	ETeamAffiliation TeamAffiliation = ETeamAffiliation::Neutral;
+
+	UPROPERTY()
+	UDeltaCharacterAnimInstance* AnimInstance;
+
+	TSharedPtr<FStreamableHandle> SkillDataHandle = nullptr;
+	TSharedPtr<FStreamableHandle> SkillAnimHandle = nullptr;
+
+	bool bCanInterruptSkill = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Skill")
+	TArray<USkillDataAsset*> SkillDataAssets;
+	TWeakObjectPtr<USkillDataAsset> CachedSkillData;
+	
+	TWeakObjectPtr<ADeltaBaseCharacter> CurrentSkillTarget = nullptr;
+	FVector SkillTargetLocation;
+	TArray<TEnumAsByte<EObjectTypeQuery>> TargetTraceChannel;
+
+	UPROPERTY()
+	TObjectPtr<AActor> CachedSkillMesh = nullptr;
+	
+#pragma region Components
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UMotionWarpingComponent* MotionWarpingComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UCombatComponent* CombatComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UHealthComponent* HealthComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UManaComponent* ManaComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UNiagaraPoolingComponent* NiagaraPoolingComponent;
+
+#pragma endregion Components
+
+private:
+	void LoadSkillAnim();
+	void UnLoadSkillAnim();
+
+	EDeltaHitDirection CalcDirection(const FVector& DamagedForward, const FVector& ToAttackerDirection);
+	FVector CachedMeshLocation = FVector::ZeroVector;
+
+	FTimerHandle RestoreMeshTimerHandle;
+
+	float TotalDealing = 0.0f;
+	
+public:
+#pragma region GetSet
+	FString GetDisplayName() const {return DisplayName;}
+
+	bool GetCanInterruptSkill() const {return bCanInterruptSkill;}
+
+	EDeltaSkillType GetCurrentSkillName() const {return CachedSkillData.IsValid() ? CachedSkillData.Get()->Type : EDeltaSkillType::Max;}
+	
+	ADeltaBaseCharacter* GetCurrentSkillTarget() const {return CurrentSkillTarget.IsValid() ? CurrentSkillTarget.Get() : nullptr;}
+	void SetCurrentSkillTarget(ADeltaBaseCharacter* InSkillTarget) {CurrentSkillTarget = InSkillTarget;}
+	
+	// return Saved TargetLocation or front location
+	FVector GetSkillTargetLocation() const {return SkillTargetLocation;}
+	void SetSkillTargetLocation(const FVector& InSkillTargetLocation) {SkillTargetLocation = InSkillTargetLocation;}
+
+	float GetHealthPercentage() const {return HealthComponent->GetHealthPercentage();}
+	bool GetIsDead() const {return HealthComponent->GetIsDead();}
+
+	const TArray<TEnumAsByte<EObjectTypeQuery>>& GetTargetTraceChannel() const {return TargetTraceChannel;}
+
+	float GetTotalDealing() const {return TotalDealing;}
+
+	ETeamAffiliation GetTeamAffiliation() const {return TeamAffiliation;}
+	void SetTeamAffiliation(ETeamAffiliation InTeamAffiliation) {TeamAffiliation = InTeamAffiliation;}
+
+#pragma endregion GetSet
+
+};
